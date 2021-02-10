@@ -13,6 +13,7 @@ from werkzeug.exceptions import Unauthorized, Forbidden
 
 from src.models.user import User
 
+
 def privileges(*roles):
     """Ensures the logged in user has the required privileges."""
     def decorator(f):

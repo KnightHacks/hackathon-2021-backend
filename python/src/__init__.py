@@ -14,9 +14,9 @@
         swagger_template
         db
         app
-        
+
 """
-import os
+from os import path, getenv
 
 from flask import Config, Flask
 from flasgger import Swagger
@@ -26,14 +26,14 @@ from flask_mongoengine import MongoEngine
 import yaml
 
 # Flask Config
-conf = Config(root_path=os.path.dirname(os.path.realpath(__file__)))
-conf.from_object(os.getenv("APP_SETTINGS", "src.config.ProductionConfig"))
+conf = Config(root_path=path.dirname(path.realpath(__file__)))
+conf.from_object(getenv("APP_SETTINGS", "src.config.ProductionConfig"))
 
 # Init Extensions
 db = MongoEngine()
 
 # Load the Schema Definitions
-schemapath = os.path.join(os.path.abspath(os.path.dirname(__file__)), "schemas.yml")
+schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
 schemastream = open(schemapath, "r")
 schema = yaml.load(schemastream, Loader=yaml.FullLoader)
 schemastream.close()
@@ -78,8 +78,7 @@ def create_app():
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api/hackers")
 
-
     return app
 
-app = create_app()
 
+app = create_app()

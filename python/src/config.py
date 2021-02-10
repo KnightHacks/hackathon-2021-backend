@@ -15,6 +15,7 @@
 import os
 import logging
 
+
 class BaseConfig:
     """Base Configuration"""
     DEBUG = False
@@ -39,4 +40,3 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production Configuration"""
     DEBUG = False
-

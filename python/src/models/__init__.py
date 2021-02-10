@@ -11,6 +11,7 @@
 """
 from src import db
 
+
 class BaseDocument(db.Document):
     """A Base Class to be inherited by all other Document Classes"""
     meta = {
