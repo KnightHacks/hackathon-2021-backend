@@ -1,3 +1,17 @@
+# -*- coding: utf-8 -*-
+"""
+    src.config
+    ~~~~~~~~~~
+    Defines the Configuration Classes for Flask
+
+    Classes:
+
+        BaseConfig
+        DevelopmentConfig
+        TestingConfig
+        ProductionConfig
+
+"""
 import os
 import logging
 

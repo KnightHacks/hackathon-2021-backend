@@ -1,6 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+    src.models
+    ~~~~~~~~~~
+    Define the BaseDocument
+
+    Classes:
+
+        BaseDocument
+
+"""
 from src import db
 
 class BaseDocument(db.Document):
+    """A Base Class to be inherited by all other Document Classes"""
     meta = {
         "abstract": True
     }

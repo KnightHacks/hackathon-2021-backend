@@ -31,9 +31,10 @@ Hacker:
       description: The tracks that the Hacker is participating in.
       items:
         type: string
-    graduation:
-      type: string
+    grad_year:
+      type: int
       description: The Hacker's expected graduation year.
+      example: 2024
     socials:
       type: array
       items:

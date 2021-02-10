@@ -1,3 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+    src
+    ~~~
+    Initialize the Flask App and its extensions + blueprints
+
+    Functions:
+
+        create_app() -> Flask
+
+    Variables:
+
+        schema
+        swagger_template
+        db
+        app
+        
+"""
 import os
 
 from flask import Config, Flask

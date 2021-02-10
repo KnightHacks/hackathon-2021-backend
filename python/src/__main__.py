@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    src.__main__
+    ~~~~~~~~~~~~
+    Handles arguments from the cli and runs the app.
+
+    Functions:
+
+        main()
+
+"""
 import argparse
 from src import app
 
