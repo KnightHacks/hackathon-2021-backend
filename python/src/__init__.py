@@ -17,8 +17,8 @@
 
 """
 from os import path, getenv
-
 from flask import Config, Flask
+from werkzeug.exceptions import HTTPException
 from flasgger import Swagger
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
@@ -77,6 +77,11 @@ def create_app():
     from src.api.hackers import hackers_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api/hackers")
+
+    # Register Error Handlers
+    from src.common import error_handlers
+
+    app.register_error_handler(HTTPException, error_handlers.handle_exception)
 
     return app
 

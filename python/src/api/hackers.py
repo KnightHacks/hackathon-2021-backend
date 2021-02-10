@@ -13,7 +13,8 @@
 
 """
 from flask import Blueprint, request
-from werkzeug.exceptions import BadRequest
+from mongoengine.errors import NotUniqueError, ValidationError
+from werkzeug.exceptions import BadRequest, Conflict
 import dateutil.parser
 
 from src.models.hacker import Hacker
@@ -44,6 +45,8 @@ def create_hacker():
             description: OK
         400:
             description: Bad request.
+        409:
+            description: Sorry, that username or email already exists.
         5XX:
             description: Unexpected error.
     """
@@ -60,11 +63,11 @@ def create_hacker():
         data["hacker_profile"][f] = data.pop(f, None)
 
     try:
-        hacker = Hacker.createOne(**data, permissions=("HACKER",))
-    except Exception as e:
-        print(type(e))
-        print(e.args)
-        print(e)
+        Hacker.createOne(**data, permissions=("HACKER",))
+    except NotUniqueError:
+        raise Conflict("Sorry, that username or email already exists.")
+    except ValidationError:
+        raise BadRequest()
 
     res = {
         "status": "success",
@@ -72,4 +75,3 @@ def create_hacker():
     }
 
     return res, 201
-
