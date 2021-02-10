@@ -1,7 +1,7 @@
-jsonschema<3.0.0
-flasgger==0.9.3
-Flask==1.1.2
-Flask-Cors==3.0.10
-flask-mongoengine==1.0.0
-pyyaml==5.4.1
+jsonschema
+flasgger
+Flask
+Flask-Cors
+flask-mongoengine
+pyyaml
 python-dateutil
