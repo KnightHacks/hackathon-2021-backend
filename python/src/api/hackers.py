@@ -16,7 +16,6 @@ from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
 import dateutil.parser
-
 from src.models.hacker import Hacker
 
 

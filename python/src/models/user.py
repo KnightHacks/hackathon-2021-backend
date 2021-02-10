@@ -14,7 +14,6 @@
 
 """
 from datetime import datetime
-
 from src import db
 from src.models import BaseDocument
 

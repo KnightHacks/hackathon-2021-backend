@@ -10,7 +10,6 @@
 """
 from functools import wraps
 from werkzeug.exceptions import Unauthorized, Forbidden
-
 from src.models.user import User
 
 

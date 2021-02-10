@@ -22,7 +22,6 @@ from werkzeug.exceptions import HTTPException
 from flasgger import Swagger
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
-
 import yaml
 
 # Flask Config
