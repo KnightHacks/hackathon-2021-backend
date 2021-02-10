@@ -9,4 +9,6 @@ WORKDIR /home/backend/app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY src/ . 
-CMD [ "python", "./main.py" ]
+
+ENTRYPOINT [ "python" ]
+CMD [ "-m", "src", "--host=0.0.0.0", "--port=80" ]

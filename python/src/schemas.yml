@@ -1,0 +1,43 @@
+Hacker:
+  type: object
+  properties:
+    first_name:
+      type: string
+    last_name:
+      type: string
+    school_name:
+      type: string
+    email:
+      type: string
+      example: foobar@email.com
+    username:
+      type: string
+    password:
+      type: string
+      format: password
+    phone_number:
+      type: string
+      example: +1 (555) 555-5555
+    resume:
+      type: string
+      format: uri
+      example: https://blob.knighthacks.org/someresume.pdf
+    date:
+      type: string
+      format: date-time
+      example: "2014-09-10T11:41:00.12343-03:00"
+    tracks:
+      type: array
+      description: The tracks that the Hacker is participating in.
+      items:
+        type: string
+    graduation:
+      type: string
+      description: The Hacker's expected graduation year.
+    socials:
+      type: array
+      items:
+        type: string
+    current_status:
+      type: boolean
+      description: If the Hacker is accepted or not.
