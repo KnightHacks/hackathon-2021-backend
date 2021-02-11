@@ -18,7 +18,7 @@ def privileges(*roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(username, *args, **kwargs):
-            user = User.objects(username=username).only("permissions").first()
+            user = User.objects(username=username).only("roles").first()
 
             if not user:
                 raise Unauthorized()

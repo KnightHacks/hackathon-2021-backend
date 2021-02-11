@@ -62,7 +62,7 @@ def create_hacker():
         data["hacker_profile"][f] = data.pop(f, None)
 
     try:
-        Hacker.createOne(**data, permissions=("HACKER",))
+        Hacker.createOne(**data, roles=("HACKER",))
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
     except ValidationError:
