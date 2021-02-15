@@ -67,19 +67,19 @@ def create_app():
     """Initialize the App"""
     app = Flask(__name__, static_url_path="/static")
 
-    # Setup Extensions
+    """Setup Extensions"""
     CORS(app)
     db.init_app(app)
     swagger.init_app(app)
 
-    # Register Blueprints
+    """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
 
-    # Register Error Handlers
+    """Register Error Handlers"""
     from src.common import error_handlers
 
     app.register_error_handler(HTTPException, error_handlers.handle_exception)

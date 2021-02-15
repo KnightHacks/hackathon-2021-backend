@@ -16,7 +16,7 @@ from src.models.hacker import Hacker
 stats_blueprint = Blueprint("stats", __name__)
 
 
-@stats_blueprint.route("/stats/usercount", methods=["GET"])
+@stats_blueprint.route("/stats/user_count/", methods=["GET"])
 def count_users():
     """
     Returns the Amount of Users
