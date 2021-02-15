@@ -24,7 +24,7 @@ hackers_blueprint = Blueprint("hackers", __name__)
 HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 
 
-@hackers_blueprint.route("/", methods=["POST"])
+@hackers_blueprint.route("/hackers", methods=["POST"])
 def create_hacker():
     """
     Creates a new Hacker.

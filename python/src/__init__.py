@@ -75,7 +75,7 @@ def create_app():
     # Register Blueprints
     from src.api.hackers import hackers_blueprint
 
-    app.register_blueprint(hackers_blueprint, url_prefix="/api/hackers")
+    app.register_blueprint(hackers_blueprint, url_prefix="/api")
 
     # Register Error Handlers
     from src.common import error_handlers
