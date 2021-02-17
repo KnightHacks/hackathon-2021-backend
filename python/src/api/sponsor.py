@@ -45,14 +45,14 @@ def create_sponsor():
     data = request.get_json()
 
     if not data:
-        raise BadRequest()
+        raise BadRequest("Not data")
 
     try:
         Sponsor.createOne(**data, roles=("SPONSOR",))
     except NotUniqueError:
         raise Conflict("Sorry, this sponsor already exists.")
     except ValidationError:
-        raise BadRequest()
+        raise BadRequest("Validation Error")
 
     res = {
         "status": "success",

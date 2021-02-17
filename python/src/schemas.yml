@@ -59,3 +59,5 @@ Sponsor:
     subscription_tier:
       type: string
       example: "Gold"
+Event:
+  type: object
