@@ -1,4 +1,3 @@
-#TODO
 # -*- coding: utf-8 -*-
 """
     src.api.hackers
@@ -12,7 +11,6 @@
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
-import dateutil.parser
 from src.models.sponsor import Sponsor
 
 sponsors_blueprint = Blueprint("sponsors", __name__)

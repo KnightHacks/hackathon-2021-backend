@@ -9,7 +9,6 @@
         Sponsor
 """
 from src import db
-from datetime import datetime
 
 class Sponsor():
     sponsor_name = db.StringField()
