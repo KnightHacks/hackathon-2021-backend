@@ -24,9 +24,6 @@ from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 import yaml
 
-# Flask Config
-conf = Config(root_path=path.dirname(path.realpath(__file__)))
-conf.from_object(getenv("APP_SETTINGS", "src.config.ProductionConfig"))
 
 # Init Extensions
 db = MongoEngine()
@@ -66,6 +63,9 @@ swagger = Swagger(template=swagger_template)
 def create_app():
     """Initialize the App"""
     app = Flask(__name__, static_url_path="/static")
+
+    app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")
+    app.config.from_object(app_settings)
 
     """Setup Extensions"""
     CORS(app)

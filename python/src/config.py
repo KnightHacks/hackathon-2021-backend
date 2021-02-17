@@ -23,7 +23,15 @@ class BaseConfig:
     LOGGING_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     LOGGING_LOCATION = "flask-base.log"
     LOGGING_LEVEL = logging.DEBUG
-    MONGODB_HOST = os.getenv("MONGO_URI")
+    MONGODB_HOST = os.getenv("MONGO_URI", "mongodb://localhost:27017/test")
+    SWAGGER = {
+        "specs": [
+            {
+                "endpoint": "apispec",
+                "route": "/apispec.json"
+            }
+        ]
+    }
 
 
 class DevelopmentConfig(BaseConfig):
