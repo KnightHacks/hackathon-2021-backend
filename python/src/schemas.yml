@@ -42,3 +42,20 @@ Hacker:
     current_status:
       type: boolean
       description: If the Hacker is accepted or not.
+Sponsor:
+  type: object
+  properties:
+    sponsor_name:
+      type: string
+      example: "Microsoft"
+    logo:
+      type: uri
+      example: https://blob.knighthacks.org/somelogo.png
+    event_hosting:
+      type: array
+      items:
+        type: Event
+      description: List of events that this sponsor will officially host/participate in.
+    subscription_tier:
+      type: string
+      example: "Gold"
