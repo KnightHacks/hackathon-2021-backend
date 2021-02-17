@@ -54,7 +54,7 @@ Sponsor:
     event_hosting:
       type: array
       items:
-        type: Event
+        $ref: '#/components/schemas/Event'
       description: List of events that this sponsor will officially host/participate in.
     subscription_tier:
       type: string

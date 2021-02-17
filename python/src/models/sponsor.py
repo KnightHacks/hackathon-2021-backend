@@ -9,8 +9,10 @@
         Sponsor
 """
 from src import db
+from src.models.user import User
 
-class Sponsor():
+
+class Sponsor(User):
     sponsor_name = db.StringField()
     logo = db.URLField()
     event_hosting = db.EmbeddedDocument()

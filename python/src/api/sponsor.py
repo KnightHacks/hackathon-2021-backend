@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-    src.api.hackers
+    src.api.sponsor
     ~~~~~~~~~~~~~~~
 
     Functions:
 
-        create_hacker()
+        create_sponsor()
 
 """
 from flask import Blueprint, request
@@ -13,7 +13,9 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
 from src.models.sponsor import Sponsor
 
+
 sponsors_blueprint = Blueprint("sponsors", __name__)
+
 
 @sponsors_blueprint.route("/sponsors/", methods=["POST"])
 def create_sponsor():
