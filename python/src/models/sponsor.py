@@ -15,5 +15,5 @@ from src.models.user import User
 class Sponsor(User):
     sponsor_name = db.StringField()
     logo = db.URLField()
-    event_hosting = db.EmbeddedDocument()
+    event_hosting = db.ListField(db.ReferenceField(Event))
     subscription_tier = db.StringField()
