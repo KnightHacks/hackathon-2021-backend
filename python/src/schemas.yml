@@ -59,5 +59,13 @@ Sponsor:
     subscription_tier:
       type: string
       example: "Gold"
+    email:
+      type: string
+      example: foobar@email.com
+    username:
+      type: string
+    password:
+      type: string
+      format: password
 Event:
   type: object
