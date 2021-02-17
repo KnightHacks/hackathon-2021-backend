@@ -67,3 +67,55 @@ def create_group():
     }
 
     return res, 201
+
+
+@groups_blueprint.route("/groups/<group_name>/", methods=["PUT"])
+def edit_group(group_name: str):
+    """
+    Updates a Group
+    ---
+    tags:
+        - groups
+    summary: Updates a Group
+    parameters:
+        - id: group_name
+          in: path
+          description: The name of the group to be updated.
+          required: true
+          schema:
+            type: string
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: '#/components/schemas/Group'
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad Request
+        404:
+            description: Group doesn't exist
+        5XX:
+            description: Unexpected error.
+    """
+    update = request.get_json()
+    if not update:
+        raise BadRequest()
+
+    group = Group.objects(name=group_name)
+    if not group:
+        raise NotFound()
+
+    try:
+        group.update(**update)
+    except NotUniqueError:
+        raise Conflict("Sorry, a group already exists with that name.")
+    except ValidationError:
+        raise BadRequest()
+
+    res = {
+        "status": "success",
+        "message": "Group successfully updated."
+    }
+    return res, 201
