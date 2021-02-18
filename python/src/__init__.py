@@ -75,10 +75,12 @@ def create_app():
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
+    from src.api.sponsor import sponsors_blueprint
     from src.api.groups import groups_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
+    app.register_blueprint(sponsors_blueprint, url_prefix="/api")
     app.register_blueprint(groups_blueprint, url_prefix="/api")
 
     """Register Error Handlers"""
