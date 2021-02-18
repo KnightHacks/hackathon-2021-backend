@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest
+flask-testing
+mongomock
