@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 COPY src/ . 
 
 ENTRYPOINT [ "python" ]
-CMD [ "-m", "src", "--host=0.0.0.0", "--port=80" ]
+CMD [ "-m", "src", "run", "--host=0.0.0.0", "--port=80" ]
