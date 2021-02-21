@@ -12,9 +12,16 @@ from flask import Blueprint, request, current_app
 from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest, Unauthorized
 import dateutil.parser
+from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
+from flask.json import JSONEncoder
+from bson import json_util
+from src.models import BaseDocument
+from mongoengine.queryset import QuerySet
+
 
 club_events_blueprint = Blueprint("club_events", __name__)
+
 
 
 @club_events_blueprint.route("/club/update_events/", methods=["PUT"])
@@ -61,8 +68,10 @@ def update_events():
 
     for event in data:
 
-        if event["date"]:
+        if event.get("date"):
             event["date"] = dateutil.parser.parse(event["date"])
+        else:
+            event["date"] = None
 
         try:
             ClubEvent.createOne(**event)
@@ -90,7 +99,51 @@ def get_events():
           name: count
           schema:
             type: integer
-          description: The number of most recent events to get.
+          minimum: 1
+          required: false
+          description: The number of events to get.
+        - in: query
+          name: rdate
+          required: false
+          schema:
+            type: string
+            enum:
+                - Today
+                - LastWeek
+                - LastMonth
+                - LastYear
+          description: >
+            A relative date range for the events.
+            For an exact range, use `start_date` and `end_date` instead.
+            `confirmed` must be true or undefined.
+        - in: query
+          name: start_date
+          required: false
+          schema:
+            type: string
+            format: date
+          description: >
+            The start date for the events. Must be used with `end_date`.
+            This parameter is incompatible with `rdate`.
+            `confirmed` must be true or undefined.
+        - in: query
+          name: end_date
+          required: false
+          schema:
+            type: string
+            format: date
+          description: >
+            The end date for the events. Must be used with `start_date`.
+            This parameter is incompatible with `rdate`.
+            `confirmed` must be true or undefined.
+        - in: query
+          name: confirmed
+          required: false
+          schema:
+            type: boolean
+            default: true
+            required: false
+            description: If true, the endpoint returns only confirmed events.
     responses:
         200:
             content:
@@ -100,6 +153,9 @@ def get_events():
                         properties:
                             count:
                                 type: integer
+                                description: >
+                                  Total number of ClubEvents that
+                                  match the given parameters.
                             events:
                                 type: array
                                 items:
@@ -107,14 +163,37 @@ def get_events():
         5XX:
             description: Unexpected error.
     """
-    count = request.args.get("count")
+    args = request.args
+    query = {}
 
-    events = ClubEvent.objects.exclude("id")
+    if args.get("rdate") and (
+            args.get("start_date") or args.get("end_date")):
+        raise BadRequest("Parameter `rdate` is incompatible with `start_date` and `end_date`!")  # noqa: E501
+
+    if args.get("confirmed", "true") != "true" and (
+            args.get("start_date") or args.get("end_date")
+            or args.get("rdate")):
+        raise BadRequest("Parameter `confirmed` must be true or undefined while using date parameters!")  # noqa: E501
+
+    if args.get("confirmed", "true") == "true":
+        query["date__type"] = "date"
+
+    if args.get("rdate"):
+        if args.get("rdate") == "Today":
+            pass
+
+    if args.get("start_date") and args.get("end_date"):
+        pass
+
+    events = ClubEvent.objects(**query).exclude("id")
+
+    count = args.get("count")
     if count:
         events = events[:int(count)]
 
+
     res = {
-        "count": count,
+        "count": events.count(),
         "events": events
     }
 
