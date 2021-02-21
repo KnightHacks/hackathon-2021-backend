@@ -8,7 +8,7 @@
         update_events()
 
 """
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest, Unauthorized
 import dateutil.parser
@@ -54,7 +54,8 @@ def update_events():
     if not auth_token:
         raise Unauthorized()
 
-    # TODO: Authorize the thing
+    if auth_token != current_app.config["CLUBEVENT_APIKEY"]:
+        raise Unauthorized()
 
     ClubEvent.drop_collection()
 

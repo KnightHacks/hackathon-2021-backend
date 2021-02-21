@@ -24,6 +24,7 @@ class BaseConfig:
     LOGGING_LOCATION = "flask-base.log"
     LOGGING_LEVEL = logging.DEBUG
     MONGODB_HOST = os.getenv("MONGO_URI")
+    CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
 
 
 class DevelopmentConfig(BaseConfig):
