@@ -20,3 +20,7 @@ class ClubEvent(BaseDocument):
     date = db.DateTimeField(requried=True)
     description = db.StringField()
     link = db.URLField()
+
+    meta = {
+        "ordering": ["date"]
+    }

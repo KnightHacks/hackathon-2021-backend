@@ -75,3 +75,47 @@ def update_events():
     }
 
     return res, 201
+
+
+@club_events_blueprint.route("/club/get_events/", methods=["GET"])
+def get_events():
+    """
+    Gets the Club Events.
+    ---
+    tags:
+        - club
+    summary: Get Club Events
+    parameters:
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: The number of most recent events to get.
+    responses:
+        200:
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            count:
+                                type: integer
+                            events:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/ClubEvent'
+        5XX:
+            description: Unexpected error.
+    """
+    count = request.args.get("count")
+
+    events = ClubEvent.objects.exclude("id")
+    if count:
+        events = events[:int(count)]
+
+    res = {
+        "count": count,
+        "events": events
+    }
+
+    return res, 200
