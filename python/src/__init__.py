@@ -57,7 +57,14 @@ swagger_template = {
         "https"
     ],
     "components": {
-        "schemas": schema
+        "schemas": schema,
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authorization"
+            }
+        }
     }
 }
 swagger = Swagger(template=swagger_template)
@@ -77,11 +84,13 @@ def create_app():
     from src.api.stats import stats_blueprint
     from src.api.sponsor import sponsors_blueprint
     from src.api.groups import groups_blueprint
+    from src.api.club_events import club_events_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
     app.register_blueprint(sponsors_blueprint, url_prefix="/api")
     app.register_blueprint(groups_blueprint, url_prefix="/api")
+    app.register_blueprint(club_events_blueprint, url_prefix="/api")
 
     """Register Error Handlers"""
     from src.common import error_handlers
