@@ -14,7 +14,7 @@
 """
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict
+from werkzeug.exceptions import BadRequest, Conflict, NotFound
 import dateutil.parser
 from src.models.hacker import Hacker
 
@@ -71,6 +71,46 @@ def create_hacker():
     res = {
         "status": "success",
         "message": "Hacker was created!"
+    }
+
+    return res, 201
+
+
+@hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
+def delete_hacker(username: str):
+    """
+    Deletes an existing Hacker.
+    ---
+    tags:
+        - hacker
+    summary: Delete Hacker
+    parameters:
+        - id: username
+          in: path
+          description: User name
+          required: true
+          schema:
+            type: string
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad request.
+        404:
+            description: Specified hacker does not exist.
+        5XX:
+            description: Unexpected error.
+    """
+
+    hacker = Hacker.objects(username=username)
+
+    if not hacker:
+        raise NotFound("The specified hacker does not exist in the database.")
+    hacker.delete()
+
+    res = {
+        "status": "success",
+        "message": "Hacker was deleted!"
     }
 
     return res, 201
