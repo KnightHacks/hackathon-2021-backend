@@ -75,56 +75,6 @@ def create_hacker():
 
     return res, 201
 
-@hackers_blueprint.route("/hackers/", methods=["POST"])
-def create_hacker():
-    """
-    Creates a new Hacker.
-    ---
-    tags:
-        - hacker
-    summary: Create Hacker
-    requestBody:
-        content:
-            application/json:
-                schema:
-                    $ref: '#/components/schemas/Hacker'
-        description: Created Hacker Object
-        required: true
-    responses:
-        201:
-            description: OK
-        400:
-            description: Bad request.
-        409:
-            description: Sorry, that username or email already exists.
-        5XX:
-            description: Unexpected error.
-    """
-    data = request.get_json()
-
-    if not data:
-        raise BadRequest()
-
-    if data["date"]:
-        data["date"] = dateutil.parser.parse(data["date"])
-
-    data["hacker_profile"] = {}
-    for f in HACKER_PROFILE_FIELDS:
-        data["hacker_profile"][f] = data.pop(f, None)
-
-    try:
-        Hacker.createOne(**data, roles=("HACKER",))
-    except NotUniqueError:
-        raise Conflict("Sorry, that username or email already exists.")
-    except ValidationError:
-        raise BadRequest()
-
-    res = {
-        "status": "success",
-        "message": "Hacker was created!"
-    }
-
-    return res, 201
 
 @hackers_blueprint.route("/hackers/<username>/", methods=["GET"])
 def get_user_search(username: str):
@@ -157,6 +107,7 @@ def get_user_search(username: str):
     }
 
     return res, 200
+
 
 @hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
 def delete_hacker(username: str):
