@@ -11,7 +11,7 @@
         delete_category
 
 """
-from Flask import Blueprint, request
+from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.category import Category
