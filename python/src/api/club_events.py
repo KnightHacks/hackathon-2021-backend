@@ -165,9 +165,7 @@ def get_events():
             args.get("start_date") or args.get("end_date")):
         raise BadRequest("Parameter `rdate` is incompatible with `start_date` and `end_date`!")  # noqa: E501
 
-    if args.get("confirmed", "true") != "true" and (
-            args.get("start_date") or args.get("end_date")
-            or args.get("rdate")):
+    if args.get("confirmed", "true") != "true" and (args.get("start_date") or args.get("end_date") or args.get("rdate")):  # noqa: E501
         raise BadRequest("Parameter `confirmed` must be true or undefined while using date parameters!")  # noqa: E501
 
     if args.get("confirmed", "true") == "true":
