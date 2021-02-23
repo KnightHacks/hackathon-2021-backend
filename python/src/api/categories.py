@@ -181,7 +181,24 @@ def delete_category():
         5XX:
             description: Unexpected error.
     """
-    pass
+    args = request.args
+    query = dict(name=args["name"])
+
+    if args.get("sponsor"):
+        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        if not sponsor_find:
+            raise NotFound("A sponsor with that name does not exist!")
+        query["sponsor"] = sponsor_find
+
+    cat = Category.objects(**query)
+    if not cat:
+        raise NotFound("Sorry, no categories exist that match the query.")
+
+    affected = cat.delete()
+
+    res = dict(affected=affected)
+
+    return res, 201
 
 
 @categories_blueprint.route("/categories/", methods=["GET"])
