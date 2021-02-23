@@ -14,10 +14,6 @@ from werkzeug.exceptions import BadRequest, Unauthorized
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
-from flask.json import JSONEncoder
-from bson import json_util
-from src.models import BaseDocument
-from mongoengine.queryset import QuerySet
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
@@ -178,11 +174,33 @@ def get_events():
         query["date__type"] = "date"
 
     if args.get("rdate"):
+        now = datetime.now()
+        now = now.replace(hour=23,
+                          minute=59,
+                          second=59,
+                          microsecond=999999)
+
         if args.get("rdate") == "Today":
-            pass
+            query["date__gte"] = now.replace(hour=0,
+                                             minute=0,
+                                             second=0,
+                                             microsecond=0)
+            query["date__lte"] = now
+        elif args.get("rdate") == "LastWeek":
+            query["date__gte"] = now - timedelta(days=7)
+            query["date__lte"] = now
+        elif args.get("rdate") == "LastMonth":
+            query["date__gte"] = now - timedelta(days=30)
+            query["date__lte"] = now
+        elif args.get("rdate") == "LastYear":
+            query["date__gte"] = now - timedelta(days=365)
+            query["date__lte"] = now
 
     if args.get("start_date") and args.get("end_date"):
-        pass
+        query |= {
+            "date__gte": dateutil.parser.parse(args["start_date"]),
+            "date__lt": dateutil.parser.parse(args["end_date"])
+        }
 
     events = ClubEvent.objects(**query).exclude("id")
 
@@ -190,10 +208,13 @@ def get_events():
     if count:
         events = events[:int(count)]
 
+    events_list = []
+    for event in events:
+        events_list.append(event.to_mongo(use_db_field=False))
 
     res = {
         "count": events.count(),
-        "events": events
+        "events": events_list
     }
 
     return res, 200
