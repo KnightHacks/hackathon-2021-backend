@@ -9,7 +9,7 @@
         edit_group()
 
 """
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.hacker import Hacker
@@ -22,7 +22,7 @@ groups_blueprint = Blueprint("groups", __name__)
 @groups_blueprint.route("/groups/", methods=["POST"])
 def create_group():
     """
-    Returns the Amount of Users
+    Creates a group
     ---
     tags:
         - groups
@@ -119,3 +119,31 @@ def edit_group(group_name: str):
         "message": "Group successfully updated."
     }
     return res, 201
+
+
+@groups_blueprint.route("/groups/<group_name>/", methods=["GET"])
+def get_group(group_name: str):
+    """
+    Retrieves a group's schema from their group name
+    ---
+    tags:
+        - groups
+    summary: Gets a group's schema from their group name
+    parameters:
+        - name: group_name
+          in: path
+          type: string
+          description: The group's schema.
+          required: true
+    responses:
+        200:
+            description: OK
+
+    """
+    group = Group.objects(name=group_name).first()
+    if not group:
+        raise NotFound()
+
+    res = jsonify(group.to_json())
+
+    return res, 200
