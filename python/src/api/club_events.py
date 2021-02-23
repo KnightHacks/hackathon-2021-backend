@@ -23,7 +23,6 @@ from mongoengine.queryset import QuerySet
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
-
 @club_events_blueprint.route("/club/update_events/", methods=["PUT"])
 def update_events():
     """

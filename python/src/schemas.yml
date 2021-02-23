@@ -103,6 +103,5 @@ ClubEvent:
       example: "2014-09-10T11:41:00.12343-03:00"
     description:
       type: string
-    link:
-      type: uri
-      example: https://ucf.zoom.us/zoom-sucks-use-discord-instead
+    location:
+      type: string
