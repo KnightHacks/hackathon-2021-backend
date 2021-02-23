@@ -45,7 +45,29 @@ def create_category():
         5XX:
             description: Unexpected error.
     """
-    pass
+    data = request.get_json()
+
+    if not data:
+        raise BadRequest()
+
+    data["sponsor"] = Sponsor.findOne(sponsor_name=data["sponsor"])
+
+    if not data["sponsor"]:
+        raise NotFound("A sponsor with that name does not exist.")
+
+    try:
+        Category.createOne(**data)
+    except NotUniqueError:
+        raise Conflict("Sorry, a category with that name already exists.")
+    except ValidationError:
+        raise BadRequest()
+
+    res = {
+        "status": "success",
+        "message": "Category was created!"
+    }
+
+    return res, 201
 
 
 @categories_blueprint.route("/categories/", methods=["PUT"])
