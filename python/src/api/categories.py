@@ -40,6 +40,8 @@ def create_category():
             description: OK
         400:
             description: Bad request.
+        404:
+            description: Sorry, no sponsors exist with the provided name.
         409:
             description: Sorry, a category with that name already exists.
         5XX:
@@ -106,12 +108,43 @@ def edit_category():
                                     Number of Categories affected.
         400:
             description: Bad request.
+        404:
+            description: Sorry, no categories exist that match the query.
         409:
             description: Sorry, a category with that name already exists.
         5XX:
             description: Unexpected error.
     """
-    pass
+    args = request.args
+    data = request.get_json()
+    query = dict(name=args["name"])
+
+    if args.get("sponsor"):
+        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        if not sponsor_find:
+            raise NotFound("A sponsor with that name does not exist!")
+        query["sponsor"] = sponsor_find
+
+    cat = Category.objects(**query)
+    if not cat:
+        raise NotFound("Sorry, no categories exist that match the query.")
+
+    if data["sponsor"]:
+        data["sponsor"] = Sponsor.findOne(sponsor_name=data["sponsor"])
+
+    if not data["sponsor"]:
+        raise NotFound("A sponsor with that name does not exist!")
+
+    try:
+        affected = cat.update(**data)
+    except NotUniqueError:
+        raise Conflict("Sorry, a category already exists with that name.")
+    except ValidationError:
+        raise BadRequest()
+
+    res = dict(affected=affected)
+
+    return res, 201
 
 
 @categories_blueprint.route("/categories/", methods=["DELETE"])
