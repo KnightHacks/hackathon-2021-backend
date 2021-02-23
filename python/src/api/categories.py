@@ -117,7 +117,7 @@ def edit_category():
     """
     args = request.args
     data = request.get_json()
-    query = dict(name=args["name"])
+    query = dict(name=args.get("name"))
 
     if args.get("sponsor"):
         sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
@@ -182,7 +182,7 @@ def delete_category():
             description: Unexpected error.
     """
     args = request.args
-    query = dict(name=args["name"])
+    query = dict(name=args.get("name"))
 
     if args.get("sponsor"):
         sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
@@ -224,15 +224,46 @@ def get_category():
                     schema:
                         type: object
                         properties:
-                            affected:
+                            count:
                                 type: integer
                                 description: >
-                                    Number of Categories affected.
+                                    The number of Categories that match the
+                                    query.
+                            categories:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Category'
         400:
             description: Bad request.
+        404:
+            description: Sorry, no categories exist that match the query.
         409:
             description: Sorry, a category with that name already exists.
         5XX:
             description: Unexpected error.
     """
-    pass
+    args = request.args
+    query = dict(name=args.get("name"))
+
+    if args.get("sponsor"):
+        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        if not sponsor_find:
+            raise NotFound("A sponsor with that name does not exist!")
+        query["sponsor"] = sponsor_find
+
+    cat = Category.objects(**query).exclude("id")
+    if not cat:
+        raise NotFound("Sorry, no categories exist that match the query.")
+
+    cat_list = []
+    for c in cat:
+        c_dict = c.to_mongo().to_dict()
+        c_dict["sponsor"] = c.sponsor.sponsor_name
+        cat_list.append(c_dict)
+
+    res = {
+        "count": cat.count(),
+        "categories": cat_list
+    }
+
+    return res, 201
