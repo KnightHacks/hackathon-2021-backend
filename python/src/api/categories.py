@@ -52,7 +52,7 @@ def create_category():
     if not data:
         raise BadRequest()
 
-    data["sponsor"] = Sponsor.findOne(sponsor_name=data["sponsor"])
+    data["sponsor"] = Sponsor.objects(sponsor_name=data["sponsor"]).first()
 
     if not data["sponsor"]:
         raise NotFound("A sponsor with that name does not exist.")
@@ -82,11 +82,13 @@ def edit_category():
     parameters:
         - name: name
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the category.
         - name: sponsor
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the sponsor.
     requestBody:
         content:
@@ -117,10 +119,13 @@ def edit_category():
     """
     args = request.args
     data = request.get_json()
-    query = dict(name=args.get("name"))
+    query = {}
+
+    if args.get("name"):
+        query["name"] = args["name"]
 
     if args.get("sponsor"):
-        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        sponsor_find = Sponsor.objects(sponsor_name=args["sponsor"]).first()
         if not sponsor_find:
             raise NotFound("A sponsor with that name does not exist!")
         query["sponsor"] = sponsor_find
@@ -129,11 +134,11 @@ def edit_category():
     if not cat:
         raise NotFound("Sorry, no categories exist that match the query.")
 
-    if data["sponsor"]:
-        data["sponsor"] = Sponsor.findOne(sponsor_name=data["sponsor"])
+    if data.get("sponsor"):
+        data["sponsor"] = Sponsor.objects(sponsor_name=data["sponsor"]).first()
 
-    if not data["sponsor"]:
-        raise NotFound("A sponsor with that name does not exist!")
+        if not data.get("sponsor"):
+            raise NotFound("A sponsor with that name does not exist!")
 
     try:
         affected = cat.update(**data)
@@ -157,11 +162,13 @@ def delete_category():
     parameters:
         - name: name
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the category.
         - name: sponsor
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the sponsor.
     responses:
         201:
@@ -182,10 +189,13 @@ def delete_category():
             description: Unexpected error.
     """
     args = request.args
-    query = dict(name=args.get("name"))
+    query = {}
+
+    if args.get("name"):
+        query["name"] = args["name"]
 
     if args.get("sponsor"):
-        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        sponsor_find = Sponsor.objects(sponsor_name=args["sponsor"]).first()
         if not sponsor_find:
             raise NotFound("A sponsor with that name does not exist!")
         query["sponsor"] = sponsor_find
@@ -211,11 +221,13 @@ def get_category():
     parameters:
         - name: name
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the category.
         - name: sponsor
           in: query
-          type: string
+          schema:
+            type: string
           description: The name of the sponsor.
     responses:
         201:
@@ -243,10 +255,13 @@ def get_category():
             description: Unexpected error.
     """
     args = request.args
-    query = dict(name=args.get("name"))
+    query = {}
+
+    if args.get("name"):
+        query["name"] = args["name"]
 
     if args.get("sponsor"):
-        sponsor_find = Sponsor.findOne(sponsor_name=args["sponsor"])
+        sponsor_find = Sponsor.objects(sponsor_name=args["sponsor"]).first()
         if not sponsor_find:
             raise NotFound("A sponsor with that name does not exist!")
         query["sponsor"] = sponsor_find

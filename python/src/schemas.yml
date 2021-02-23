@@ -86,3 +86,13 @@ Sponsor:
       format: password
 Event:
   type: object
+Category:
+  type: object
+  properties:
+    name:
+      type: string
+    sponsor:
+      type: string
+      description: Sponsor name
+    description:
+      type: string
