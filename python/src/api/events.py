@@ -74,10 +74,10 @@ def create_event():
         raise BadRequest()
     
     res = {
-		"status": "Success",
-		"message": "Event was created!"
-	}
-
+        "status": "success",
+        "message": "Event was updated!"
+    }
+	
     return res, 201
 
 
@@ -121,7 +121,6 @@ def update_event():
         raise InvalidDocumentError()
 
     event.modify(**data)
-    event.save()
 
     res = {
         "status": "success",
