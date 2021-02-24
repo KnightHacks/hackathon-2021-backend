@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -* 
+# -*- coding: utf-8 -*
 """
     src.api.events
     ~~~~~~~~~~~~~~
@@ -7,7 +7,7 @@
 
         create_event()
         update_event()
-    
+
     Variables:
 
         EVENT_FIELDS
@@ -21,9 +21,9 @@ import dateutil.parser
 
 events_blueprint = Blueprint("events", __name__)
 
-EVENT_FIELDS = ("name", "date_time", "description", 
-                "image", "link", "end_date_time", 
-                "attendees_count", "event_status", 
+EVENT_FIELDS = ("name", "date_time", "description",
+                "image", "link", "end_date_time",
+                "attendees_count", "event_status",
                 "sponsors", "user")
 
 
@@ -70,12 +70,12 @@ def create_event():
         Event.createOne(**new_data)
     except ValidationError:
         raise BadRequest()
-    
+
     res = {
         "status": "success",
         "message": "Event was updated!"
     }
-	
+
     return res, 201
 
 
@@ -106,10 +106,10 @@ def update_event():
 
     if not data:
         raise BadRequest()
-    
+
     if data["date_time"]:
         data["date_time"] = dateutil.parser.parse(data["date_time"])
-    
+
     if data["end_date_time"]:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
@@ -124,6 +124,5 @@ def update_event():
         "status": "success",
         "message": "Event was updated!"
     }
-    
+
     return res, 201
-    
