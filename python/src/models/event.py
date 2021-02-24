@@ -13,15 +13,17 @@
 from src import db
 from src.models.sponsor import Sponsor
 from src.models.user import User
+from src.models import BaseDocument
 
 
-class Event(db.EmbeddedDocument):
-    name = db.StringField()
-    date = db.DateTime()
-    image = db.URLField
-    link = db.URLField()
-    endDate = db.DateTime()
-    attendeesCount = db.IntField()
-    eventStatus = db.StringField()
+class Event(BaseDocument):
+    name = db.StringField(unique=True, required=True)
+    date_time = db.DateTimeField(required=True)
+    description = db.StringField()
+    image = db.URLField()
+    link = db.URLField(required=True)
+    end_date_time = db.DateTimeField(required=True)
+    attendees_count = db.IntField()
+    event_status = db.StringField()
     sponsors = db.ListField(db.ReferenceField(Sponsor))
     user = db.ReferenceField(User)

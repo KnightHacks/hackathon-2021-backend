@@ -70,37 +70,38 @@ Sponsor:
 Event:
   type: object
   properties:
-    name_of_event:
+    name:
       type: string
       example: Python Workshop
-    datetime_of_event:
+    date_time:
       type: string
       format: date-time
       example: 2020-05-19 09:26:42
-    brief_description:
+    description:
       type: string
       example: An introductory workshop for the Python language.
-    image_link:
+    image:
       type: string
       format: uri
       example: https://www.google.com/url?sa=i&url=https%3A%2F%2Fgithub.com%2Fpython%2Fcpython&psig=AOvVaw1CHBRMuCQfeJmcgUcgubDb&ust=1613765980648000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNiA7vKg9O4CFQAAAAAdAAAAABAD
-    link_of_event:
+    link:
       type: string
       format: uri
       example: https://ucf.zoom.us/j/96765484043?pwd=TjBYRU5UbU0p6SlNzTC9lTjJvZz09&from=msft
-    date_when_event_added:
+    end_date_time:
       type: string
       format: date-time
       example: 2020-01-26 05:16:31
-    number_of_attendees:
+    attendees_count:
       type: int
       example: 20
-    status_of_event:
+    event_status:
       type: string
       example: cancelled
     sponsors:
-      type: string
-      example: Publix Supermarkets, Google
+      type: array
+      items:
+        $ref: '#/components/schemas/Sponsor'
     user:
       type: string
           

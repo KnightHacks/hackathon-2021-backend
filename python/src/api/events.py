@@ -14,7 +14,7 @@
 """
 
 from flask import Blueprint, request, jsonify
-from mongoengine.error import ValidationError
+from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest, Unauthorized
 from src.models.event import Event
 from flask_mongoengine import MongoEngine
@@ -23,9 +23,10 @@ import json
 
 events_blueprint = Blueprint("events", __name__)
 
-EVENT_FIELDS = ("name", "date", "image", "link", 
-                "endDate", "attendeesCount", 
-                "eventStatus", "sponsors")
+EVENT_FIELDS = ("name", "date_time", "description", 
+                "image", "link", "end_date_time", 
+                "attendees_count", "event_status", 
+                "sponsors", "user")
 
 
 @events_blueprint.route("/events/create_event/", methods=["POST"])
@@ -34,7 +35,7 @@ def create_event():
     Creates a new event.
     ---
     tags:
-        - hacker
+        - event
     summary: Create event
     requestBody:
         content:
@@ -56,19 +57,19 @@ def create_event():
     if not data:
         raise BadRequest()
 
-    if data["datetime_of_event"]:
-        data["datetime_of_event"] = dateutil.parser.parse(data["datetime_of_event"])
+    if data["date_time"]:
+        data["date_time"] = dateutil.parser.parse(data["date_time"])
 
-    if data["date_when_event_added"]:
-        data["date_when_event_added"] = dateutil.parser.parse(data["date_when_event_added"])
+    if data["end_date_time"]:
+        data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
-    data["event"] = {}
+    new_data = {}
 
     for field in EVENT_FIELDS:
-        data["event"][field] = data.pop(field, None)
+        new_data[field] = data.pop(field, None)
 
     try:
-        Event.createOne(**data)
+        Event.createOne(**new_data)
     except ValidationError:
         raise BadRequest()
     
@@ -86,7 +87,7 @@ def update_event():
     Updates an event that has already been created.
     ---
     tags:
-        - hacker
+        - event
     summary: Updates event
     requestBody:
         content:
@@ -103,22 +104,18 @@ def update_event():
         5XX:
             description: Unexpected error (the API issue).
     """
-    # get data
     data = request.get_json()
 
     if not data:
         raise BadRequest()
+    
+    if data["date_time"]:
+        data["date_time"] = dateutil.parser.parse(data["date_time"])
+    
+    if data["end_date_time"]:
+        data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
-    # create a temp object to hold new data
-    updated_event = Event.objects(name = data['name'], 
-                                  date = data['date'], 
-                                  image = data['image'], 
-                                  link = data['link'], 
-                                  endDate = data['endDate'], 
-                                  attendeesCount = data['attendeesCount'], 
-                                  eventStatus = data['eventStatus'], 
-                                  sponsors = data['sponsors'])
-    updated_event.save()
+    events = Event.object(name=data["name"]).first()
 
     res = {
         "status": "success",
