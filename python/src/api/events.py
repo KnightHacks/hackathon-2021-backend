@@ -14,7 +14,7 @@
 """
 
 from flask import Blueprint, request, jsonify
-from mongoengine.errors import ValidationError
+from mongoengine.errors import ValidationError, InvalidDocumentError
 from werkzeug.exceptions import BadRequest, Unauthorized
 from src.models.event import Event
 from flask_mongoengine import MongoEngine
@@ -115,7 +115,13 @@ def update_event():
     if data["end_date_time"]:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
-    events = Event.object(name=data["name"]).first()
+    event = Event.objects(name=data["name"]).first()
+
+    if not event:
+        raise InvalidDocumentError()
+
+    event.modify(**data)
+    event.save()
 
     res = {
         "status": "success",
