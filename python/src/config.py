@@ -32,11 +32,13 @@ class BaseConfig:
             }
         ]
     }
+    CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
 
 
 class DevelopmentConfig(BaseConfig):
     """Development Configuration"""
     DEBUG = True
+    CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
 
 
 class TestingConfig(BaseConfig):
