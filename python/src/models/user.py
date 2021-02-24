@@ -29,3 +29,4 @@ class User(BaseDocument):
     password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
     roles = db.ListField(db.StringField(choices=ROLES), required=True)
+    email_registration = db.BooleanField(default=False)
