@@ -13,13 +13,11 @@
         EVENT_FIELDS
 """
 
-from flask import Blueprint, request, jsonify
-from mongoengine.errors import ValidationError, InvalidDocumentError
-from werkzeug.exceptions import BadRequest, Unauthorized
+from flask import Blueprint, request
+from mongoengine.errors import ValidationError
+from werkzeug.exceptions import BadRequest, NotFound
 from src.models.event import Event
-from flask_mongoengine import MongoEngine
 import dateutil.parser
-import json
 
 events_blueprint = Blueprint("events", __name__)
 
@@ -118,7 +116,7 @@ def update_event():
     event = Event.objects(name=data["name"]).first()
 
     if not event:
-        raise InvalidDocumentError()
+        raise NotFound()
 
     event.modify(**data)
 
