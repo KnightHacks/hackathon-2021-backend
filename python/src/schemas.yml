@@ -76,7 +76,7 @@ Event:
     date_time:
       type: string
       format: date-time
-      example: 2020-05-19 09:26:42
+      example: "2014-09-10T11:41:00.12343-03:00"
     description:
       type: string
       example: An introductory workshop for the Python language.
@@ -91,7 +91,7 @@ Event:
     end_date_time:
       type: string
       format: date-time
-      example: 2020-01-26 05:16:31
+      example: "2014-09-10T11:41:00.12343-03:00"
     attendees_count:
       type: int
       example: 20
