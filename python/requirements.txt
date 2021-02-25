@@ -5,3 +5,4 @@ Flask-Cors
 flask-mongoengine
 pyyaml
 python-dateutil
+jwtcrypto

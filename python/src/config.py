@@ -25,6 +25,9 @@ class BaseConfig:
     LOGGING_LEVEL = logging.DEBUG
     MONGODB_HOST = os.getenv("MONGO_URI", "mongodb://localhost:27017/test")
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
+    TOKEN_EMAIL_EXPIRATION_DAYS = 1
+    TOKEN_EMAIL_EXPIRATION_SECONDS = 0
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 class DevelopmentConfig(BaseConfig):
