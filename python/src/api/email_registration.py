@@ -52,7 +52,7 @@ def check_registration_status(email: str):
 @email_reg_blueprint.route("/email_registration/<email_token>/", methods=["PUT"])  # noqa: E501
 def update_registration_status(email_token: str):
     """
-    Checks the email registration status
+    Updates the email registration status
     ---
     tags:
         - email_registration
