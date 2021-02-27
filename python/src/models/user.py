@@ -16,15 +16,26 @@
 from datetime import datetime
 from src import db
 from src.models import BaseDocument
-from enum import IntFlag, auto
+from enum import Flag, auto
 
 
-class ROLES(IntFlag):
+class ROLES(Flag):
     HACKER = auto()
     EVENTORG = auto()
     SPONSOR = auto()
     MOD = auto()
     ADMIN = auto()
+
+    @staticmethod
+    def members():
+        return {r.name: r for r in ROLES}
+
+    @classmethod
+    def _missing_(cls, value):
+        members = cls.members()
+        if value in members.keys():
+            return cls(members[value])
+        return super()._missing_(value)
 
 
 class User(BaseDocument):
