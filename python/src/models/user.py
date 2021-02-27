@@ -16,9 +16,15 @@
 from datetime import datetime
 from src import db
 from src.models import BaseDocument
+from enum import IntFlag, auto
 
 
-ROLES = ("HACKER", "EVENTORG", "SPONSOR", "MOD", "ADMIN")
+class ROLES(IntFlag):
+    HACKER = auto()
+    EVENTORG = auto()
+    SPONSOR = auto()
+    MOD = auto()
+    ADMIN = auto()
 
 
 class User(BaseDocument):
@@ -28,4 +34,4 @@ class User(BaseDocument):
     email = db.EmailField(unique=True, required=True)
     password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    roles = db.ListField(db.StringField(choices=ROLES), required=True)
+    roles = db.EnumField(enum=ROLES, required=True)

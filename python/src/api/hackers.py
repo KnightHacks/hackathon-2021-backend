@@ -17,6 +17,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 import dateutil.parser
 from src.models.hacker import Hacker
+from src.models.user import ROLES
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -62,7 +63,7 @@ def create_hacker():
         data["hacker_profile"][f] = data.pop(f, None)
 
     try:
-        Hacker.createOne(**data, roles=("HACKER",))
+        Hacker.createOne(**data, roles=ROLES.HACKER)
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
     except ValidationError:
