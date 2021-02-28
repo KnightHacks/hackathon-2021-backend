@@ -45,6 +45,7 @@ class TestingConfig(BaseConfig):
     """Testing Configuration"""
     DEBUG = True
     TESTING = True
+    CLUBEVENT_APIKEY = "testing"
 
 
 class ProductionConfig(BaseConfig):

@@ -54,7 +54,7 @@ def create_hacker():
     if not data:
         raise BadRequest()
 
-    if data["date"]:
+    if data.get("date"):
         data["date"] = dateutil.parser.parse(data["date"])
 
     data["hacker_profile"] = {}
