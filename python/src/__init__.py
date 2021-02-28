@@ -84,6 +84,7 @@ def create_app():
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
     from src.api.sponsor import sponsors_blueprint
+    from src.api.events import events_blueprint
     from src.api.groups import groups_blueprint
     from src.api.club_events import club_events_blueprint
     from src.api.categories import categories_blueprint
@@ -91,6 +92,7 @@ def create_app():
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
     app.register_blueprint(sponsors_blueprint, url_prefix="/api")
+    app.register_blueprint(events_blueprint, url_prefix="/api")
     app.register_blueprint(groups_blueprint, url_prefix="/api")
     app.register_blueprint(club_events_blueprint, url_prefix="/api")
     app.register_blueprint(categories_blueprint, url_prefix="/api")

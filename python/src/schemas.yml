@@ -68,11 +68,6 @@ Sponsor:
     logo:
       type: uri
       example: https://blob.knighthacks.org/somelogo.png
-    event_hosting:
-      type: array
-      items:
-        $ref: '#/components/schemas/Event'
-      description: List of events that this sponsor will officially host/participate in.
     subscription_tier:
       type: string
       example: "Gold"
@@ -86,6 +81,11 @@ Sponsor:
       format: password
 Event:
   type: object
+  properties:
+    name:
+      type: string
+      example: Python Workshop
+    date_time:
 ClubEvent:
   type: object
   properties:
@@ -102,6 +102,31 @@ ClubEvent:
       format: date-time
       example: "2014-09-10T11:41:00.12343-03:00"
     description:
+      type: string
+      example: An introductory workshop for the Python language.
+    image:
+      type: string
+      format: uri
+      example: https://www.google.com/url?sa=i&url=https%3A%2F%2Fgithub.com%2Fpython%2Fcpython&psig=AOvVaw1CHBRMuCQfeJmcgUcgubDb&ust=1613765980648000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNiA7vKg9O4CFQAAAAAdAAAAABAD
+    link:
+      type: string
+      format: uri
+      example: https://ucf.zoom.us/j/96765484043?pwd=TjBYRU5UbU0p6SlNzTC9lTjJvZz09&from=msft
+    end_date_time:
+      type: string
+      format: date-time
+      example: "2014-09-10T11:41:00.12343-03:00"
+    attendees_count:
+      type: int
+      example: 20
+    event_status:
+      type: string
+      example: cancelled
+    sponsors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Sponsor'
+    user:
       type: string
     location:
       type: string
