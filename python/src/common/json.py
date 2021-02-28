@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+    src.common.json
+    ~~~~~~~~~~~~~~~
+    Overrides Flask's and Mongoengine's json encoders
+
+    Classes:
+
+        JSONEncoderBase
+
+"""
 import datetime
 from flask.json import JSONEncoder
 from mongoengine.base import BaseDocument
