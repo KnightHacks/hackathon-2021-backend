@@ -22,7 +22,8 @@ ROLES = ("HACKER", "EVENTORG", "SPONSOR", "MOD", "ADMIN")
 
 
 class User(BaseDocument):
-    meta = {"allow_inheritance": True}
+    meta = {"allow_inheritance": True,
+            "ordering": ["date"]}
 
     username = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
