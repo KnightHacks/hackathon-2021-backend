@@ -12,6 +12,7 @@
 from flask import Blueprint
 from werkzeug.exceptions import NotFound
 from src.models.user import User
+from src import bcrypt
 
 
 email_verify_blueprint = Blueprint("email_verification", __name__)
@@ -71,12 +72,18 @@ def update_registration_status(email_token: str):
             description: Unexpected error.
     """
     user_username = User.decode_email_token(email_token)
-    user = User.objects(username=user_username)
+    user = User.objects(username=user_username).first()
 
-    if not user:
+    if not user or not user.email_token_hash:
         raise NotFound("Invalid verification token. Please try again.")
 
-    user.update(email_verification=True)
+    isvalid = bcrypt.check_password_hash(user.email_token_hash, email_token)
+    if not isvalid:
+        raise NotFound("Invalid verification token. Please try again.")
+
+    user.modify(email_verification=True,
+                unset__email_token_hash="")
+    user.save()
 
     res = {
         "status": "success",

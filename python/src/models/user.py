@@ -16,7 +16,7 @@
 import jwt
 from flask import current_app
 from datetime import datetime, timedelta
-from src import db
+from src import db, bcrypt
 from src.models import BaseDocument
 from werkzeug.exceptions import Unauthorized
 
@@ -33,6 +33,7 @@ class User(BaseDocument):
     date = db.DateTimeField(default=datetime.utcnow)
     roles = db.ListField(db.StringField(choices=ROLES), required=True)
     email_verification = db.BooleanField(default=False)
+    email_token_hash = db.BinaryField()
 
     def encode_email_token(self) -> str:
         """Encode the email token"""
@@ -43,11 +44,19 @@ class User(BaseDocument):
             "iat": datetime.now(),
             "sub": self.username
         }
-        return jwt.encode(
+        email_token = jwt.encode(
             payload,
             current_app.config.get("SECRET_KEY"),
             algorithm="HS256"
         )
+
+        conf = current_app.config["BCRYPT_LOG_ROUNDS"]
+        email_token_hash = bcrypt.generate_password_hash(email_token, conf)
+
+        self.modify(set__email_token_hash=email_token_hash)
+        self.save()
+
+        return email_token
 
     @staticmethod
     def decode_email_token(email_token: str) -> str:

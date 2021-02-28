@@ -23,6 +23,7 @@ from flasgger import Swagger
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from flask_mail import Mail
+from flask_bcrypt import Bcrypt
 from src.tasks import make_celery
 import yaml
 
@@ -30,6 +31,7 @@ import yaml
 # Init Extensions
 db = MongoEngine()
 mail = Mail()
+bcrypt = Bcrypt()
 
 # Load the Schema Definitions
 schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
@@ -83,6 +85,7 @@ def create_app():
     db.init_app(app)
     swagger.init_app(app)
     mail.init_app(app)
+    bcrypt.init_app(app)
 
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint

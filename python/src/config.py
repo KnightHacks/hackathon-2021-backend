@@ -38,18 +38,21 @@ class BaseConfig:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "https://knighthacks.org/")
+    BCRYPT_LOG_ROUNDS = 13
 
 
 class DevelopmentConfig(BaseConfig):
     """Development Configuration"""
     DEBUG = True
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class TestingConfig(BaseConfig):
     """Testing Configuration"""
     DEBUG = True
     TESTING = True
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class ProductionConfig(BaseConfig):
