@@ -15,12 +15,11 @@
 
 """
 import os
-import unittest
+import pytest
 from flask.cli import FlaskGroup
 from src import app
 
 os.environ["FLASK_APP"] = "src.__main__:main()"
-
 
 cli = FlaskGroup(app)
 
@@ -32,11 +31,7 @@ def main():
 @cli.command()
 def test():
     """Run tests"""
-    tests = unittest.TestLoader().discover("tests", pattern="test_*.py")
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
+    pytest.main(["--doctest-modules", "--junitxml=junit/test-results.xml"])
 
 
 if __name__ == "__main__":
