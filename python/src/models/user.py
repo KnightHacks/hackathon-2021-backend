@@ -32,15 +32,15 @@ class User(BaseDocument):
     password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
     roles = db.ListField(db.StringField(choices=ROLES), required=True)
-    email_registration = db.BooleanField(default=False)
+    email_verification = db.BooleanField(default=False)
 
     def encode_email_token(self) -> str:
         """Encode the email token"""
         payload = {
-            "exp": datetime.utcnow() + timedelta(
+            "exp": datetime.now() + timedelta(
                 days=current_app.config["TOKEN_EMAIL_EXPIRATION_DAYS"],
                 seconds=current_app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]),
-            "iat": datetime.utcnow(),
+            "iat": datetime.now(),
             "sub": self.username
         }
         return jwt.encode(
@@ -54,7 +54,8 @@ class User(BaseDocument):
         """Decodes the email token"""
         try:
             payload = jwt.decode(email_token,
-                                 current_app.config.get("SECRET_KEY"))
+                                 current_app.config.get("SECRET_KEY"),
+                                 algorithms=["HS256"])
             return payload["sub"]
         except jwt.ExpiredSignatureError:
             raise Unauthorized()

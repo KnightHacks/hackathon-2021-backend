@@ -48,11 +48,16 @@ def create_sponsor():
         raise BadRequest("Not data")
 
     try:
-        Sponsor.createOne(**data, roles=("SPONSOR",))
+        sponsor = Sponsor.createOne(**data, roles=("SPONSOR",))
     except NotUniqueError:
         raise Conflict("Sorry, this sponsor already exists.")
     except ValidationError:
         raise BadRequest("Validation Error")
+
+    """Send Verification Email"""
+    token = sponsor.encode_email_token()
+    from src.common.mail import send_verification_email
+    send_verification_email(sponsor, token)
 
     res = {
         "status": "success",
