@@ -50,6 +50,9 @@ def check_verification_status(email: str):
     return res, 200
 
 
+"""Inline comment on following decorator is to disable flake8 'longline' err"""
+
+
 @email_verify_blueprint.route("/email/verify/<email_token>/", methods=["PUT"])  # noqa: E501
 def update_registration_status(email_token: str):
     """
@@ -91,6 +94,9 @@ def update_registration_status(email_token: str):
     }
 
     return res, 200
+
+
+"""Inline comment on following decorator is to disable flake8 'longline' err"""
 
 
 @email_verify_blueprint.route("/email/verify/<username>/", methods=["POST"])  # noqa: E501
