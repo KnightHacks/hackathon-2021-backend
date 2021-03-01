@@ -206,13 +206,9 @@ def get_events():
     if count:
         events = events[:int(count)]
 
-    events_list = []
-    for event in events:
-        events_list.append(event.to_mongo(use_db_field=False))
-
     res = {
         "count": events.count(),
-        "events": events_list
+        "events": events
     }
 
     return res, 200

@@ -21,7 +21,24 @@ from src.models import BaseDocument
 from werkzeug.exceptions import Unauthorized
 
 
-ROLES = ("HACKER", "EVENTORG", "SPONSOR", "MOD", "ADMIN")
+
+class ROLES(Flag):
+    HACKER = auto()
+    EVENTORG = auto()
+    SPONSOR = auto()
+    MOD = auto()
+    ADMIN = auto()
+
+    @staticmethod
+    def members():
+        return {r.name: r for r in ROLES}
+
+    @classmethod
+    def _missing_(cls, value):
+        members = cls.members()
+        if value in members.keys():
+            return cls(members[value])
+        return super()._missing_(value)
 
 
 class User(BaseDocument):
@@ -70,3 +87,4 @@ class User(BaseDocument):
             raise Unauthorized()
         except jwt.InvalidTokenError:
             raise Unauthorized()
+

@@ -140,10 +140,13 @@ def get_group(group_name: str):
             description: OK
 
     """
-    group = Group.objects(name=group_name).first()
+    group = Group.objects(name=group_name).exclude("id").first()
     if not group:
         raise NotFound()
 
-    res = jsonify(group.to_json())
+    res = {
+        "group": group,
+        "status": "success"
+    }
 
     return res, 200

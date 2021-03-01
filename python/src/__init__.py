@@ -87,6 +87,9 @@ def create_app():
     mail.init_app(app)
     bcrypt.init_app(app)
 
+    from src.common.json import JSONEncoderBase
+    app.json_encoder = JSONEncoderBase
+
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint

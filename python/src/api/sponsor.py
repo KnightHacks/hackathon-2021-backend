@@ -12,6 +12,7 @@ from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
 from src.models.sponsor import Sponsor
+from src.models.user import ROLES
 
 
 sponsors_blueprint = Blueprint("sponsors", __name__)

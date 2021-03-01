@@ -10,11 +10,16 @@
 """
 from functools import wraps
 from werkzeug.exceptions import Unauthorized, Forbidden
-from src.models.user import User
+from src.models.user import User, ROLES
 
 
-def privileges(*roles):
-    """Ensures the logged in user has the required privileges."""
+def privileges(roles):
+    """
+    Ensures the logged in user has the required privileges.
+
+        Parameters:
+            roles (ROLES): example: ROLES.MOD | ROLES.ADMIN
+    """
     def decorator(f):
         @wraps(f)
         def decorated_function(username, *args, **kwargs):
@@ -23,8 +28,10 @@ def privileges(*roles):
             if not user:
                 raise Unauthorized()
 
+            user_roles = ROLES(user.roles)
+
             # Check if the user has the required permission(s)
-            if not any(True for r in user.privileges if r in roles):
+            if not(user_roles & roles):
                 raise Forbidden()
 
             return f(username, *args, **kwargs)

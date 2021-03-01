@@ -31,11 +31,9 @@ class Group(BaseDocument):
             "username": member.username
         }
 
-    def to_json(self):
-        return {
-            "name": self.name,
-            "icon": self.icon,
-            "members": [self.member_fields(m) for m in self.members],
-            "categories": self.categories,
-            "date": self.date
-        }
+    def to_mongo(self, *args, **kwargs):
+        data = super().to_mongo(*args, **kwargs)
+
+        data["members"] = [self.member_fields(m) for m in self.members]
+
+        return data
