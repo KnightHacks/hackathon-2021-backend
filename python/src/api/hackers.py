@@ -152,7 +152,7 @@ def delete_hacker(username: str):
 @hackers_blueprint.route("/hackers/<username>/", methods=["PUT"])
 def update_user_profile_settings(username: str):
     """
-    Updates user profile settings
+    Updates hacker profile settings
     ---
     tags:
         - hacker
