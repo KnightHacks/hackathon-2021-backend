@@ -87,4 +87,3 @@ class User(BaseDocument):
             raise Unauthorized()
         except jwt.InvalidTokenError:
             raise Unauthorized()
-
