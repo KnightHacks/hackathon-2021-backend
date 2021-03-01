@@ -12,6 +12,7 @@ from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
 from src.models.sponsor import Sponsor
+from src.models.user import ROLES
 
 
 sponsors_blueprint = Blueprint("sponsors", __name__)
@@ -48,7 +49,7 @@ def create_sponsor():
         raise BadRequest("Not data")
 
     try:
-        Sponsor.createOne(**data, roles=("SPONSOR",))
+        Sponsor.createOne(**data, roles=ROLES.SPONSOR)
     except NotUniqueError:
         raise Conflict("Sorry, this sponsor already exists.")
     except ValidationError:

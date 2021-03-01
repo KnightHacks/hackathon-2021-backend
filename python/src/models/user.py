@@ -16,9 +16,26 @@
 from datetime import datetime
 from src import db
 from src.models import BaseDocument
+from enum import Flag, auto
 
 
-ROLES = ("HACKER", "EVENTORG", "SPONSOR", "MOD", "ADMIN")
+class ROLES(Flag):
+    HACKER = auto()
+    EVENTORG = auto()
+    SPONSOR = auto()
+    MOD = auto()
+    ADMIN = auto()
+
+    @staticmethod
+    def members():
+        return {r.name: r for r in ROLES}
+
+    @classmethod
+    def _missing_(cls, value):
+        members = cls.members()
+        if value in members.keys():
+            return cls(members[value])
+        return super()._missing_(value)
 
 
 class User(BaseDocument):
@@ -28,4 +45,4 @@ class User(BaseDocument):
     email = db.EmailField(unique=True, required=True)
     password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    roles = db.ListField(db.StringField(choices=ROLES), required=True)
+    roles = db.EnumField(enum=ROLES, required=True)

@@ -86,24 +86,9 @@ Event:
       type: string
       example: Python Workshop
     date_time:
-ClubEvent:
-  type: object
-  properties:
-    name:
-      type: string
-    tags:
-      type: array
-      items:
-        type: string
-    presenter:
-      type: string
-    date:
       type: string
       format: date-time
       example: "2014-09-10T11:41:00.12343-03:00"
-    description:
-      type: string
-      example: An introductory workshop for the Python language.
     image:
       type: string
       format: uri
@@ -128,6 +113,24 @@ ClubEvent:
         $ref: '#/components/schemas/Sponsor'
     user:
       type: string
+ClubEvent:
+  type: object
+  properties:
+    name:
+      type: string
+    tags:
+      type: array
+      items:
+        type: string
+    presenter:
+      type: string
+    date:
+      type: string
+      format: date-time
+      example: "2014-09-10T11:41:00.12343-03:00"
+    description:
+      type: string
+      example: An introductory workshop for the Python language.
     location:
       type: string
 Category:

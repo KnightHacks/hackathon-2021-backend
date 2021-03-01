@@ -80,6 +80,9 @@ def create_app():
     db.init_app(app)
     swagger.init_app(app)
 
+    from src.common.json import JSONEncoderBase
+    app.json_encoder = JSONEncoderBase
+
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
