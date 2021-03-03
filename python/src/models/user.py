@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 from src import db, bcrypt
 from src.models import BaseDocument
 from werkzeug.exceptions import Unauthorized
-
+from enum import Flag, auto
 
 
 class ROLES(Flag):
