@@ -17,7 +17,7 @@ services:
         image: knighthacks/backend
         build:
             context: ./python
-            dockerfile: Dockerfile.backend.dev
+            dockerfile: Dockerfile.dev
         container_name: kh-backend
         restart: unless-stopped
         depends_on:
@@ -31,12 +31,12 @@ services:
             APP_SETTINGS: src.config.DevelopmentConfig
             MONGO_URI: "mongodb://kh-mongo/test"
             CELERY_BROKER_URL: "amqp://kh-rabbitmq"
-            MAIL_SERVER: "smtp.mailgun.org"
+            MAIL_SERVER: "smtp.knighthacks.org"
             MAIL_PORT: 587
             MAIL_USE_TLS: "true"
-            MAIL_USERNAME: "testing@torrentofshame.com"
-            MAIL_PASSWORD: "93bf3036fe3442f42ce4f0bcb97648de-6e0fd3a4-08591edb"
-            MAIL_DEFAULT_SENDER: "testing@torrentofshame.com"
+            MAIL_USERNAME: "noreply@knighthacks.org"
+            MAIL_PASSWORD: "supersecurepassworddontatme"
+            MAIL_DEFAULT_SENDER: "noreply@knighthacks.org"
             SECRET_KEY: "vivalapluto"
             
 volumes:
