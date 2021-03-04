@@ -18,7 +18,6 @@ class TestClubEventModel(BaseTestCase):
                                          location="link or actual loc")
 
         self.assertTrue(club_event.id)
-        self.assertFalse(True)
         self.assertEqual(club_event.name, "foobar")
         self.assertEqual(club_event.tags, ["tag1", "tag2"])
         self.assertEqual(club_event.presenter, "Arjun")
