@@ -15,8 +15,8 @@
 """
 
 from flask import Blueprint, request
-from mongoengine.errors import ValidationError
-from werkzeug.exceptions import BadRequest, NotFound
+from mongoengine.errors import ValidationError, NotUniqueError
+from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 import dateutil.parser
 
@@ -71,6 +71,8 @@ def create_event():
         Event.createOne(**new_data)
     except ValidationError:
         raise BadRequest()
+    except NotUniqueError:
+        raise Conflict("The event name already exists.")
 
     res = {
         "status": "success",
@@ -93,7 +95,8 @@ def update_event(event_name: str):
           in: path
           description: event name
           required: true
-          schema: string
+          schema: 
+            type: string
     requestBody:
         content:
             application/json:
