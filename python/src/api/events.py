@@ -93,7 +93,8 @@ def update_event(event_name: str):
           in: path
           description: event name
           required: true
-          schema: string
+          schema: 
+            type: string
     requestBody:
         content:
             application/json:
