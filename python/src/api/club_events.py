@@ -104,9 +104,9 @@ def get_events():
             type: string
             enum:
                 - Today
-                - LastWeek
-                - LastMonth
-                - LastYear
+                - NextWeek
+                - NextMonth
+                - NextYear
           description: >
             A relative date range for the events.
             For an exact range, use `start_date` and `end_date` instead.
@@ -173,26 +173,22 @@ def get_events():
 
     if args.get("rdate"):
         now = datetime.now()
-        now = now.replace(hour=23,
-                          minute=59,
-                          second=59,
-                          microsecond=999999)
+        now = now.replace(hour=0,
+                          minute=0,
+                          second=0,
+                          microsecond=0)
 
         if args.get("rdate") == "Today":
-            query["date__gte"] = now.replace(hour=0,
-                                             minute=0,
-                                             second=0,
-                                             microsecond=0)
-            query["date__lte"] = now
-        elif args.get("rdate") == "LastWeek":
-            query["date__gte"] = now - timedelta(days=7)
-            query["date__lte"] = now
-        elif args.get("rdate") == "LastMonth":
-            query["date__gte"] = now - timedelta(days=30)
-            query["date__lte"] = now
-        elif args.get("rdate") == "LastYear":
-            query["date__gte"] = now - timedelta(days=365)
-            query["date__lte"] = now
+            query["date__gte"] = now
+        elif args.get("rdate") == "NextWeek":
+            query["date__gte"] = now
+            query["date__lte"] = now + timedelta(days=7)
+        elif args.get("rdate") == "NextMonth":
+            query["date__gte"] = now
+            query["date__lte"] = now + timedelta(days=30)
+        elif args.get("rdate") == "NextYear":
+            query["date__gte"] = now
+            query["date__lte"] = now + timedelta(days=365)
 
     if args.get("start_date") and args.get("end_date"):
         query |= {
