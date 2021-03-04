@@ -17,6 +17,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 import dateutil.parser
 from src.models.hacker import Hacker
+from src.models.user import ROLES
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -62,11 +63,17 @@ def create_hacker():
         data["hacker_profile"][f] = data.pop(f, None)
 
     try:
-        Hacker.createOne(**data, roles=("HACKER",))
+        hacker = Hacker.createOne(**data, roles=("HACKER",))
+
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
     except ValidationError:
         raise BadRequest()
+
+    """Send Verification Email"""
+    token = hacker.encode_email_token()
+    from src.common.mail import send_verification_email
+    send_verification_email(hacker, token)
 
     res = {
         "status": "success",
@@ -144,6 +151,57 @@ def delete_hacker(username: str):
     res = {
         "status": "success",
         "message": "Hacker was deleted!"
+    }
+
+    return res, 201
+
+
+@hackers_blueprint.route("/hackers/<username>/", methods=["PUT"])
+def update_user_profile_settings(username: str):
+    """
+    Updates hacker profile settings
+    ---
+    tags:
+        - hacker
+    summary: Updates user profile settings
+    parameters:
+        - id: username
+          in: path
+          description: user name
+          required: true
+          schema:
+            type: string
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: '#/components/schemas/Hacker'
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad Request
+        404:
+            description: Group doesn't exist
+        5XX:
+            description: Unexpected error.
+    """
+    update = request.get_json()
+    if not update:
+        raise BadRequest()
+
+    hacker = Hacker.objects(username=username).first()
+    if not hacker:
+        raise NotFound()
+
+    try:
+        hacker.update(**update)
+    except ValidationError:
+        raise BadRequest()
+
+    res = {
+        "status": "success",
+        "message": "Hacker profile successfully updated"
     }
 
     return res, 201

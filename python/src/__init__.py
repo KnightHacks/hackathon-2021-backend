@@ -22,11 +22,16 @@ from werkzeug.exceptions import HTTPException
 from flasgger import Swagger
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
+from flask_mail import Mail
+from flask_bcrypt import Bcrypt
+from src.tasks import make_celery
 import yaml
 
 
 # Init Extensions
 db = MongoEngine()
+mail = Mail()
+bcrypt = Bcrypt()
 
 # Load the Schema Definitions
 schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
@@ -79,6 +84,11 @@ def create_app():
     CORS(app)
     db.init_app(app)
     swagger.init_app(app)
+    mail.init_app(app)
+    bcrypt.init_app(app)
+
+    from src.common.json import JSONEncoderBase
+    app.json_encoder = JSONEncoderBase
 
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
@@ -88,6 +98,7 @@ def create_app():
     from src.api.groups import groups_blueprint
     from src.api.club_events import club_events_blueprint
     from src.api.categories import categories_blueprint
+    from src.api.email_verification import email_verify_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
@@ -96,13 +107,17 @@ def create_app():
     app.register_blueprint(groups_blueprint, url_prefix="/api")
     app.register_blueprint(club_events_blueprint, url_prefix="/api")
     app.register_blueprint(categories_blueprint, url_prefix="/api")
+    app.register_blueprint(email_verify_blueprint, url_prefix="/api")
 
     """Register Error Handlers"""
     from src.common import error_handlers
 
     app.register_error_handler(HTTPException, error_handlers.handle_exception)
 
-    return app
+    """Initialize Celery"""
+    celery = make_celery(app)
+
+    return app, celery
 
 
-app = create_app()
+app, celery = create_app()

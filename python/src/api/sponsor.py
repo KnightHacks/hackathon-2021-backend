@@ -12,6 +12,7 @@ from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict
 from src.models.sponsor import Sponsor
+from src.models.user import ROLES
 
 
 sponsors_blueprint = Blueprint("sponsors", __name__)
@@ -48,11 +49,16 @@ def create_sponsor():
         raise BadRequest("Not data")
 
     try:
-        Sponsor.createOne(**data, roles=("SPONSOR",))
+        sponsor = Sponsor.createOne(**data, roles=("SPONSOR",))
     except NotUniqueError:
         raise Conflict("Sorry, this sponsor already exists.")
     except ValidationError:
         raise BadRequest("Validation Error")
+
+    """Send Verification Email"""
+    token = sponsor.encode_email_token()
+    from src.common.mail import send_verification_email
+    send_verification_email(sponsor, token)
 
     res = {
         "status": "success",
