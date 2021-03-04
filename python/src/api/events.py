@@ -63,8 +63,8 @@ def create_event():
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
     if data.get("sponsors"):
-        data["sponsors"] = list(map(lambda name: Sponsor.objects(username=name).first(),
-                                   data["sponsors"]))
+        data["sponsors"] = list(
+                                map(lambda name: Sponsor.objects(username=name).first(),data["sponsors"]))
     new_data = {}
 
     for field in EVENT_FIELDS:
