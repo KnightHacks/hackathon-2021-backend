@@ -55,7 +55,7 @@ def create_hacker():
     if not data:
         raise BadRequest()
 
-    if data["date"]:
+    if data.get("date"):
         data["date"] = dateutil.parser.parse(data["date"])
 
     data["hacker_profile"] = {}
@@ -205,3 +205,30 @@ def update_user_profile_settings(username: str):
     }
 
     return res, 201
+
+@hackers_blueprint.route("/hackers/<username>/settings/", methods=["GET"])
+def hacker_settings(username: str):
+    """
+    Gets the hacker settings
+    ---
+    tags:
+    - hacker
+    parameters:
+        - id: username
+          in: path
+          description: user name
+          required: true
+          schema:
+          type: string
+    """
+    hacker = Hacker.objects(username=username).exclude("password", "date", "email_token_hash", "tracks", "hacker_profile").first()
+    if not hacker:
+        raise NotFound()
+
+    res = {
+        "hacker": hacker,
+        "status": "success",
+        "message": "Found hacker settings"
+    }
+
+    return res, 200
