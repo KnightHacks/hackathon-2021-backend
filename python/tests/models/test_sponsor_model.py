@@ -1,6 +1,7 @@
 # flake8: noqa
 from mongoengine.errors import NotUniqueError
 from src.models.sponsor import Sponsor
+from src.models.user import User, ROLES
 from tests.base import BaseTestCase
 
 
@@ -11,7 +12,7 @@ class TestSponsorModel(BaseTestCase):
         sponsor = Sponsor.createOne(username="foobar",
                         email="foobar@email.com",
                         password="password",
-                        roles=("SPONSOR",))
+                        roles=ROLES.SPONSOR)
 
         self.assertTrue(sponsor.id)
         self.assertEqual(sponsor.username, "foobar")

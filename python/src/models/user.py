@@ -49,7 +49,7 @@ class User(BaseDocument):
     email = db.EmailField(unique=True, required=True)
     password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    roles = db.ListField(db.StringField(choices=ROLES), required=True)
+    roles = db.EnumField(enum=ROLES, required=True)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
 

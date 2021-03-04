@@ -1,6 +1,6 @@
 # flake8: noqa
 from mongoengine.errors import NotUniqueError
-from src.models.user import User
+from src.models.user import User, ROLES
 from tests.base import BaseTestCase
 
 
@@ -11,7 +11,7 @@ class TestUserModel(BaseTestCase):
         user = User.createOne(username="foobar",
                         email="foobar@email.com",
                         password="password",
-                        roles=("HACKER",))
+                        roles=ROLES.ADMIN)
 
         self.assertTrue(user.id)
         self.assertEqual(user.username, "foobar")
@@ -22,7 +22,7 @@ class TestUserModel(BaseTestCase):
         User.createOne(username="foobar",
                        email="foobar@email.com",
                        password="password",
-                       roles=("HACKER",))
+                       roles=ROLES.ADMIN)
 
         user = User.findOne(username="foobar")
 

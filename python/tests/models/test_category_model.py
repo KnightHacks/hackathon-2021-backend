@@ -2,6 +2,7 @@
 from mongoengine.errors import NotUniqueError
 from src.models.sponsor import Sponsor
 from src.models.category import Category
+from src.models.user import ROLES
 from tests.base import BaseTestCase
 
 
@@ -12,7 +13,7 @@ class TestCategoryModel(BaseTestCase):
         sponsor = Sponsor.createOne(username="foobar",
                                     email="foobar@foobar.com",
                                     password="pluto is a planet",
-                                    roles=("SPONSOR",))
+                                    roles=ROLES.SPONSOR)
 
         category = Category.createOne(name="foobar",
                                       description="Lorem ipsum",

@@ -1,6 +1,7 @@
 # flake8: noqa
 import json
 from src.models.hacker import Hacker
+from src.models.user import ROLES
 from tests.base import BaseTestCase
 from datetime import datetime
 
@@ -10,13 +11,14 @@ class TestHackersBlueprint(BaseTestCase):
 
     """create_hacker"""
     def test_create_hacker(self):
+        now = datetime.now()
         res = self.client.post(
             "/api/hackers/",
             data=json.dumps({
                 "username": "foobar",
                 "email": "foobar@email.com",
                 "password": "123456",
-                "date": datetime.now().isoformat()
+                "date": now.isoformat()
             }),
             content_type="application/json")
 
@@ -36,10 +38,11 @@ class TestHackersBlueprint(BaseTestCase):
         self.assertEqual(Hacker.objects.count(), 0)
 
     def test_create_hacker_duplicate_user(self):
+        now = datetime.now()
         Hacker.createOne(username="foobar",
                          email="foobar@email.com",
                          password="123456",
-                         roles=("HACKER",))
+                         roles=ROLES.HACKER)
 
         res = self.client.post(
             "/api/hackers/",
@@ -47,7 +50,7 @@ class TestHackersBlueprint(BaseTestCase):
                 "username": "foobar",
                 "email": "foobar@email.com",
                 "password": "123456",
-                "date": datetime.now().isoformat()
+                "date": now.isoformat()
             }),
             content_type="application/json")
 
@@ -79,7 +82,7 @@ class TestHackersBlueprint(BaseTestCase):
         h = Hacker.createOne(username="foobar",
                          email="foobar@email.com",
                          password="123456",
-                         roles=("HACKER",))
+                         roles=ROLES.HACKER)
 
         res = self.client.get("/api/hackers/foobar/")
 
@@ -99,7 +102,7 @@ class TestHackersBlueprint(BaseTestCase):
         Hacker.createOne(username="foobar",
                          email="foobar@email.com",
                          password="123456",
-                         roles=("HACKER",))
+                         roles=ROLES.HACKER)
 
         res = self.client.delete("/api/hackers/foobar/")
 

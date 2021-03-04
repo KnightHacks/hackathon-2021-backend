@@ -2,6 +2,7 @@
 from mongoengine.errors import NotUniqueError
 from src.models.group import Group
 from src.models.hacker import Hacker
+from src.models.user import User, ROLES
 from tests.base import BaseTestCase
 from datetime import datetime
 
@@ -13,7 +14,7 @@ class TestGroupModel(BaseTestCase):
         hacker = Hacker.createOne(username="foobar",
                         email="foobar@email.com",
                         password="password",
-                        roles=("HACKER",))
+                        roles=ROLES.HACKER)
 
         now = datetime.now()
         group = Group.createOne(name="foobar",
@@ -35,7 +36,7 @@ class TestGroupModel(BaseTestCase):
                                   password="password",
                                   first_name="foo",
                                   last_name="bar",
-                                  roles=("HACKER",))
+                                  roles=ROLES.HACKER)
 
         now = datetime.now()
         group = Group.createOne(name="foobar",
@@ -44,7 +45,7 @@ class TestGroupModel(BaseTestCase):
                                 date=now,
                                 members=[hacker])
 
-        group_json = group.to_json()
+        group_json = group.to_mongo().to_dict()
 
         self.assertEqual("foobar", group_json["name"])
         self.assertEqual("image", group_json["icon"])
