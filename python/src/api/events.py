@@ -7,6 +7,7 @@
 
         create_event()
         update_event()
+        get_all_events()
 
     Variables:
 
@@ -34,7 +35,7 @@ def create_event():
     ---
     tags:
         - event
-    summary: Create event
+    summary: Creates event
     requestBody:
         content:
             application/json:
@@ -73,20 +74,26 @@ def create_event():
 
     res = {
         "status": "success",
-        "message": "Event was updated!"
+        "message": "Event was created!"
     }
 
     return res, 201
 
 
-@events_blueprint.route("/events/update_event/", methods=["PUT"])
-def update_event():
+@events_blueprint.route("/events/update_event/<event_name>/", methods=["PUT"])
+def update_event(event_name: str):
     """
     Updates an event that has already been created.
     ---
     tags:
         - event
     summary: Updates event
+    parameters:
+        - id: event_name
+          in: path
+          description: event name
+          required: true
+          schema: string
     requestBody:
         content:
             application/json:
@@ -113,7 +120,7 @@ def update_event():
     if data["end_date_time"]:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
-    event = Event.objects(name=data["name"]).first()
+    event = Event.objects(name=event_name).first()
 
     if not event:
         raise NotFound()
@@ -123,6 +130,33 @@ def update_event():
     res = {
         "status": "success",
         "message": "Event was updated!"
+    }
+
+    return res, 201
+
+
+@events_blueprint.route("/events/get_all_events/", methods=["GET"])
+def get_all_events():
+    """
+    Returns an array of event documents.
+    ---
+    tags:
+        - event
+    summary: returns an array of event documents
+    responses:
+        201:
+            description: OK
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    events = Event.objects()
+
+    if not events:
+        raise NotFound("There are no events created.")
+
+    res = {
+        "events": events,
+        "status": "success"
     }
 
     return res, 201

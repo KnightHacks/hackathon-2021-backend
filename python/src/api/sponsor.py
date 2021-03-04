@@ -6,14 +6,14 @@
     Functions:
 
         create_sponsor()
+        update_sponsor()
 
 """
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict
+from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.sponsor import Sponsor
 from src.models.user import ROLES
-
 
 sponsors_blueprint = Blueprint("sponsors", __name__)
 
@@ -63,6 +63,47 @@ def create_sponsor():
     res = {
         "status": "success",
         "message": "Sponsor was created!"
+    }
+
+    return res, 201
+
+
+@sponsors_blueprint.route("/sponsors/delete_sponsor/<sponsor_name>/", methods=["DELETE"])
+def delete_sponsor(sponsor_name: str):
+    """
+    Deletes an existing Sponsor.
+    ---
+    tags:
+        - sponsor
+    summary: Delete Sponsor
+    parameters:
+        - id: sponsor_name
+          in: path
+          description: Sponsor name
+          required: true
+          schema:
+            type: string
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad request.
+        409:
+            description: Sorry, that sponsor_name already exists.
+        5XX:
+            description: Unexpected error.
+    """
+
+    sponsor = Sponsor.objects(sponsor_name=sponsor_name)
+
+    if not sponsor:
+        raise NotFound("The specified sponsor does not exist in the database.")
+
+    sponsor.delete()
+
+    res = {
+        "status": "success",
+        "message": "Sponsor was deleted!"
     }
 
     return res, 201
