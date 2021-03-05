@@ -55,7 +55,7 @@ def create_hacker():
     if not data:
         raise BadRequest()
 
-    if data["date"]:
+    if data.get("date"):
         data["date"] = dateutil.parser.parse(data["date"])
 
     data["hacker_profile"] = {}
@@ -63,7 +63,7 @@ def create_hacker():
         data["hacker_profile"][f] = data.pop(f, None)
 
     try:
-        hacker = Hacker.createOne(**data, roles=("HACKER",))
+        hacker = Hacker.createOne(**data, roles=ROLES.HACKER)
 
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
@@ -94,7 +94,8 @@ def get_user_search(username: str):
     parameters:
         - name: username
           in: path
-          type: string
+          schema:
+              type: string
           description: The hacker's profile.
           required: true
     responses:
@@ -205,3 +206,52 @@ def update_user_profile_settings(username: str):
     }
 
     return res, 201
+
+
+@hackers_blueprint.route("/hackers/<username>/settings/", methods=["GET"])
+def hacker_settings(username: str):
+    """
+    Gets the hacker settings
+    ---
+    tags:
+    - hacker
+    parameters:
+        - id: username
+          in: path
+          description: user name
+          required: true
+          schema:
+              type: string
+    responses:
+        200:
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Hacker'
+        404:
+            description: Hacker not found!
+    """
+
+    hacker = Hacker.objects(username=username).exclude(
+        "password",
+        "date",
+        "email_token_hash",
+        "tracks",
+        "hacker_profile",
+        "id").first()
+
+    if not hacker:
+        raise NotFound()
+
+    hacker = hacker.to_mongo().to_dict()
+    hacker.pop("_cls")
+
+    hacker["roles"] = ROLES(hacker["roles"])
+
+    res = {
+        "hacker": hacker,
+        "status": "success",
+        "message": "Found hacker settings"
+    }
+
+    return res, 200
