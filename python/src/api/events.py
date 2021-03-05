@@ -17,6 +17,7 @@ from flask import Blueprint, request
 from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest, NotFound
 from src.models.event import Event
+from src.models.sponsor import Sponsor
 import dateutil.parser
 
 events_blueprint = Blueprint("events", __name__)
@@ -61,6 +62,8 @@ def create_event():
     if data["end_date_time"]:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
+    if data.get("sponsors"):
+        data["sponsors"] = list(map(lambda name: Sponsor.objects(username=name).first(), data["sponsors"]))  # noqa: E501
     new_data = {}
 
     for field in EVENT_FIELDS:
