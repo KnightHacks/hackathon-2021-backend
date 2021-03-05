@@ -54,6 +54,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
     BCRYPT_LOG_ROUNDS = 4
+    MAIL_SUPPRESS_SEND = False
 
 
 class TestingConfig(BaseConfig):
