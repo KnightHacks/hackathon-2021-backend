@@ -8,9 +8,9 @@
         privileges(roles)
 
 """
-from flask import jsonify
+from flask import request
 from functools import wraps
-from werkzeug.exceptions import Unauthorized, Forbidden
+from werkzeug.exceptions import Forbidden, BadRequest, NotFound
 from src.models.user import User, ROLES
 
 
@@ -30,7 +30,7 @@ def privileges(roles):
             if not(user_roles & roles):
                 raise Forbidden()
 
-            return f(username, *args, **kwargs)
+            return f(user, *args, **kwargs)
         return decorated_function
     return decorator
 
@@ -53,13 +53,13 @@ def authenticate(f):
             token = request.cookies.get("sid")
 
         if not token:
-            return jsonify({"Message" : "Token not found"}), 401
+            raise BadRequest()
 
-        try:
-            data = User.decode_auth_token(token)
-            user = User.objects(username=data).first()
-        except:
-            return jsonify({"Message" : "Token not found"}), 401
+        data = User.decode_auth_token(token)
+        user = User.objects(username=data).first()
+
+        if not user:
+            raise NotFound()
 
         return f(user, *args, **kwargs)
 
