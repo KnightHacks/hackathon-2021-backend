@@ -49,6 +49,7 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_MINUTES = 15
     TOKEN_EXPIRATION_SECONDS = 0
+    SESSION_COOKIE_NAME = "sid"
 
 
 class DevelopmentConfig(BaseConfig):
