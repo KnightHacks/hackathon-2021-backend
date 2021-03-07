@@ -67,7 +67,6 @@ class TestingConfig(BaseConfig):
     CLUBEVENT_APIKEY = "testing"
     BCRYPT_LOG_ROUNDS = 4
     SECRET_KEY = "pluto is a planet"
-    MAIL_SUPPRESS_SEND = False
 
 
 class ProductionConfig(BaseConfig):

@@ -13,7 +13,7 @@ from src.common.decorators import authenticate
 auth_blueprint = Blueprint("auth", __name__)
 
 
-@auth_blueprint.route("/login", methods=["POST"])
+@auth_blueprint.route("/auth/login/", methods=["POST"])
 def login():
     """
     Logs in User
@@ -68,7 +68,7 @@ def login():
     return res
 
 
-@auth_blueprint.route("/signout", methods=["GET"])
+@auth_blueprint.route("/auth/signout/", methods=["GET"])
 @authenticate
 def logout(_):
     """
