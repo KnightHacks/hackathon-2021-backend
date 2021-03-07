@@ -53,11 +53,40 @@ class User(BaseDocument):
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
 
+    def encode_auth_token(self) -> str:
+        """Encode the auth token"""
+        payload = {
+            "exp": datetime.now() + timedelta(
+                minutes=current_app.config["TOKEN_EXPIRATION_MINUTES"],
+                seconds=current_app.config["TOKEN_EXPIRATION_SECONDS"]),
+            "iat": datetime.now(),
+            "sub": self.username
+        }
+
+        return jwt.encode(
+            payload,
+            current_app.config.get("SECRET_KEY"),
+            algorithm="HS256"
+        )
+
+    @staticmethod
+    def decode_auth_token(auth_token: str) -> str:
+        """Decode the auth token"""
+        try:
+            payload = jwt.decode(auth_token,
+                                 current_app.config.get("SECRET_KEY"),
+                                 algorithms=["HS256"])
+            return payload["sub"]
+        except jwt.ExpiredSignatureError:
+            raise Unauthorized()
+        except jwt.InvalidTokenError:
+            raise Unauthorized()
+
     def encode_email_token(self) -> str:
         """Encode the email token"""
         payload = {
             "exp": datetime.now() + timedelta(
-                days=current_app.config["TOKEN_EMAIL_EXPIRATION_DAYS"],
+                minutes=current_app.config["TOKEN_EMAIL_EXPIRATION_MINUTES"],
                 seconds=current_app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]),
             "iat": datetime.now(),
             "sub": self.username
@@ -91,5 +120,7 @@ class User(BaseDocument):
 
     def __init__(self, *args, **kwargs):
         conf = current_app.config["BCRYPT_LOG_ROUNDS"]
-        hashed_password = bcrypt.generate_password_hash(kwargs.pop("password"), conf)
+        hashed_password = bcrypt.generate_password_hash(
+            kwargs.pop("password"),
+            conf)
         super(User, self).__init__(*args, **kwargs, password=hashed_password)

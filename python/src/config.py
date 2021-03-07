@@ -33,7 +33,7 @@ class BaseConfig:
         ]
     }
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
-    TOKEN_EMAIL_EXPIRATION_DAYS = 1
+    TOKEN_EMAIL_EXPIRATION_MINUTES = 30
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
     SECRET_KEY = os.getenv("SECRET_KEY")
     CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
@@ -47,6 +47,8 @@ class BaseConfig:
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "https://knighthacks.org/")
     BCRYPT_LOG_ROUNDS = 13
+    TOKEN_EXPIRATION_MINUTES = 15
+    TOKEN_EXPIRATION_SECONDS = 0
 
 
 class DevelopmentConfig(BaseConfig):

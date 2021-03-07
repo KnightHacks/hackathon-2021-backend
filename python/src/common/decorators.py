@@ -37,3 +37,19 @@ def privileges(roles):
             return f(username, *args, **kwargs)
         return decorated_function
     return decorator
+
+
+def authenticate(f):
+    """
+    Authenticated the user using a header.
+    """
+
+    doc = getattr(f, "__doc__")
+    if doc:
+        setattr(f, "__doc__", doc + """security:
+        - CookieAuth: []""")
+
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        pass
+    return decorator

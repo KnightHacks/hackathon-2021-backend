@@ -65,6 +65,11 @@ swagger_template = {
                 "type": "apiKey",
                 "in": "header",
                 "name": "Authorization"
+            },
+            "CookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sid"
             }
         }
     }
