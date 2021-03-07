@@ -12,12 +12,17 @@
     Misc Variables:
 
         cli
+        test_present
 
 """
 import os
-import pytest
 from flask.cli import FlaskGroup
 from src import app
+try:
+    import pytest
+    test_present = True
+except ImportError:
+    test_present = False
 
 os.environ["FLASK_APP"] = "src.__main__:main()"
 
@@ -31,7 +36,10 @@ def main():
 @cli.command()
 def test():
     """Run tests"""
-    pytest.main(["--doctest-modules", "--junitxml=junit/test-results.xml"])
+    if test_present:
+        pytest.main(["--doctest-modules", "--junitxml=junit/test-results.xml"])
+    else:
+        app.logger.error("Module PyTest is not installed! Install dev dependencies before testing!")  # noqa: E501
 
 
 if __name__ == "__main__":

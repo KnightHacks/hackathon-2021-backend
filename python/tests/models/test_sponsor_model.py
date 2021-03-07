@@ -1,7 +1,7 @@
 # flake8: noqa
-from mongoengine.errors import NotUniqueError
+from mongoengine.errors import NotUniqueError, ValidationError
 from src.models.sponsor import Sponsor
-from src.models.user import User, ROLES
+from src.models.user import ROLES
 from tests.base import BaseTestCase
 
 

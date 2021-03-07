@@ -8,8 +8,7 @@
 
         Sponsor
 """
-
-
+from mongoengine.errors import ValidationError
 from src import db
 from src.models.user import User
 
@@ -31,6 +30,9 @@ class Sponsor(User):
     def to_mongo(self, *args, **kwargs):
         data = super().to_mongo(*args, **kwargs)
 
-        data["events"] = [e for e in self.events]
+        try:
+            data["events"] = [e for e in self.events]
+        except ValidationError:
+            pass
 
         return data
