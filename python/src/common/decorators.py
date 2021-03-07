@@ -8,6 +8,7 @@
         privileges(roles)
 
 """
+from flask import jsonify
 from functools import wraps
 from werkzeug.exceptions import Unauthorized, Forbidden
 from src.models.user import User, ROLES
@@ -22,15 +23,10 @@ def privileges(roles):
     """
     def decorator(f):
         @wraps(f)
-        def decorated_function(username, *args, **kwargs):
-            user = User.objects(username=username).only("roles").first()
-
-            if not user:
-                raise Unauthorized()
-
+        def decorated_function(user, *args, **kwargs):
             user_roles = ROLES(user.roles)
 
-            # Check if the user has the required permission(s)
+            """ Check if the user has the required permission(s) """
             if not(user_roles & roles):
                 raise Forbidden()
 
@@ -51,5 +47,20 @@ def authenticate(f):
 
     @wraps(f)
     def decorator(*args, **kwargs):
-        pass
+        token = None
+
+        if request.cookies.get("sid"):
+            token = request.cookies.get("sid")
+
+        if not token:
+            return jsonify({"Message" : "Token not found"}), 401
+
+        try:
+            data = User.decode_auth_token(token)
+            user = User.objects(username=data).first()
+        except:
+            return jsonify({"Message" : "Token not found"}), 401
+
+        return f(user, *args, **kwargs)
+
     return decorator
