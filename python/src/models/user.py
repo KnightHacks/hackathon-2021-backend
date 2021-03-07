@@ -47,7 +47,7 @@ class User(BaseDocument):
 
     username = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
-    password = db.StringField(required=True)
+    password = db.BinaryField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
     roles = db.EnumField(enum=ROLES, required=True)
     email_verification = db.BooleanField(default=False)
