@@ -104,12 +104,16 @@ class TestHackersBlueprint(BaseTestCase):
                          password="123456",
                          roles=ROLES.HACKER)
 
-        res = self.client.delete("/api/hackers/foobar/")
+        token = self.login_user(ROLES.ADMIN)
+
+        res = self.client.delete("/api/hackers/foobar/",
+                                 headers=[("sid", token)])
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 0)
 
     def test_delete_hacker_not_found(self):
+        self.login_user(ROLES.ADMIN)
         res = self.client.delete("/api/hackers/foobar/")
 
         data = json.loads(res.data.decode())

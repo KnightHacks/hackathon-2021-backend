@@ -8,9 +8,9 @@
         privileges(roles)
 
 """
-from flask import request
+from flask import request, current_app
 from functools import wraps
-from werkzeug.exceptions import Forbidden, BadRequest, NotFound
+from werkzeug.exceptions import Forbidden, Unauthorized, NotFound
 from src.models.user import User, ROLES
 
 
@@ -51,9 +51,11 @@ def authenticate(f):
 
         if request.cookies.get("sid"):
             token = request.cookies.get("sid")
+        elif current_app.config.get("TESTING"):
+            token = request.headers.get("sid")
 
         if not token:
-            raise BadRequest()
+            raise Unauthorized("User is not signed in!")
 
         data = User.decode_auth_token(token)
         user = User.objects(username=data).first()

@@ -18,6 +18,7 @@ from werkzeug.exceptions import BadRequest, Conflict, NotFound
 import dateutil.parser
 from src.models.hacker import Hacker
 from src.models.user import ROLES
+from src.common.decorators import authenticate, privileges
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -118,7 +119,9 @@ def get_user_search(username: str):
 
 
 @hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
-def delete_hacker(username: str):
+@authenticate
+@privileges(ROLES.MOD | ROLES.ADMIN)
+def delete_hacker(_, username: str):
     """
     Deletes an existing Hacker.
     ---
