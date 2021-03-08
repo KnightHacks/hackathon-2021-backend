@@ -18,7 +18,7 @@ from flask import current_app
 from datetime import datetime, timedelta
 from src import db, bcrypt
 from src.models import BaseDocument
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, NotFound
 from enum import Flag, auto
 
 

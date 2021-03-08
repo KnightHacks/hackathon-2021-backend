@@ -49,7 +49,6 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_MINUTES = 15
     TOKEN_EXPIRATION_SECONDS = 0
-    SESSION_COOKIE_NAME = "sid"
 
 
 class DevelopmentConfig(BaseConfig):
@@ -66,7 +65,8 @@ class TestingConfig(BaseConfig):
     TESTING = True
     CLUBEVENT_APIKEY = "testing"
     BCRYPT_LOG_ROUNDS = 4
-    SECRET_KEY = "pluto is a planet"
+    SECRET_KEY = "plutoisaplanet"
+    TOKEN_EXPIRATION_MINUTES = 1440
 
 
 class ProductionConfig(BaseConfig):
