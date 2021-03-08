@@ -108,7 +108,7 @@ class TestHackersBlueprint(BaseTestCase):
 
         res = self.client.delete("/api/hackers/foobar/",
                                  headers=[("sid", token)])
-
+        # TODO: Get authentication testing working
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 0)
 
