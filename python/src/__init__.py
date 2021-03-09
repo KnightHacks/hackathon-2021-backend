@@ -16,7 +16,7 @@
         app
 
 """
-from os import path, getenv
+from os import path, getenv, environ
 from flask import Flask
 from werkzeug.exceptions import HTTPException
 from flasgger import Swagger
@@ -79,6 +79,11 @@ def create_app():
     # Flask Config
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")
     app.config.from_object(app_settings)
+
+    """Set FLASK_ENV and FLASK_DEBUG cause that doesn't happen auto anymore"""
+    if app.config.get("DEBUG"):
+        environ["FLASK_ENV"] = "development"
+        environ["FLASK_DEBUG"] = "1"
 
     """Setup Extensions"""
     CORS(app)
