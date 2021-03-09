@@ -47,6 +47,7 @@ class BaseConfig:
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "https://knighthacks.org/")
     BCRYPT_LOG_ROUNDS = 13
+    SUPPRESS_EMAIL = False
 
 
 class DevelopmentConfig(BaseConfig):
@@ -55,6 +56,7 @@ class DevelopmentConfig(BaseConfig):
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
     BCRYPT_LOG_ROUNDS = 4
     MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class TestingConfig(BaseConfig):
@@ -65,6 +67,7 @@ class TestingConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 4
     SECRET_KEY = "pluto is a planet"
     MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class ProductionConfig(BaseConfig):
