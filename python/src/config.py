@@ -24,6 +24,14 @@ class BaseConfig:
     LOGGING_LOCATION = "flask-base.log"
     LOGGING_LEVEL = logging.DEBUG
     MONGODB_HOST = os.getenv("MONGO_URI", "mongodb://localhost:27017/test")
+    SWAGGER = {
+        "specs": [
+            {
+                "endpoint": "apispec",
+                "route": "/apispec.json"
+            }
+        ]
+    }
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
     TOKEN_EMAIL_EXPIRATION_DAYS = 1
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
@@ -39,6 +47,7 @@ class BaseConfig:
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "https://knighthacks.org/")
     BCRYPT_LOG_ROUNDS = 13
+    SUPPRESS_EMAIL = False
 
 
 class DevelopmentConfig(BaseConfig):
@@ -46,13 +55,19 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
     BCRYPT_LOG_ROUNDS = 4
+    MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class TestingConfig(BaseConfig):
     """Testing Configuration"""
     DEBUG = True
     TESTING = True
+    CLUBEVENT_APIKEY = "testing"
     BCRYPT_LOG_ROUNDS = 4
+    SECRET_KEY = "pluto is a planet"
+    MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class ProductionConfig(BaseConfig):

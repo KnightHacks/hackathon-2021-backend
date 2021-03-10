@@ -49,7 +49,7 @@ def create_sponsor():
         raise BadRequest("Not data")
 
     try:
-        sponsor = Sponsor.createOne(**data, roles=("SPONSOR",))
+        sponsor = Sponsor.createOne(**data, roles=ROLES.SPONSOR)
     except NotUniqueError:
         raise Conflict("Sorry, this sponsor already exists.")
     except ValidationError:

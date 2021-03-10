@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest
+coverage
+flask-testing
+mongomock
+flake8

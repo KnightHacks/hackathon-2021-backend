@@ -7,30 +7,40 @@
     Functions:
 
         main()
+        test()
+
+    Misc Variables:
+
+        cli
+        test_present
 
 """
-import argparse
+import os
+from flask.cli import FlaskGroup
 from src import app
+try:
+    import pytest
+    test_present = True
+except ImportError:
+    test_present = False
 
-# Setup Parser
-parser = argparse.ArgumentParser()
+os.environ["FLASK_APP"] = "src.__main__:main()"
 
-# Define the arguments
-parser.add_argument("--host",
-                    type=str,
-                    help="The host to listen on (default: 0.0.0.0)",
-                    default="0.0.0.0")
-parser.add_argument("--port",
-                    type=int,
-                    help="The port to listen on (default: 80)",
-                    default=80)
-args = parser.parse_args()
+cli = FlaskGroup(app)
 
 
 def main():
-    """Runs the Flask app using the parameters passed through the cli"""
-    app.run(host=args.host, port=args.port)
+    return app
+
+
+@cli.command()
+def test():
+    """Run tests"""
+    if test_present:
+        pytest.main(["--doctest-modules", "--junitxml=junit/test-results.xml"])
+    else:
+        app.logger.error("Module PyTest is not installed! Install dev dependencies before testing!")  # noqa: E501
 
 
 if __name__ == "__main__":
-    main()
+    cli()

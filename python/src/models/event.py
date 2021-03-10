@@ -27,3 +27,10 @@ class Event(BaseDocument):
     event_status = db.StringField()
     sponsors = db.ListField(db.ReferenceField(Sponsor))
     user = db.ReferenceField(User)
+
+    def to_mongo(self, *args, **kwargs):
+        data = super().to_mongo(*args, **kwargs)
+
+        data["sponsors"] = [s.sponsor_name for s in self.sponsors]
+
+        return data

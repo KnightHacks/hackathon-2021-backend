@@ -47,9 +47,9 @@ class User(BaseDocument):
 
     username = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
-    password = db.StringField(required=True)
+    password = db.BinaryField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    roles = db.ListField(db.StringField(choices=ROLES), required=True)
+    roles = db.EnumField(enum=ROLES, required=True)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
 
@@ -88,3 +88,8 @@ class User(BaseDocument):
             raise Unauthorized()
         except jwt.InvalidTokenError:
             raise Unauthorized()
+
+    def __init__(self, *args, **kwargs):
+        conf = current_app.config["BCRYPT_LOG_ROUNDS"]
+        hashed_password = bcrypt.generate_password_hash(kwargs.pop("password"), conf)
+        super(User, self).__init__(*args, **kwargs, password=hashed_password)
