@@ -10,8 +10,9 @@
 
 """
 from flask import Blueprint
-from werkzeug.exceptions import NotFound
-from src.models.user import User
+from werkzeug.exceptions import NotFound, Unauthorized
+from src.models.user import User, ROLES
+from src.common.decorators import authenticate
 from src import bcrypt
 
 
@@ -19,7 +20,8 @@ email_verify_blueprint = Blueprint("email_verification", __name__)
 
 
 @email_verify_blueprint.route("/email/verify/<email>/", methods=["GET"])
-def check_verification_status(email: str):
+@authenticate
+def check_verification_status(loggedin_user, email: str):
     """
     Checks the email verification status
     ---
@@ -34,9 +36,15 @@ def check_verification_status(email: str):
     responses:
         200:
             description: OK
+        401:
+            description: Unauthorized
         404:
             description: No User exists with that email!
     """
+
+    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+            and loggedin_user.email != email):
+        raise Unauthorized()
 
     user = User.objects(email=email).only("email_verification").first()
 
@@ -100,7 +108,8 @@ def update_registration_status(email_token: str):
 
 
 @email_verify_blueprint.route("/email/verify/<username>/", methods=["POST"])  # noqa: E501
-def send_registration_email(username: str):
+@authenticate
+def send_registration_email(loggedin_user, username: str):
     """
     Sends a registration email to the user.
     ---
@@ -120,6 +129,10 @@ def send_registration_email(username: str):
         5XX:
             description: Unexpected error.
     """
+
+    if (not(ROLES(loggedin_user.roles) & ROLES.ADMIN)
+            and loggedin_user.username != username):
+        raise Unauthorized("User can only request a verification email for themself!")  # noqa: E501
 
     user = User.objects(username=username).first()
 
