@@ -32,7 +32,6 @@ class BaseConfig:
             }
         ]
     }
-    CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY")
     TOKEN_EMAIL_EXPIRATION_MINUTES = 30
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
     SECRET_KEY = os.getenv("SECRET_KEY")
@@ -54,7 +53,6 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     """Development Configuration"""
     DEBUG = True
-    CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
     BCRYPT_LOG_ROUNDS = 4
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
@@ -64,7 +62,6 @@ class TestingConfig(BaseConfig):
     """Testing Configuration"""
     DEBUG = True
     TESTING = True
-    CLUBEVENT_APIKEY = "testing"
     BCRYPT_LOG_ROUNDS = 4
     SECRET_KEY = "pluto is a planet"
     TOKEN_EXPIRATION_MINUTES = 1440

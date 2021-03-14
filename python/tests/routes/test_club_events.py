@@ -14,12 +14,6 @@ class TestClubEventsBlueprint(BaseTestCase):
     def test_update_events_invalid_json(self):
         pass
 
-    def test_update_events_missing_auth_header(self):
-        pass
-
-    def test_update_events_invalid_apikey(self):
-        pass
-
     def test_update_events_invalid_datatypes(self):
         pass
 
@@ -36,11 +30,11 @@ class TestClubEventsBlueprint(BaseTestCase):
     def test_get_events_rdate_today(self):
         pass
 
-    def test_get_events_rdate_lastweek(self):
+    def test_get_events_rdate_nextweek(self):
         pass
 
-    def test_get_events_rdate_lastmonth(self):
+    def test_get_events_rdate_nextmonth(self):
         pass
 
-    def test_get_events_rdate_lastyear(self):
+    def test_get_events_rdate_nextyear(self):
         pass

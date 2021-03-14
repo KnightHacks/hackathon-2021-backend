@@ -14,20 +14,22 @@ from werkzeug.exceptions import BadRequest, Unauthorized
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
+from src.common.decorators import authenticate, privileges
+from src.models.user import ROLES
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
 @club_events_blueprint.route("/club/update_events/", methods=["PUT"])
-def update_events():
+@authenticate
+@privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
+def update_events(_):
     """
     Updates the Club Events.
     ---
     tags:
         - club
-    security:
-        - ApiKeyAuth: []
     summary: Update Club Events
     requestBody:
         content:
@@ -51,13 +53,6 @@ def update_events():
 
     if not data:
         raise BadRequest()
-
-    auth_token = request.headers.get("Authorization")
-    if not auth_token:
-        raise Unauthorized()
-
-    if auth_token != current_app.config["CLUBEVENT_APIKEY"]:
-        raise Unauthorized()
 
     ClubEvent.drop_collection()
 
