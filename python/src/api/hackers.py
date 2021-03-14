@@ -204,10 +204,22 @@ def update_user_profile_settings(username: str):
     if not hacker:
         raise NotFound()
 
+    if update.get("email") != hacker.email:
+        update["email_verification"] = False
+        newemail = True
+    else:
+        newemail = False
+
     try:
         hacker.update(**update)
     except ValidationError:
         raise BadRequest()
+
+    """Send Verification Email if New Email"""
+    if newemail:
+        token = hacker.encode_email_token()
+        from src.common.mail import send_verification_email
+        send_verification_email(hacker, token)
 
     res = {
         "status": "success",
