@@ -112,6 +112,35 @@ class TestHackersBlueprint(BaseTestCase):
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 0)
 
+    def test_delete_hacker_as_self(self):
+        hacker = Hacker.createOne(username="foobar",
+                         email="foobar@email.com",
+                         password="123456",
+                         roles=ROLES.HACKER)
+
+        token = hacker.encode_auth_token()
+
+        res = self.client.delete("/api/hackers/foobar/",
+                                 headers=[("sid", token)])
+
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+
+    def test_delete_hacker_as_other_hacker(self):
+        Hacker.createOne(username="foobar",
+                         email="foobar@email.com",
+                         password="123456",
+                         roles=ROLES.HACKER)
+
+        token = self.login_user(ROLES.HACKER)
+
+        res = self.client.delete("/api/hackers/foobar/",
+                                 headers=[("sid", token)])
+
+        self.assertEqual(res.status_code, 401)
+
+
     def test_delete_hacker_not_found(self):
 
         token = self.login_user(ROLES.ADMIN)

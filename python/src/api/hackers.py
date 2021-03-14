@@ -14,7 +14,7 @@
 """
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict, NotFound
+from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 import dateutil.parser
 from src.models.hacker import Hacker
 from src.models.user import ROLES
@@ -120,8 +120,8 @@ def get_user_search(username: str):
 
 @hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
 @authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
-def delete_hacker(_, username: str):
+@privileges(ROLES.HACKER | ROLES.MOD | ROLES.ADMIN)
+def delete_hacker(loggedin_user, username: str):
     """
     Deletes an existing Hacker.
     ---
@@ -140,11 +140,17 @@ def delete_hacker(_, username: str):
             description: OK
         400:
             description: Bad request.
+        401:
+            description: Unauthorized
         404:
             description: Specified hacker does not exist.
         5XX:
             description: Unexpected error.
     """
+
+    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+            and loggedin_user.username != username):
+        raise Unauthorized("Hacker can only delete their own account!")
 
     hacker = Hacker.objects(username=username)
 
