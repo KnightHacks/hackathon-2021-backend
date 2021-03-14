@@ -2,11 +2,11 @@
 """
     src.api.event
     ~~~~~~~~~~~~~
+    Model definition for Event
 
-    Functions:
+    Classes:
 
-        create_event()
-        update_event()
+        Event
 
 """
 

@@ -7,6 +7,7 @@
 
         create_event()
         update_event()
+        get_all_events()
 
     Variables:
 
@@ -14,8 +15,8 @@
 """
 
 from flask import Blueprint, request
-from mongoengine.errors import ValidationError
-from werkzeug.exceptions import BadRequest, NotFound
+from mongoengine.errors import ValidationError, NotUniqueError
+from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 from src.models.sponsor import Sponsor
 import dateutil.parser
@@ -35,7 +36,7 @@ def create_event():
     ---
     tags:
         - event
-    summary: Create event
+    summary: Creates event
     requestBody:
         content:
             application/json:
@@ -73,23 +74,32 @@ def create_event():
         Event.createOne(**new_data)
     except ValidationError:
         raise BadRequest()
+    except NotUniqueError:
+        raise Conflict("The event name already exists.")
 
     res = {
         "status": "success",
-        "message": "Event was updated!"
+        "message": "Event was created!"
     }
 
     return res, 201
 
 
-@events_blueprint.route("/events/update_event/", methods=["PUT"])
-def update_event():
+@events_blueprint.route("/events/update_event/<event_name>/", methods=["PUT"])
+def update_event(event_name: str):
     """
     Updates an event that has already been created.
     ---
     tags:
         - event
     summary: Updates event
+    parameters:
+        - id: event_name
+          in: path
+          description: event name
+          required: true
+          schema:
+            type: string
     requestBody:
         content:
             application/json:
@@ -116,7 +126,7 @@ def update_event():
     if data["end_date_time"]:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
-    event = Event.objects(name=data["name"]).first()
+    event = Event.objects(name=event_name).first()
 
     if not event:
         raise NotFound()
@@ -126,6 +136,33 @@ def update_event():
     res = {
         "status": "success",
         "message": "Event was updated!"
+    }
+
+    return res, 201
+
+
+@events_blueprint.route("/events/get_all_events/", methods=["GET"])
+def get_all_events():
+    """
+    Returns an array of event documents.
+    ---
+    tags:
+        - event
+    summary: returns an array of event documents
+    responses:
+        201:
+            description: OK
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    events = Event.objects()
+
+    if not events:
+        raise NotFound("There are no events created.")
+
+    res = {
+        "events": events,
+        "status": "success"
     }
 
     return res, 201

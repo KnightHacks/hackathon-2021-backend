@@ -57,6 +57,7 @@ class DevelopmentConfig(BaseConfig):
     CLUBEVENT_APIKEY = os.getenv("CLUBEVENT_APIKEY", "dev")
     BCRYPT_LOG_ROUNDS = 4
     MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class TestingConfig(BaseConfig):
@@ -65,8 +66,10 @@ class TestingConfig(BaseConfig):
     TESTING = True
     CLUBEVENT_APIKEY = "testing"
     BCRYPT_LOG_ROUNDS = 4
-    SECRET_KEY = "plutoisaplanet"
+    SECRET_KEY = "pluto is a planet"
     TOKEN_EXPIRATION_MINUTES = 1440
+    MAIL_SUPPRESS_SEND = False
+    SUPPRESS_EMAIL = True
 
 
 class ProductionConfig(BaseConfig):
