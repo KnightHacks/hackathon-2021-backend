@@ -11,9 +11,10 @@
 """
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict, NotFound
+from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 from src.models.sponsor import Sponsor
 from src.models.user import ROLES
+from src.common.decorators import authenticate, privileges
 
 sponsors_blueprint = Blueprint("sponsors", __name__)
 
@@ -68,8 +69,10 @@ def create_sponsor():
     return res, 201
 
 
-@sponsors_blueprint.route("/sponsors/delete_sponsor/<sponsor_name>/", methods=["DELETE"])
-def delete_sponsor(sponsor_name: str):
+@sponsors_blueprint.route("/sponsors/delete_sponsor/<sponsor_name>/", methods=["DELETE"])  # noqa: E501
+@authenticate
+@privileges(ROLES.SPONSOR | ROLES.ADMIN)
+def delete_sponsor(loggedin_user, sponsor_name: str):
     """
     Deletes an existing Sponsor.
     ---
@@ -93,6 +96,10 @@ def delete_sponsor(sponsor_name: str):
         5XX:
             description: Unexpected error.
     """
+
+    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+            and loggedin_user.sponsor_name != sponsor_name):
+        raise Unauthorized("Sponsor can only delete their own account!")
 
     sponsor = Sponsor.objects(sponsor_name=sponsor_name)
 
