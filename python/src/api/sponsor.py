@@ -135,7 +135,7 @@ def get_sponsor(sponsor_name: str):
 
     if not sponsor:
         raise NotFound()
-    
+
     res = {
         "Sponsor": sponsor,
         "status": "success"
@@ -179,7 +179,7 @@ def edit_sponsor(sponsor_name: str):
     update = request.get_json()
     if not update:
         raise BadRequest()
-    
+
     sponsor = Sponsor.objects(sponsor_name=sponsor_name)
     if not sponsor:
         raise NotFound()
@@ -191,7 +191,7 @@ def edit_sponsor(sponsor_name: str):
     except ValidationError:
         raise BadRequest()
 
-    res = {        
+    res = {
         "status": "success",
         "message": "Sponsor successfully updated."
     }
