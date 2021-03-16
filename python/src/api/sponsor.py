@@ -114,3 +114,92 @@ def delete_sponsor(loggedin_user, sponsor_name: str):
     }
 
     return res, 201
+
+
+@sponsors_blueprint.route("/sponsors/<sponsor_name>/", methods=["GET"])
+def get_sponsor(sponsor_name: str):
+    """
+    Retrieves a sponsor's information using their name.
+    ---
+    tags:
+        - sponsor
+    summary: Gets a sponsor's information from their name.
+    parameters:
+        - name: sponsor_name
+          in: path
+          type: string
+          description: The sponsor's information.
+          required: true
+    responses:
+        200:
+            description: OK
+
+    """
+    sponsor = Sponsor.objects(sponsor_name=sponsor_name).exclude(
+        "date",
+        "email_token_hash",
+        "id")
+
+    if not sponsor:
+        raise NotFound()
+
+    res = {
+        "Sponsor": sponsor,
+        "status": "success"
+    }
+
+    print(res)
+
+    return res, 200
+
+
+@sponsors_blueprint.route("/sponsors/<sponsor_name>/", methods=["PUT"])
+def edit_sponsor(sponsor_name: str):
+    """
+    Updates a sponsor
+    ---
+    tags:
+        - sponsor
+    summary: Updates a sponsor
+    parameters:
+        - id: sponsor_name
+          in: path
+          description: The name of the sponsor to be updated.
+          required: true
+          schema:
+            type: string
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: '#/components/schemas/Sponsor'
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad Request
+        404:
+            description: Sponsor doesn't exist
+        5XX:
+            description: Unexpected error.
+    """
+    update = request.get_json()
+    if not update:
+        raise BadRequest()
+
+    sponsor = Sponsor.objects(sponsor_name=sponsor_name)
+    if not sponsor:
+        raise NotFound()
+
+    try:
+        sponsor.update(**update)
+    except NotUniqueError:
+        raise Conflict("Sorry, a sponsor already exists with that name.")
+    except ValidationError:
+        raise BadRequest()
+
+    res = {
+        "status": "success",
+        "message": "Sponsor successfully updated."
+    }
+    return res, 201
