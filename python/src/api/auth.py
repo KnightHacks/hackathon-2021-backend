@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~
 
 """
-from flask import Blueprint, request, current_app, make_response
+from flask import Blueprint, request, make_response
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from src.models.user import User
 from src import bcrypt
