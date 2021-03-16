@@ -9,7 +9,7 @@
         edit_group()
 
 """
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.hacker import Hacker

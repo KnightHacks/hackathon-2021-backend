@@ -97,8 +97,10 @@ def delete_sponsor(loggedin_user, sponsor_name: str):
             description: Unexpected error.
     """
 
-    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
-            and loggedin_user.sponsor_name != sponsor_name):
+    if (
+        not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+        and loggedin_user.sponsor_name != sponsor_name
+    ):
         raise Unauthorized("Sponsor can only delete their own account!")
 
     sponsor = Sponsor.objects(sponsor_name=sponsor_name)

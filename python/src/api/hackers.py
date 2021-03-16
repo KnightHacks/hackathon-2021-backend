@@ -148,8 +148,10 @@ def delete_hacker(loggedin_user, username: str):
             description: Unexpected error.
     """
 
-    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
-            and loggedin_user.username != username):
+    if (
+        not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+        and loggedin_user.username != username
+    ):
         raise Unauthorized("Hacker can only delete their own account!")
 
     hacker = Hacker.objects(username=username)

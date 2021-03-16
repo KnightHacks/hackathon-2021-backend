@@ -42,8 +42,10 @@ def check_verification_status(loggedin_user, email: str):
             description: No User exists with that email!
     """
 
-    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN)) and
-        loggedin_user.email != email):
+    if (
+        not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
+        and loggedin_user.email != email
+    ):
         raise Unauthorized()
 
     user = User.objects(email=email).only("email_verification").first()
@@ -130,8 +132,10 @@ def send_registration_email(loggedin_user, username: str):
             description: Unexpected error.
     """
 
-    if (not(ROLES(loggedin_user.roles) & ROLES.ADMIN)
-            and loggedin_user.username != username):
+    if (
+        not(ROLES(loggedin_user.roles) & ROLES.ADMIN)
+        and loggedin_user.username != username
+    ):
         raise Unauthorized("User can only request a verification email for themself!")  # noqa: E501
 
     user = User.objects(username=username).first()

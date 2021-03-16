@@ -8,9 +8,9 @@
         update_events()
 
 """
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request
 from mongoengine.errors import ValidationError
-from werkzeug.exceptions import BadRequest, Unauthorized
+from werkzeug.exceptions import BadRequest
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
