@@ -42,8 +42,8 @@ def check_verification_status(loggedin_user, email: str):
             description: No User exists with that email!
     """
 
-    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN))
-            and loggedin_user.email != email):
+    if (not(ROLES(loggedin_user.roles) & (ROLES.MOD | ROLES.ADMIN)) and
+        loggedin_user.email != email):
         raise Unauthorized()
 
     user = User.objects(email=email).only("email_verification").first()
