@@ -1,0 +1,1 @@
+Knight Hacks, You've been accepted! - {{hacker.username}}
