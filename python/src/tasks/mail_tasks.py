@@ -8,7 +8,6 @@
         send_async_email()
 
 """
-from flask import current_app
 from flask_mail import Message
 from src import celery, mail
 
@@ -19,6 +18,8 @@ def send_async_email(subject, recipient, text_body, html_body):
     msg = Message(subject=subject, recipients=[recipient])
     msg.body = text_body
     msg.html = html_body
-    if not current_app.config.get("SUPRESS_EMAIL") and (
-            not current_app.config.get("TESTING")):
+
+    from src import app
+    if not app.config.get("DEBUG") and (
+            not app.config.get("TESTING")):
         mail.send(msg)  # pragma: no cover
