@@ -34,4 +34,4 @@ def send_hacker_acceptance_email(hacker):
                      text_body=render_template("emails/hacker_acceptance.txt",
                                                hacker=hacker),
                      html_body=render_template("emails/hacker_acceptance.html",
-                                               hacker=hacker)
+                                               hacker=hacker))
