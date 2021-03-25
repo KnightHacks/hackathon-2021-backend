@@ -12,7 +12,7 @@
         HACKER_PROFILE_FIELDS
 
 """
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app as app
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 import dateutil.parser
@@ -63,9 +63,13 @@ def create_hacker():
     for f in HACKER_PROFILE_FIELDS:
         data["hacker_profile"][f] = data.pop(f, None)
 
+    from src import bcrypt
+    data["password"] = bcrypt.generate_password_hash(
+        data["password"],
+        app.config["BCRYPT_LOG_ROUNDS"])
+
     try:
         hacker = Hacker.createOne(**data, roles=ROLES.HACKER)
-
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
     except ValidationError:
