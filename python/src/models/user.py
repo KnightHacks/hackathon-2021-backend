@@ -118,9 +118,12 @@ class User(BaseDocument):
         except jwt.InvalidTokenError:
             raise Unauthorized()
 
-    # def __init__(self, *args, **kwargs):
-        # conf = current_app.config["BCRYPT_LOG_ROUNDS"]
-        # hashed_password = bcrypt.generate_password_hash(
-            # kwargs.pop("password"),
-            # conf)
-        # super(User, self).__init__(*args, **kwargs, password=hashed_password)
+    def __init__(self, *args, **kwargs):
+        conf = current_app.config["BCRYPT_LOG_ROUNDS"]
+        if isinstance(kwargs['password'], str):
+            kwargs['password'] = bcrypt.generate_password_hash(
+                kwargs['password'],
+                conf)
+            current_app.logger.error('E' * 20)
+
+        super(User, self).__init__(*args, **kwargs)

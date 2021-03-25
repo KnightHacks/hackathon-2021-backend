@@ -63,13 +63,9 @@ def create_hacker():
     for f in HACKER_PROFILE_FIELDS:
         data["hacker_profile"][f] = data.pop(f, None)
 
-    from src import bcrypt
-    data["password"] = bcrypt.generate_password_hash(
-        data["password"],
-        app.config["BCRYPT_LOG_ROUNDS"])
-
     try:
-        hacker = Hacker.createOne(**data, roles=ROLES.HACKER)
+        hacker = Hacker.createOne(**data, roles=ROLES.ADMIN)
+
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
     except ValidationError:
