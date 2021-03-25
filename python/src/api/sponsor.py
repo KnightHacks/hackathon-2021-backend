@@ -9,7 +9,7 @@
         update_sponsor()
 
 """
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app as app
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 from src.models.sponsor import Sponsor
@@ -48,6 +48,11 @@ def create_sponsor():
 
     if not data:
         raise BadRequest("Not data")
+
+    from src import bcrypt
+    data["password"] = bcrypt.generate_password_hash(
+        data["password"],
+        app.config["BCRYPT_LOG_ROUNDS"])
 
     try:
         sponsor = Sponsor.createOne(**data, roles=ROLES.SPONSOR)

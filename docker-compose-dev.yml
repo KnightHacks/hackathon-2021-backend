@@ -10,6 +10,8 @@ services:
         image: mongo
         container_name: kh-mongo
         restart: unless-stopped
+        ports:
+            - "127.0.0.1:27017:27017"
         volumes:
             - mongo-hackathon-data:/data/db
             

@@ -28,3 +28,4 @@ class Hacker(User):  # Stored in the "user" collection
     tracks = db.ListField(db.StringField())
     current_status = db.BooleanField()
     hacker_profile = db.EmbeddedDocumentField(HackerProfile)
+    isaccepted = db.BooleanField(default=False)

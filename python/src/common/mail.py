@@ -27,5 +27,11 @@ def send_track_email(user, track):
     pass
 
 
-def send_acceptance_email(user):
-    pass
+def send_hacker_acceptance_email(hacker):
+    """Sends an acceptance email to the hacker"""
+    send_async_email(subject="",
+                     recipient=hacker.email,
+                     text_body=render_template("emails/hacker_acceptance.txt",
+                                               hacker=hacker),
+                     html_body=render_template("emails/hacker_acceptance.html",
+                                               hacker=hacker))
