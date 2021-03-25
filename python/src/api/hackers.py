@@ -12,7 +12,7 @@
         HACKER_PROFILE_FIELDS
 
 """
-from flask import Blueprint, request, current_app as app
+from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 import dateutil.parser
