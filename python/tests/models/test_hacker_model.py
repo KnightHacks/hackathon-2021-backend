@@ -9,10 +9,12 @@ class TestHackerModel(BaseTestCase):
     """Tests for the Hacker Model"""
 
     def test_create_hacker(self):
-        hacker = Hacker.createOne(username="foobar",
-                        email="foobar@email.com",
-                        password="password",
-                        roles=ROLES.HACKER)
+        hacker = Hacker.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="password",
+            roles=ROLES.HACKER,
+        )
 
         self.assertTrue(hacker.id)
         self.assertEqual(hacker.username, "foobar")

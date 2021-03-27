@@ -10,14 +10,16 @@ class TestCategoryModel(BaseTestCase):
     """Tests for the Category Model"""
 
     def test_create_category(self):
-        sponsor = Sponsor.createOne(username="foobar",
-                                    email="foobar@foobar.com",
-                                    password="pluto is a planet",
-                                    roles=ROLES.SPONSOR)
+        sponsor = Sponsor.createOne(
+            username="foobar",
+            email="foobar@foobar.com",
+            password="pluto is a planet",
+            roles=ROLES.SPONSOR,
+        )
 
-        category = Category.createOne(name="foobar",
-                                      description="Lorem ipsum",
-                                      sponsor=sponsor)
+        category = Category.createOne(
+            name="foobar", description="Lorem ipsum", sponsor=sponsor
+        )
 
         self.assertTrue(category.id)
         self.assertEqual(category.sponsor, sponsor)

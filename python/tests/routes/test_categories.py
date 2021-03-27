@@ -8,6 +8,7 @@ class TestCategoriesBlueprint(BaseTestCase):
     """Tests for the categories Endpoints"""
 
     """create_category"""
+
     def test_create_category(self):
         pass
 
@@ -24,6 +25,7 @@ class TestCategoriesBlueprint(BaseTestCase):
         pass
 
     """edit_category"""
+
     def test_edit_category(self):
         pass
 
@@ -43,6 +45,7 @@ class TestCategoriesBlueprint(BaseTestCase):
         pass
 
     """delete_category"""
+
     def test_delete_category(self):
         pass
 
@@ -53,6 +56,7 @@ class TestCategoriesBlueprint(BaseTestCase):
         pass
 
     """get_category"""
+
     def test_get_category(self):
         pass
 

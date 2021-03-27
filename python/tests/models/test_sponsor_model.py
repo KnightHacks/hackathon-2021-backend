@@ -9,10 +9,12 @@ class TestSponsorModel(BaseTestCase):
     """Tests for the Sponsor Model"""
 
     def test_create_sponsor(self):
-        sponsor = Sponsor.createOne(username="foobar",
-                        email="foobar@email.com",
-                        password="password",
-                        roles=ROLES.SPONSOR)
+        sponsor = Sponsor.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="password",
+            roles=ROLES.SPONSOR,
+        )
 
         self.assertTrue(sponsor.id)
         self.assertEqual(sponsor.username, "foobar")

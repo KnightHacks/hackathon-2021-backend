@@ -10,7 +10,6 @@ from src import app
 
 
 class BaseTestCase(TestCase):
-
     def create_app(self):
         app.config.from_object("src.config.TestingConfig")
         return app
@@ -30,10 +29,12 @@ class BaseTestCase(TestCase):
         self._conn.drop_database("mongoenginetest")
 
     def login_user(self, roles: ROLES):
-        user = User.createOne(username="tester",
-                       email="tester@localhost.dev",
-                       password="123456",
-                       roles=roles)
+        user = User.createOne(
+            username="tester",
+            email="tester@localhost.dev",
+            password="123456",
+            roles=roles,
+        )
 
         token = user.encode_auth_token()
 

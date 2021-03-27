@@ -57,7 +57,8 @@ def update_events(_):
     ClubEvent.drop_collection()
 
     for event in data:
-
+        if not isinstance(event, dict):
+            continue
         if event.get("date"):
             event["date"] = dateutil.parser.parse(event["date"])
         else:

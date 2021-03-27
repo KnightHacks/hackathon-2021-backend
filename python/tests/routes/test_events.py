@@ -8,13 +8,12 @@ class TestEventsBlueprint(BaseTestCase):
     """Tests for the Events Endpoints"""
 
     """create_event"""
+
     def test_create_event(self):
         pass
 
     def test_create_event_invalid_json(self):
-        res = self.client.post(
-            "/api/events/create_event/",
-            data=json.dumps({}))
+        res = self.client.post("/api/events/create_event/", data=json.dumps({}))
 
         data = json.loads(res.data.decode())
 
@@ -25,6 +24,7 @@ class TestEventsBlueprint(BaseTestCase):
         pass
 
     """update_event"""
+
     def test_update_event(self):
         pass
 

@@ -10,12 +10,14 @@ class TestClubEventModel(BaseTestCase):
 
     def test_create_club_event(self):
         now = datetime.now()
-        club_event = ClubEvent.createOne(name="foobar",
-                                         tags=["tag1", "tag2"],
-                                         presenter="Arjun",
-                                         date=now,
-                                         description="Lorem ipsum",
-                                         location="link or actual loc")
+        club_event = ClubEvent.createOne(
+            name="foobar",
+            tags=["tag1", "tag2"],
+            presenter="Arjun",
+            date=now,
+            description="Lorem ipsum",
+            location="link or actual loc",
+        )
 
         self.assertTrue(club_event.id)
         self.assertEqual(club_event.name, "foobar")

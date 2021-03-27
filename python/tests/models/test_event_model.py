@@ -10,10 +10,9 @@ class TestEventModel(BaseTestCase):
 
     def test_create_event(self):
         now = datetime.now()
-        event = Event.createOne(name="foobar",
-                        date_time=now,
-                        link="https://foobar.com",
-                        end_date_time=now)
+        event = Event.createOne(
+            name="foobar", date_time=now, link="https://foobar.com", end_date_time=now
+        )
 
         self.assertTrue(event.id)
         self.assertEqual(event.name, "foobar")

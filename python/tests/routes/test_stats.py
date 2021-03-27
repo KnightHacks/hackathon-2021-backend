@@ -10,7 +10,9 @@ class TestStatsBlueprint(BaseTestCase):
 
     def test_user_count(self):
 
-        res = self.client.get("/api/stats/user_count/", headers=[("Accept", "application/json")])
+        res = self.client.get(
+            "/api/stats/user_count/", headers=[("Accept", "application/json")]
+        )
         data = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 200)

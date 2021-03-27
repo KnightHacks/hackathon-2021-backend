@@ -8,10 +8,12 @@ class TestUserModel(BaseTestCase):
     """Tests for the User Model"""
 
     def test_create_user(self):
-        user = User.createOne(username="foobar",
-                        email="foobar@email.com",
-                        password="password",
-                        roles=ROLES.ADMIN)
+        user = User.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="password",
+            roles=ROLES.ADMIN,
+        )
 
         self.assertTrue(user.id)
         self.assertEqual(user.username, "foobar")
@@ -19,10 +21,12 @@ class TestUserModel(BaseTestCase):
         self.assertTrue(user.password)
 
     def test_findOne_user(self):
-        User.createOne(username="foobar",
-                       email="foobar@email.com",
-                       password="password",
-                       roles=ROLES.ADMIN)
+        User.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="password",
+            roles=ROLES.ADMIN,
+        )
 
         user = User.findOne(username="foobar")
 

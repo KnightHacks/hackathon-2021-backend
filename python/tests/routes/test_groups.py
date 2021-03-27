@@ -8,6 +8,7 @@ class TestGroupsBlueprint(BaseTestCase):
     """Tests for the Groups Endpoints"""
 
     """create_group"""
+
     def test_create_group(self):
         pass
 
@@ -24,6 +25,7 @@ class TestGroupsBlueprint(BaseTestCase):
         pass
 
     """edit_group"""
+
     def test_edit_group(self):
         pass
 
@@ -43,6 +45,7 @@ class TestGroupsBlueprint(BaseTestCase):
         pass
 
     """get_group"""
+
     def test_get_group(self):
         pass
 
