@@ -10,8 +10,6 @@ services:
         image: mongo
         container_name: kh-mongo
         restart: unless-stopped
-        volumes:
-            - mongo-hackathon-data:/data/db
             
     kh-backend:
         image: knighthacks/backend
@@ -25,8 +23,6 @@ services:
             - kh-rabbitmq
         ports:
             - "8080:5000"
-        volumes:
-            - ./python:/home/backend/app
         environment:
             APP_SETTINGS: src.config.ProductionConfig
             MONGO_URI: "mongodb://kh-mongo/test"
