@@ -1,0 +1,41 @@
+version: "3.3"
+services:
+
+    kh-rabbitmq:
+        image: rabbitmq
+        container_name: kh-rabbitmq
+        restart: unless-stopped
+
+    kh-mongo:
+        image: mongo
+        container_name: kh-mongo
+        restart: unless-stopped
+        volumes:
+            - mongo-hackathon-data:/data/db
+            
+    kh-backend:
+        image: knighthacks/backend
+        build:
+            context: ./python
+            dockerfile: Dockerfile.dev
+        container_name: kh-backend
+        restart: unless-stopped
+        depends_on:
+            - kh-mongo
+            - kh-rabbitmq
+        ports:
+            - "8080:5000"
+        volumes:
+            - ./python:/home/backend/app
+        environment:
+            APP_SETTINGS: src.config.ProductionConfig
+            MONGO_URI: "mongodb://kh-mongo/test"
+            CELERY_BROKER_URL: "amqp://kh-rabbitmq"
+            MAIL_SERVER: "smtp.knighthacks.org"
+            MAIL_PORT: 587
+            MAIL_USE_TLS: "true"
+            MAIL_USERNAME: "noreply@knighthacks.org"
+            MAIL_PASSWORD: "supersecurepassworddontatme"
+            MAIL_DEFAULT_SENDER: "noreply@knighthacks.org"
+            SECRET_KEY: "vivalapluto"
+
