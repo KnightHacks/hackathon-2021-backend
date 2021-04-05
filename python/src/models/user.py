@@ -120,7 +120,8 @@ class User(BaseDocument):
 
     def __init__(self, *args, **kwargs):
         conf = current_app.config["BCRYPT_LOG_ROUNDS"]
-        if isinstance(kwargs['password'], str):
+        if (kwargs.get("password") is not None
+                and isinstance(kwargs.get('password'), str)):
             kwargs['password'] = bcrypt.generate_password_hash(
                 kwargs['password'],
                 conf)

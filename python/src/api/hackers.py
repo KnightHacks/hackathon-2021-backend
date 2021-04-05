@@ -204,7 +204,7 @@ def update_user_profile_settings(username: str):
     if not hacker:
         raise NotFound()
 
-    if update.get("email") != hacker.email:
+    if update.get("email") is not None and update.get("email") != hacker.email:
         update["email_verification"] = False
         newemail = True
     else:
@@ -276,46 +276,3 @@ def hacker_settings(username: str):
     }
 
     return res, 200
-
-
-@hackers_blueprint.route("/hackers/<username>/accept/", methods=["PUT"])
-@authenticate
-@privileges(ROLES.ADMIN)
-def accept_hacker(username: str):
-    """
-    Accepts a Hacker
-    ---
-    tags:
-        - hacker
-    parameters:
-        - id: username
-          in: path
-          description: username
-          required: true
-          schema:
-            type: string
-    responses:
-        201:
-            description: OK
-        404:
-            description: Hacker does not exist.
-        5XX:
-            description: Unexpected error.
-    """
-
-    hacker = Hacker.objects(username=username).first()
-    if not hacker:
-        raise NotFound()
-
-    hacker.update(isaccepted=True)
-
-    """Send Acceptance Email"""
-    from src.common.mail import send_hacker_acceptance_email
-    send_hacker_acceptance_email(hacker)
-
-    res = {
-        "status": "success",
-        "message": "Hacker has been accepted!"
-    }
-
-    return res, 201
