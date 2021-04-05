@@ -208,3 +208,46 @@ def edit_sponsor(sponsor_name: str):
         "message": "Sponsor successfully updated."
     }
     return res, 201
+
+
+@sponsors_blueprint.route("/sponsors/<username>/accept/", methods=["PUT"])
+@authenticate
+@privileges(ROLES.ADMIN)
+def accept_sponsor(_, username: str):
+    """
+    Accepts a Sponsor
+    ---
+    tags:
+        - sponsor
+    parameters:
+        - id: username
+          in: path
+          description: username
+          required: true
+          schema:
+            type: string
+    responses:
+        201:
+            description: OK
+        404:
+            description: Sponsor does not exist.
+        5XX:
+            description: Unexpected error.
+    """
+
+    sponsor = Sponsor.objects(username=username).first()
+    if not sponsor:
+        raise NotFound()
+
+    sponsor.update(isaccepted=True)
+
+    """Send Acceptance Email"""
+    from src.common.mail import send_sponsor_acceptance_email
+    send_sponsor_acceptance_email(sponsor)
+
+    res = {
+        "status": "success",
+        "message": "Sponsor has been accepted!"
+    }
+
+    return res, 201

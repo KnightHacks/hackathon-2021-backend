@@ -281,7 +281,7 @@ def hacker_settings(username: str):
 @hackers_blueprint.route("/hackers/<username>/accept/", methods=["PUT"])
 @authenticate
 @privileges(ROLES.ADMIN)
-def accept_hacker(username: str):
+def accept_hacker(_, username: str):
     """
     Accepts a Hacker
     ---

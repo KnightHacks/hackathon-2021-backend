@@ -373,3 +373,35 @@ class TestSponsorsBlueprint(BaseTestCase):
 
         # ensure that the sponsor username was not unique
         self.assertEqual(res.status_code, 409)
+
+    """accept_sponsor"""
+    def test_accept_sponsor(self):
+        Sponsor.createOne(
+            sponsor_name="Walmart",
+            logo="https://blob.knighthacks.org/somelogo.png",
+            subscription_tier="Gold",
+            email="walmart@gmail.com",
+            username="walmartofficial",
+            password="pass1234",
+            roles=ROLES.SPONSOR
+        )
+
+        token = self.login_user(ROLES.ADMIN)
+
+        res = self.client.put(
+            "/api/sponsors/walmartofficial/accept/",
+            headers=[("sid", token)]
+        )
+
+        self.assertEqual(res.status_code, 201)
+
+    def test_accept_sponsor_not_found(self):
+
+        token = self.login_user(ROLES.ADMIN)
+
+        res = self.client.put(
+            "/api/sponsors/walmartofficial/accept/",
+            headers=[("sid", token)]
+        )
+
+        self.assertEqual(res.status_code, 404)

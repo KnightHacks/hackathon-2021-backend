@@ -35,3 +35,14 @@ def send_hacker_acceptance_email(hacker):
                                                hacker=hacker),
                      html_body=render_template("emails/hacker_acceptance.html",
                                                hacker=hacker))
+
+
+def send_sponsor_acceptance_email(sponsor):
+    """Sends an acceptance email to the sponsor"""
+    send_async_email(subject="",
+                     recipient=sponsor.email,
+                     text_body=render_template("emails/sponsor_acceptance.txt",
+                                               sponsor=sponsor),
+                     html_body=render_template(
+                         "emails/sponsor_acceptance.html",
+                         sponsor=sponsor))
