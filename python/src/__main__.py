@@ -21,7 +21,7 @@ from src import app
 try:
     import pytest
     test_present = True
-except ImportError:
+except ImportError:  # pragma: no cover
     test_present = False
 
 os.environ["FLASK_APP"] = "src.__main__:main()"
@@ -38,7 +38,7 @@ def test():
     """Run tests"""
     if test_present:
         pytest.main(["--doctest-modules", "--junitxml=junit/test-results.xml"])
-    else:
+    else:  # pragma: no cover
         app.logger.error("Module PyTest is not installed! Install dev dependencies before testing!")  # noqa: E501
 
 

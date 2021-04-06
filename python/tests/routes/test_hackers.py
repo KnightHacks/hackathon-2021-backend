@@ -258,8 +258,38 @@ class TestHackersBlueprint(BaseTestCase):
 
         self.assertEqual(res.status_code, 200)
 
+
     def test_hacker_settings_not_found(self):
 
         res = self.client.get("/api/hackers/foobar/settings/")
+
+        self.assertEqual(res.status_code, 404)
+
+    """accept_hacker"""
+    def test_accept_hacker(self):
+        Hacker.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="123456",
+            roles=ROLES.HACKER
+        )
+
+        token = self.login_user(ROLES.ADMIN)
+
+        res = self.client.put(
+            "/api/hackers/foobar/accept/",
+            headers=[("sid", token)]
+        )
+
+        self.assertEqual(res.status_code, 201)
+
+    def test_accept_hacker_not_found(self):
+
+        token = self.login_user(ROLES.ADMIN)
+
+        res = self.client.put(
+            "/api/hackers/foobar/accept/",
+            headers=[("sid", token)]
+        )
 
         self.assertEqual(res.status_code, 404)
