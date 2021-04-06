@@ -144,8 +144,23 @@ def get_group(group_name: str):
     if not group:
         raise NotFound()
 
+    group_dict = group.to_mongo().to_dict()
+
+    members = []
+
+    for member in group.members:
+
+        members.append({
+            "first_name": member.first_name,
+            "last_name": member.last_name,
+            "email": member.email,
+            "username": member.username
+        })
+
+    group_dict["members"] = members
+
     res = {
-        "group": group,
+        "group": group_dict,
         "status": "success"
     }
 

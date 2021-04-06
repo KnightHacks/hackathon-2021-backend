@@ -51,12 +51,3 @@ class TestGroupModel(BaseTestCase):
         self.assertEqual("image", group_json["icon"])
         self.assertEqual(["cat1"], group_json["categories"])
         self.assertEqual(now, group_json["date"])
-        self.assertIn(
-            {
-                "first_name": hacker.first_name,
-                "last_name": hacker.last_name,
-                "email": hacker.email,
-                "username": hacker.username,
-            },
-            group_json["members"],
-        )
