@@ -143,7 +143,6 @@ def get_group(group_name: str):
     group = Group.objects(name=group_name).exclude("id").first()
     if not group:
         raise NotFound()
-
     
     group_dict = group.to_mongo().to_dict()
 
