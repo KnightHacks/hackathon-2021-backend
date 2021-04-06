@@ -17,6 +17,7 @@ class Sponsor(User):
     sponsor_name = db.StringField()
     logo = db.URLField()
     subscription_tier = db.StringField()
+    isaccepted = db.BooleanField(default=False)
 
     @property
     def events(self):
