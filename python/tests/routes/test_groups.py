@@ -305,21 +305,55 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(Group.objects.count(), 0)
 
     """edit_group (worked on by Conroy)"""
-
+    
     def test_edit_group(self):
 
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create a group
         new_group = Group.createOne(
             name = "My Group",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
                         "category 3"]
         )
-        
+
+        #edit group
         res = self.client.put(
             "/api/groups/My Group/",
-            data=json.dumps({"name": "My Updated Group"}),
+            data=json.dumps({"name": "My Updated Group",
+                             "members": [
+                                        "conroy@gmail.com", 
+                                        "john@gmail.com",
+                                        "doe@gmail.com"]}),
             content_type="application/json",
         )        
         
@@ -328,15 +362,45 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_invalid_json(self):
 
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create a group
         new_group = Group.createOne(
             name = "My Group",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
                         "category 3"]
         )
         
+        #edit group
         res = self.client.put(
             "/api/groups/My Group/",
             data=json.dumps({}),
@@ -347,31 +411,144 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_not_found(self):
         
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create a group
         new_group = Group.createOne(
             name = "My Group",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
                         "category 3"]
         )
         
+        #edit group
         res = self.client.put(
             "/api/groups/Not My Group/",
-            data=json.dumps({"name": "My Updated Group"}),
+            data=json.dumps({"name": "My Updated Group",
+                             "members": [
+                                        "conroy@gmail.com", 
+                                        "john@gmail.com",
+                                        "doe@gmail.com"]}),
             content_type="application/json",
         )        
         
         self.assertEqual(res.status_code, 404)
+    
+    def test_edit_group_member_not_found(self):
+        
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
 
-    def test_edit_group_not_found_member(self):
-        pass
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
 
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create a group
+        new_group = Group.createOne(
+            name = "My Group",
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+        
+        #edit group
+        res = self.client.put(
+            "/api/groups/My Group/",
+            data=json.dumps({"name": "My Updated Group",
+                             "members": [
+                                        "obviouslynotmyemail@gmail.com", 
+                                        "john@gmail.com",
+                                        "doe@gmail.com"]}),
+            content_type="application/json"
+        )        
+        
+        self.assertEqual(res.status_code, 404)
+    
     def test_edit_group_duplicate_group(self):
         
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create groups
         new_group1 = Group.createOne(
             name = "Group 1",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
@@ -380,16 +557,24 @@ class TestGroupsBlueprint(BaseTestCase):
         
         new_group2 = Group.createOne(
             name = "Group 2",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
                         "category 3"]
         )
         
+        #edit a group
         res = self.client.put(
             "/api/groups/Group 1/",
-            data=json.dumps({"name": "Group 2"}),
+            data=json.dumps({"name": "Group 2",
+                             "members": [
+                                        "conroy@gmail.com", 
+                                        "john@gmail.com",
+                                        "doe@gmail.com"]}),
             content_type="application/json",
         )        
         
@@ -397,23 +582,57 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_invalid_datatypes(self):
         
+        #create hackers to put inside group
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        #create a group
         new_group = Group.createOne(
             name = "My Group",
-            members = [],
+            members = [
+                        new_hacker1, 
+                        new_hacker2,
+                        new_hacker3],
             categories = [
                         "category 1",
                         "category 2",
                         "category 3"]
         )
         
+        #edit group
         res = self.client.put(
             "/api/groups/My Group/",
-            data=json.dumps({"name": 1}),
+            data=json.dumps({"name": 1,
+                             "members": [
+                                        "conroy@gmail.com", 
+                                        "john@gmail.com",
+                                        "doe@gmail.com"]}),
             content_type="application/json",
         )        
         
         self.assertEqual(res.status_code, 400)
-
+        
     """get_group (worked on by Conroy)"""
 
     def test_get_group(self):
