@@ -101,8 +101,8 @@ def edit_group(group_name: str):
     """
     update = request.get_json()
     if not update:
-        raise BadRequest()    
-    
+        raise BadRequest()
+
     for k, email in enumerate(update["members"]):
         member = Hacker.objects(email=email).first()
         if not member:
