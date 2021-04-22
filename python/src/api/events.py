@@ -120,10 +120,10 @@ def update_event(event_name: str):
     if not data:
         raise BadRequest()
 
-    if data["date_time"]:
+    if "date_time" in data:
         data["date_time"] = dateutil.parser.parse(data["date_time"])
 
-    if data["end_date_time"]:
+    if "end_date_time" in data:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
     event = Event.objects(name=event_name).first()
