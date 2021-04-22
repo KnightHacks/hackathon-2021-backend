@@ -192,7 +192,7 @@ def update_user_profile_settings(username: str):
         400:
             description: Bad Request
         404:
-            description: Group doesn't exist
+            description: Hacker doesn't exist
         5XX:
             description: Unexpected error.
     """

@@ -2,18 +2,18 @@
 import json
 from src.models.hacker import Hacker
 from src.models.user import ROLES
-from src.models.group import Group
+from src.models.team import Team
 from tests.base import BaseTestCase
 
 
-class TestGroupsBlueprint(BaseTestCase):
-    """Tests for the Groups Endpoints"""
+class TestTeamsBlueprint(BaseTestCase):
+    """Tests for the Teams Endpoints"""
 
-    """create_group (worked on by Conroy)"""
+    """create_team (worked on by Conroy)"""
 
-    def test_create_group(self):
+    def test_create_team(self):
 
-        #create hackers to put inside group
+        #create hackers to put inside team
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -55,14 +55,14 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        #create a team
         res4 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps(
                 {
-                    "name" : "My Group",
+                    "name" : "My Team",
                     "members" : [
-                        "conroy@gmail.com", 
+                        "conroy@gmail.com",
                         "john@gmail.com",
                         "doe@gmail.com"],
                     "categories" : [
@@ -75,22 +75,22 @@ class TestGroupsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res4.status_code, 201)
-        self.assertEqual(Group.objects.count(), 1)
+        self.assertEqual(Team.objects.count(), 1)
 
-    def test_create_group_invalid_json(self):
+    def test_create_team_invalid_json(self):
 
         res4 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps({}),
             content_type="application/json",
         )
 
         self.assertEqual(res4.status_code, 400)
-        self.assertEqual(Group.objects.count(), 0)
+        self.assertEqual(Team.objects.count(), 0)
 
-    def test_create_group_member_not_found(self):
+    def test_create_team_member_not_found(self):
 
-        #create hackers to put inside group
+        #create hackers to put inside team
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -132,14 +132,14 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        #create a team
         res4 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps(
                 {
-                    "name" : "My Group",
+                    "name" : "My Team",
                     "members" : [
-                        "obviouslynotmyemail@gmail.com", 
+                        "obviouslynotmyemail@gmail.com",
                         "john@gmail.com",
                         "doe@gmail.com"],
                     "categories" : [
@@ -152,11 +152,11 @@ class TestGroupsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res4.status_code, 404)
-        self.assertEqual(Group.objects.count(), 0)
+        self.assertEqual(Team.objects.count(), 0)
 
-    def test_create_group_duplicate_group(self):
+    def test_create_team_duplicate_team(self):
 
-        #create hackers to put inside groups
+        #create hackers to put inside teams
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -198,14 +198,14 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create groups        
+        #create teams
         res4 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps(
                 {
-                    "name" : "My Group",
+                    "name" : "My Team",
                     "members" : [
-                        "conroy@gmail.com", 
+                        "conroy@gmail.com",
                         "john@gmail.com"],
                     "categories" : [
                         "category 1",
@@ -217,13 +217,13 @@ class TestGroupsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res4.status_code, 201)
-        self.assertEqual(Group.objects.count(), 1)
+        self.assertEqual(Team.objects.count(), 1)
 
         res5 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps(
                 {
-                    "name" : "My Group",
+                    "name" : "My Team",
                     "members" : [
                         "doe@gmail.com"],
                     "categories" : [
@@ -236,11 +236,11 @@ class TestGroupsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res5.status_code, 409)
-        self.assertEqual(Group.objects.count(), 1)
+        self.assertEqual(Team.objects.count(), 1)
 
-    def test_create_group_invalid_datatypes(self):
+    def test_create_team_invalid_datatypes(self):
 
-        #create hackers to put inside group
+        #create hackers to put inside team
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -282,14 +282,14 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        #create a team
         res4 = self.client.post(
-            "/api/groups/",
+            "/api/teams/",
             data=json.dumps(
                 {
                     "name" : 2142114,
                     "members" : [
-                        "conroy@gmail.com", 
+                        "conroy@gmail.com",
                         "john@gmail.com",
                         "doe@gmail.com"],
                     "categories" : [
@@ -302,13 +302,13 @@ class TestGroupsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res4.status_code, 400)
-        self.assertEqual(Group.objects.count(), 0)
+        self.assertEqual(Team.objects.count(), 0)
 
-    """edit_group (worked on by Conroy)"""
-    
-    def test_edit_group(self):
+    """edit_team (worked on by Conroy)"""
 
-        #create hackers to put inside group
+    def test_edit_team(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -333,11 +333,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -346,23 +346,23 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #edit group
+        #edit team
         res = self.client.put(
-            "/api/groups/My Group/",
-            data=json.dumps({"name": "My Updated Group",
+            "/api/teams/My Team/",
+            data=json.dumps({"name": "My Updated Team",
                              "members": [
-                                        "conroy@gmail.com", 
+                                        "conroy@gmail.com",
                                         "john@gmail.com",
                                         "doe@gmail.com"]}),
             content_type="application/json",
-        )        
-        
+        )
+
         self.assertEqual(res.status_code, 201)
-          
 
-    def test_edit_group_invalid_json(self):
 
-        #create hackers to put inside group
+    def test_edit_team_invalid_json(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -387,11 +387,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -399,19 +399,19 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        #edit group
+
+        #edit team
         res = self.client.put(
-            "/api/groups/My Group/",
+            "/api/teams/My Team/",
             data=json.dumps({}),
             content_type="application/json",
-        )        
-        
+        )
+
         self.assertEqual(res.status_code, 400)
 
-    def test_edit_group_not_found(self):
-        
-        #create hackers to put inside group
+    def test_edit_team_not_found(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -436,11 +436,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -448,23 +448,23 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        #edit group
+
+        #edit team
         res = self.client.put(
-            "/api/groups/Not My Group/",
-            data=json.dumps({"name": "My Updated Group",
+            "/api/teams/Not My Team/",
+            data=json.dumps({"name": "My Updated Team",
                              "members": [
-                                        "conroy@gmail.com", 
+                                        "conroy@gmail.com",
                                         "john@gmail.com",
                                         "doe@gmail.com"]}),
             content_type="application/json",
-        )        
-        
+        )
+
         self.assertEqual(res.status_code, 404)
-    
-    def test_edit_group_member_not_found(self):
-        
-        #create hackers to put inside group
+
+    def test_edit_team_member_not_found(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -489,11 +489,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -501,23 +501,23 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        #edit group
+
+        #edit team
         res = self.client.put(
-            "/api/groups/My Group/",
-            data=json.dumps({"name": "My Updated Group",
+            "/api/teams/My Team/",
+            data=json.dumps({"name": "My Updated Team",
                              "members": [
-                                        "obviouslynotmyemail@gmail.com", 
+                                        "obviouslynotmyemail@gmail.com",
                                         "john@gmail.com",
                                         "doe@gmail.com"]}),
             content_type="application/json"
-        )        
-        
+        )
+
         self.assertEqual(res.status_code, 404)
-    
-    def test_edit_group_duplicate_group(self):
-        
-        #create hackers to put inside group
+
+    def test_edit_team_duplicate_team(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -542,11 +542,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create groups
-        new_group1 = Group.createOne(
-            name = "Group 1",
+        #create teams
+        new_team1 = Team.createOne(
+            name = "Team 1",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -554,11 +554,11 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        new_group2 = Group.createOne(
-            name = "Group 2",
+
+        new_team2 = Team.createOne(
+            name = "Team 2",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -566,23 +566,23 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        #edit a group
+
+        #edit a team
         res = self.client.put(
-            "/api/groups/Group 1/",
-            data=json.dumps({"name": "Group 2",
+            "/api/teams/Team 1/",
+            data=json.dumps({"name": "Team 2",
                              "members": [
-                                        "conroy@gmail.com", 
+                                        "conroy@gmail.com",
                                         "john@gmail.com",
                                         "doe@gmail.com"]}),
             content_type="application/json",
-        )        
-        
+        )
+
         self.assertEqual(res.status_code, 409)
 
-    def test_edit_group_invalid_datatypes(self):
-        
-        #create hackers to put inside group
+    def test_edit_team_invalid_datatypes(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -607,11 +607,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -619,25 +619,25 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 2",
                         "category 3"]
         )
-        
-        #edit group
+
+        #edit team
         res = self.client.put(
-            "/api/groups/My Group/",
+            "/api/teams/My Team/",
             data=json.dumps({"name": 1,
                              "members": [
-                                        "conroy@gmail.com", 
+                                        "conroy@gmail.com",
                                         "john@gmail.com",
                                         "doe@gmail.com"]}),
             content_type="application/json",
-        )        
-        
-        self.assertEqual(res.status_code, 400)
-        
-    """get_group (worked on by Conroy)"""
+        )
 
-    def test_get_group(self):
-        
-        #create hackers to put inside group
+        self.assertEqual(res.status_code, 400)
+
+    """get_team (worked on by Conroy)"""
+
+    def test_get_team(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -662,11 +662,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -675,13 +675,13 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #get the group
-        res = self.client.get("/api/groups/My Group/")
+        #get the team
+        res = self.client.get("/api/teams/My Team/")
         self.assertEqual(res.status_code, 200)
 
-    def test_get_group_not_found(self):
-        
-        #create hackers to put inside group
+    def test_get_team_not_found(self):
+
+        #create hackers to put inside team
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -706,11 +706,11 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
-        new_group = Group.createOne(
-            name = "My Group",
+        #create a team
+        new_team = Team.createOne(
+            name = "My Team",
             members = [
-                        new_hacker1, 
+                        new_hacker1,
                         new_hacker2,
                         new_hacker3],
             categories = [
@@ -719,6 +719,6 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #"get" the group
-        res = self.client.get("/api/groups/Obviously Not My Group/")
+        #"get" the team
+        res = self.client.get("/api/teams/Obviously Not My Team/")
         self.assertEqual(res.status_code, 404)

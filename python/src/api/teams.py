@@ -1,37 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-    src.api.groups
+    src.api.teams
     ~~~~~~~~~~~~~~
 
     Functions:
 
-        create_group()
-        edit_group()
+        create_team()
+        edit_team()
 
 """
 from flask import Blueprint, request
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.hacker import Hacker
-from src.models.group import Group
+from src.models.team import Team
 
 
-groups_blueprint = Blueprint("groups", __name__)
+teams_blueprint = Blueprint("teams", __name__)
 
 
-@groups_blueprint.route("/groups/", methods=["POST"])
-def create_group():
+@teams_blueprint.route("/teams/", methods=["POST"])
+def create_team():
     """
-    Creates a group
+    Creates a team
     ---
     tags:
-        - groups
+        - teams
     requestBody:
         content:
             application/json:
                 schema:
-                    $ref: '#/components/schemas/Group'
-        description: Created Group Object
+                    $ref: '#/components/schemas/Team'
+        description: Created Team Object
         required: true
     responses:
         201:
@@ -51,36 +51,36 @@ def create_group():
     for k, email in enumerate(data["members"]):
         member = Hacker.objects(email=email).first()
         if not member:
-            raise NotFound(description="Group Member(s) does not exist.")
+            raise NotFound(description="Team Member(s) does not exist.")
         data["members"][k] = member
 
     try:
-        Group.createOne(**data)
+        Team.createOne(**data)
     except NotUniqueError:
-        raise Conflict("Sorry, a group already exists with that name.")
+        raise Conflict("Sorry, a team already exists with that name.")
     except ValidationError:
         raise BadRequest()
 
     res = {
         "status": "success",
-        "message": "Group was created!"
+        "message": "Team was created!"
     }
 
     return res, 201
 
 
-@groups_blueprint.route("/groups/<group_name>/", methods=["PUT"])
-def edit_group(group_name: str):
+@teams_blueprint.route("/teams/<team_name>/", methods=["PUT"])
+def edit_team(team_name: str):
     """
-    Updates a Group
+    Updates a Team
     ---
     tags:
-        - groups
-    summary: Updates a Group
+        - teams
+    summary: Updates a Team
     parameters:
-        - id: group_name
+        - id: team_name
           in: path
-          description: The name of the group to be updated.
+          description: The name of the team to be updated.
           required: true
           schema:
             type: string
@@ -88,14 +88,14 @@ def edit_group(group_name: str):
         content:
             application/json:
                 schema:
-                    $ref: '#/components/schemas/Group'
+                    $ref: '#/components/schemas/Team'
     responses:
         201:
             description: OK
         400:
             description: Bad Request
         404:
-            description: Group doesn't exist
+            description: Team doesn't exist
         5XX:
             description: Unexpected error.
     """
@@ -106,55 +106,55 @@ def edit_group(group_name: str):
     for k, email in enumerate(update["members"]):
         member = Hacker.objects(email=email).first()
         if not member:
-            raise NotFound(description="Group Member(s) does not exist.")
+            raise NotFound(description="Team Member(s) does not exist.")
         update["members"][k] = member
 
-    group = Group.objects(name=group_name)
-    if not group:
+    team = Team.objects(name=team_name)
+    if not team:
         raise NotFound()
 
     try:
-        group.update(**update)
+        team.update(**update)
     except NotUniqueError:
-        raise Conflict("Sorry, a group already exists with that name.")
+        raise Conflict("Sorry, a team already exists with that name.")
     except ValidationError:
         raise BadRequest()
 
     res = {
         "status": "success",
-        "message": "Group successfully updated."
+        "message": "Team successfully updated."
     }
     return res, 201
 
 
-@groups_blueprint.route("/groups/<group_name>/", methods=["GET"])
-def get_group(group_name: str):
+@teams_blueprint.route("/teams/<team_name>/", methods=["GET"])
+def get_team(team_name: str):
     """
-    Retrieves a group's schema from their group name
+    Retrieves a team's schema from their team name
     ---
     tags:
-        - groups
-    summary: Gets a group's schema from their group name
+        - teams
+    summary: Gets a team's schema from their team name
     parameters:
-        - name: group_name
+        - name: team_name
           in: path
           type: string
-          description: The group's schema.
+          description: The team's schema.
           required: true
     responses:
         200:
             description: OK
 
     """
-    group = Group.objects(name=group_name).exclude("id").first()
-    if not group:
+    team = Team.objects(name=team_name).exclude("id").first()
+    if not team:
         raise NotFound()
 
-    group_dict = group.to_mongo().to_dict()
+    team_dict = team.to_mongo().to_dict()
 
     members = []
 
-    for member in group.members:
+    for member in team.members:
 
         members.append({
             "first_name": member.first_name,
@@ -163,10 +163,10 @@ def get_group(group_name: str):
             "username": member.username
         })
 
-    group_dict["members"] = members
+    team_dict["members"] = members
 
     res = {
-        "group": group_dict,
+        "team": team_dict,
         "status": "success"
     }
 

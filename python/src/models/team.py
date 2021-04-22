@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-    src.models.group
-    ~~~~~~~~~~~~~~~~
-    Model definition for Groups
+    src.models.team
+    ~~~~~~~~~~~~~~~
+    Model definition for Teams
 
     Classes:
 
-        Group
+        Team
 
 """
 from datetime import datetime
@@ -15,7 +15,7 @@ from src.models import BaseDocument
 from src.models.hacker import Hacker
 
 
-class Group(BaseDocument):
+class Team(BaseDocument):
     name = db.StringField(unique=True, required=True)
     icon = db.StringField()
     members = db.ListField(db.ReferenceField(Hacker))

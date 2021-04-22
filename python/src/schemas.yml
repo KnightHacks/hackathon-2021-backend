@@ -42,7 +42,7 @@ Hacker:
     current_status:
       type: boolean
       description: If the Hacker is accepted or not.
-Group:
+Team:
   type: object
   properties:
     name:

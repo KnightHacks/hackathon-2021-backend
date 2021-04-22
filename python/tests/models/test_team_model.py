@@ -1,16 +1,16 @@
 # flake8: noqa
 from mongoengine.errors import NotUniqueError
-from src.models.group import Group
+from src.models.team import Team
 from src.models.hacker import Hacker
 from src.models.user import User, ROLES
 from tests.base import BaseTestCase
 from datetime import datetime
 
 
-class TestGroupModel(BaseTestCase):
-    """Tests for the Group Model"""
+class TestTeamModel(BaseTestCase):
+    """Tests for the Team Model"""
 
-    def test_create_group(self):
+    def test_create_team(self):
         hacker = Hacker.createOne(
             username="foobar",
             email="foobar@email.com",
@@ -19,18 +19,18 @@ class TestGroupModel(BaseTestCase):
         )
 
         now = datetime.now()
-        group = Group.createOne(
+        team = Team.createOne(
             name="foobar", icon="image", categories=["cat1"], date=now, members=[hacker]
         )
 
-        self.assertTrue(group.id)
-        self.assertEqual(group.name, "foobar")
-        self.assertEqual(group.icon, "image")
-        self.assertEqual(group.categories, ["cat1"])
-        self.assertEqual(group.date, now)
-        self.assertEqual(group.members[0], hacker)
+        self.assertTrue(team.id)
+        self.assertEqual(team.name, "foobar")
+        self.assertEqual(team.icon, "image")
+        self.assertEqual(team.categories, ["cat1"])
+        self.assertEqual(team.date, now)
+        self.assertEqual(team.members[0], hacker)
 
-    def test_group_to_json(self):
+    def test_team_to_json(self):
         hacker = Hacker.createOne(
             username="foobar",
             email="foobar@email.com",
@@ -41,13 +41,13 @@ class TestGroupModel(BaseTestCase):
         )
 
         now = datetime.now()
-        group = Group.createOne(
+        team = Team.createOne(
             name="foobar", icon="image", categories=["cat1"], date=now, members=[hacker]
         )
 
-        group_json = group.to_mongo().to_dict()
+        team_json = team.to_mongo().to_dict()
 
-        self.assertEqual("foobar", group_json["name"])
-        self.assertEqual("image", group_json["icon"])
-        self.assertEqual(["cat1"], group_json["categories"])
-        self.assertEqual(now, group_json["date"])
+        self.assertEqual("foobar", team_json["name"])
+        self.assertEqual("image", team_json["icon"])
+        self.assertEqual(["cat1"], team_json["categories"])
+        self.assertEqual(now, team_json["date"])
