@@ -118,6 +118,39 @@ def get_user_search(username: str):
     return res, 200
 
 
+
+@hackers_blueprint.route("/hackers/<email>/team/", methods=["GET"])
+def get_user_team(email: str):
+    """
+    Retrieves a hacker's team using their email.
+    ---
+    tags:
+        - hacker
+    summary: Retrieves a hacker's team using their email.
+    parameters:
+        - name: email
+          in: path
+          schema:
+              type: string
+          description: The hacker's email.
+          required: true
+    responses:
+        200:
+            description: OK
+        404:
+            description: Hacker not found
+    """
+    hacker = Hacker.objects(email=email).first()
+    if not hacker:
+        raise NotFound()
+
+    res = {
+        "team": hacker.team
+    }
+
+    return res, 200
+
+
 @hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
 @authenticate
 @privileges(ROLES.HACKER | ROLES.MOD | ROLES.ADMIN)

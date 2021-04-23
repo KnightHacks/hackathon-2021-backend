@@ -29,3 +29,10 @@ class Hacker(User):  # Stored in the "user" collection
     current_status = db.BooleanField()
     hacker_profile = db.EmbeddedDocumentField(HackerProfile)
     isaccepted = db.BooleanField(default=False)
+
+    @property
+    def team(self):
+        """Returns the team that the hacker belongs to or None"""
+        from src.models.team import Team
+
+        return Team.objects(members__in=[self]).first()

@@ -9,3 +9,4 @@ pyjwt
 Flask-Mail
 celery
 Flask-Bcrypt
+Pillow
