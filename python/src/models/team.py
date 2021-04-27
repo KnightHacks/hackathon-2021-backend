@@ -21,6 +21,7 @@ class Team(BaseDocument):
     name = db.StringField(unique=True, required=True)
     icon_name = db.StringField()
     icon = db.ImageField(
+        thumbnail_size=(20, 20, True),
         size=(500, 500, True)
     )
     members = db.ListField(

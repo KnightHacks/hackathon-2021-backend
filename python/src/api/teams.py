@@ -16,6 +16,7 @@
 from flask import Blueprint, request, make_response, current_app as app
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized, UnsupportedMediaType
+import base64
 from werkzeug.utils import secure_filename
 from src.common.decorators import authenticate, privileges
 from src.models.user import ROLES
@@ -72,7 +73,7 @@ def create_team(hacker=None):
         data["members"].append(member)
 
     try:
-        created = Team.createOne(**data)
+        Team.createOne(**data)
     except NotUniqueError:
         raise Conflict("Sorry, a team already exists with that name.")
     except ValidationError:
@@ -85,8 +86,28 @@ def create_team(hacker=None):
 
     return res, 201
 
+
 @teams_blueprint.route("/teams/<team_name>/icon/", methods=["GET"])
 def download_team_icon(team_name: str):
+    """
+    Upload Team Icon
+    ---
+    tags:
+        - teams
+    parameters:
+        - id: team_name
+          in: path
+          schema:
+            type: string
+          required: true
+    responses:
+        200:
+            content:
+                application/octet-stream:
+                    schema:
+                        type: string
+                        format: binary
+    """
     team = Team.objects(name=team_name).first()
 
     if not team:
@@ -95,16 +116,46 @@ def download_team_icon(team_name: str):
     if not team.icon:
         raise NotFound("There is no icon for this team.")
 
-    icon_name = team.icon_name
+    # icon_name = team.icon_name
 
-    res = make_response(team.icon.read())
-    res.headers["Content-Type"] = "application/octet-stream"
-    res.headers["Content-Disposition"] = f"attachment; filename={icon_name}"
+    high_quality = team.icon.read()
+    low_quality = "data:image/png;base64," + \
+        base64.b64encode(team.icon.thumbnail.read()).decode("utf-8")
+    res = make_response(high_quality)
+    res.headers["Low-Res-Image"] = low_quality
+    res.headers["Content-Type"] = "image/png"
+    # res.headers["Content-Disposition"] = f"attachment; filename={icon_name}"
 
     return res
 
+
 @teams_blueprint.route("/teams/<team_name>/icon/", methods=["PUT"])
 def upload_team_icon(team_name: str):
+    """
+    Upload Team Icon
+    ---
+    tags:
+        - teams
+    parameters:
+        - id: team_name
+          in: path
+          schema:
+            type: string
+          required: true
+    requestBody:
+        content:
+            image/png:
+                schema:
+                    type: string
+                    format: binary
+            image/jpg:
+                schema:
+                    type: string
+                    format: binary
+    responses:
+        200:
+            description: OK
+    """
     team = Team.objects(name=team_name).first()
 
     if "icon" not in request.files:
@@ -115,7 +166,7 @@ def upload_team_icon(team_name: str):
     if icon.content_type not in ("image/png", "image/jpeg"):
         raise UnsupportedMediaType()
 
-    if team.icon:
+    if not team.icon:
         team.icon.put(icon, content_type=icon.content_type)
     else:
         team.icon.replace(icon, content_type=icon.content_type)
