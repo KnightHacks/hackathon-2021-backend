@@ -18,7 +18,7 @@ services:
     kh-backend:
         image: knighthacks/backend
         build:
-            context: ./python
+            context: .
             dockerfile: Dockerfile.dev
         container_name: kh-backend
         restart: unless-stopped

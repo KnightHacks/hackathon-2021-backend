@@ -1,0 +1,14 @@
+jsonschema < 3.0.0
+flasgger == 0.9.3
+Flask
+Flask-Cors
+flask-mongoengine
+pyyaml
+python-dateutil
+pyjwt
+Flask-Mail
+celery
+Flask-Bcrypt
+gunicorn
+kombu
+eventlet

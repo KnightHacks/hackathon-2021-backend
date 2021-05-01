@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "emails/head.html" %}
+  </head>
+
+  <body>
+    {% include "emails/top.html" %}
+
+    <main>
+        <h1>You've been accepted!</h1>
+        <hr />
+        <p>Congratulations {{sponsor.sponsor_name}}! You've been accepted to Knight Hacks 2021. Be sure to RSVP so we can plan for you :)</p>
+        <a href="https://knighthacks.org/rsvp?token=123456">RSVP</a>
+    </main>
+
+    {% include "emails/footer.html" %}
+  </body>
+</html>
