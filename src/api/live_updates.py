@@ -17,7 +17,7 @@
 from flask import Blueprint, request, current_app as app
 from werkzeug.exceptions import BadRequest, NotFound
 from src.common.decorators import authenticate, privileges
-from flask_socketio import Namespace
+from flask_socketio import Namespace, emit
 from src.models.live_update import LiveUpdate
 from src.models.user import ROLES
 
@@ -25,9 +25,9 @@ live_updates_blueprint = Blueprint("live_updates", __name__)
 
 
 @live_updates_blueprint.route("/live_updates/", methods=["PUT"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
-def new_update(_):
+# @authenticate
+# @privileges(ROLES.MOD | ROLES.ADMIN)
+def new_update():
     """
     Adds an update
     ---
@@ -57,12 +57,12 @@ def new_update(_):
     lup = LiveUpdate.createOne(message=data.get("message"))
 
     from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event.apply_async(("NewLiveUpdate", {
+    emit("NewLiveUpdate", {
         "data": {
             "ID": lup.ID,
             "message": data.get("message")
         }
-    }, "/liveupdates"))
+    }, namespace="/liveupdates", broadcast=True)
 
     res = {
         "status": "success",
@@ -73,9 +73,9 @@ def new_update(_):
 
 
 @live_updates_blueprint.route("/live_updates/all/", methods=["DELETE"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
-def delete_all_updates(_):
+# @authenticate
+# @privileges(ROLES.MOD | ROLES.ADMIN)
+def delete_all_updates():
     """
     Deletes all updates
     ---
@@ -90,9 +90,9 @@ def delete_all_updates(_):
 
     LiveUpdate.drop_collection()
 
-    from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event.apply_async(("DeleteAllLiveUpdates",),
-                                   {"namespace": "/liveupdates"})
+    emit("DeleteAllLiveUpdates",
+         namespace="/liveupdates",
+         broadcast=True)
 
     res = {
         "status": "success",
@@ -103,9 +103,9 @@ def delete_all_updates(_):
 
 
 @live_updates_blueprint.route("/live_updates/<id>/", methods=["DELETE"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
-def delete_update(_, id: int):
+# @authenticate
+# @privileges(ROLES.MOD | ROLES.ADMIN)
+def delete_update(id: int):
     """
     Deletes an Update
     ---
@@ -134,10 +134,10 @@ def delete_update(_, id: int):
 
     to_delete.delete()
 
-    from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event.apply_async(("DeleteLiveUpdate", {
-        "data": id
-    }, "/liveupdates"))
+    emit("DeleteLiveUpdate",
+         {"data": id},
+         namespace="/liveupdates",
+         broadcast=True)
 
     res = {
         "status": "success",
@@ -153,7 +153,6 @@ def delete_update(_, id: int):
 class LiveUpdates(Namespace):
 
     def on_connect(self):
-        app.logger.debug("Someone connected to /live_updates wss namespace")
         lups = LiveUpdate.objects.exclude("id")
 
         self.emit("hello", lups)
