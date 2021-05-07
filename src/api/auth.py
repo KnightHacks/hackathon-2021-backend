@@ -4,7 +4,8 @@
     ~~~~~~~~~~~~
 
 """
-from flask import Blueprint, request, make_response
+from flask import request, make_response
+from src.api import Blueprint
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from src.models.user import User
 from src import bcrypt
@@ -13,7 +14,7 @@ from src.common.decorators import authenticate
 auth_blueprint = Blueprint("auth", __name__)
 
 
-@auth_blueprint.route("/auth/login/", methods=["POST"])
+@auth_blueprint.post("/auth/login/")
 def login():
     """
     Logs in User
@@ -68,7 +69,7 @@ def login():
     return res
 
 
-@auth_blueprint.route("/auth/signout/", methods=["GET"])
+@auth_blueprint.get("/auth/signout/")
 @authenticate
 def logout(_):
     """

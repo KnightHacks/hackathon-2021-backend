@@ -11,7 +11,8 @@
         delete_category
 
 """
-from flask import Blueprint, request
+from flask import request
+from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.category import Category
@@ -23,7 +24,7 @@ from src.common.decorators import authenticate, privileges
 categories_blueprint = Blueprint("categories", __name__)
 
 
-@categories_blueprint.route("/categories/", methods=["POST"])
+@categories_blueprint.post("/categories/")
 def create_category():
     """
     Creates a Category
@@ -74,7 +75,7 @@ def create_category():
     return res, 201
 
 
-@categories_blueprint.route("/categories/", methods=["PUT"])
+@categories_blueprint.put("/categories/")
 def edit_category():
     """
     Edits a Category
@@ -154,7 +155,7 @@ def edit_category():
     return res, 201
 
 
-@categories_blueprint.route("/categories/", methods=["DELETE"])
+@categories_blueprint.delete("/categories/")
 @authenticate
 @privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_category(_):
@@ -215,7 +216,7 @@ def delete_category(_):
     return res, 201
 
 
-@categories_blueprint.route("/categories/", methods=["GET"])
+@categories_blueprint.get("/categories/")
 def get_category():
     """
     Gets a Category

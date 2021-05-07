@@ -14,7 +14,8 @@
         EVENT_FIELDS
 """
 
-from flask import Blueprint, request
+from flask import request
+from src.api import Blueprint
 from mongoengine.errors import ValidationError, NotUniqueError
 from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
@@ -29,7 +30,7 @@ EVENT_FIELDS = ("name", "date_time", "description",
                 "sponsors", "user")
 
 
-@events_blueprint.route("/events/create_event/", methods=["POST"])
+@events_blueprint.post("/events/create_event/")
 def create_event():
     """
     Creates a new event.
@@ -85,7 +86,7 @@ def create_event():
     return res, 201
 
 
-@events_blueprint.route("/events/update_event/<event_name>/", methods=["PUT"])
+@events_blueprint.put("/events/update_event/<event_name>/")
 def update_event(event_name: str):
     """
     Updates an event that has already been created.
@@ -120,10 +121,10 @@ def update_event(event_name: str):
     if not data:
         raise BadRequest()
 
-    if data["date_time"]:
+    if "date_time" in data:
         data["date_time"] = dateutil.parser.parse(data["date_time"])
 
-    if data["end_date_time"]:
+    if "end_date_time" in data:
         data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
 
     event = Event.objects(name=event_name).first()
@@ -141,7 +142,7 @@ def update_event(event_name: str):
     return res, 201
 
 
-@events_blueprint.route("/events/get_all_events/", methods=["GET"])
+@events_blueprint.get("/events/get_all_events/")
 def get_all_events():
     """
     Returns an array of event documents.

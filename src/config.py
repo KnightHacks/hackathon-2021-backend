@@ -35,7 +35,9 @@ class BaseConfig:
     TOKEN_EMAIL_EXPIRATION_MINUTES = 30
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
     SECRET_KEY = os.getenv("SECRET_KEY")
-    CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+    RABBITMQ_URL = os.getenv("RABBITMQ_URL")
+    CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", RABBITMQ_URL)
+    SOCKETIO_MESSAGE_QUEUE = os.getenv("SOCKETIO_MESSAGE_QUEUE", RABBITMQ_URL)
     CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
@@ -72,3 +74,4 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     """Production Configuration"""
     DEBUG = False
+    SENTRY_DSN = os.getenv("SENTRY_DSN")

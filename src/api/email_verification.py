@@ -9,7 +9,7 @@
         update_verification_status()
 
 """
-from flask import Blueprint
+from src.api import Blueprint
 from werkzeug.exceptions import NotFound, Unauthorized
 from src.models.user import User, ROLES
 from src.common.decorators import authenticate
@@ -19,7 +19,7 @@ from src import bcrypt
 email_verify_blueprint = Blueprint("email_verification", __name__)
 
 
-@email_verify_blueprint.route("/email/verify/<email>/", methods=["GET"])
+@email_verify_blueprint.get("/email/verify/<email>/")
 @authenticate
 def check_verification_status(loggedin_user, email: str):
     """
@@ -58,10 +58,7 @@ def check_verification_status(loggedin_user, email: str):
     return res, 200
 
 
-"""Inline comment on following decorator is to disable flake8 'longline' err"""
-
-
-@email_verify_blueprint.route("/email/verify/<email_token>/", methods=["PUT"])  # noqa: E501
+@email_verify_blueprint.put("/email/verify/<email_token>/")
 def update_registration_status(email_token: str):
     """
     Updates the email registration status
@@ -104,10 +101,7 @@ def update_registration_status(email_token: str):
     return res, 200
 
 
-"""Inline comment on following decorator is to disable flake8 'longline' err"""
-
-
-@email_verify_blueprint.route("/email/verify/<username>/", methods=["POST"])  # noqa: E501
+@email_verify_blueprint.post("/email/verify/<username>/")
 @authenticate
 def send_registration_email(loggedin_user, username: str):
     """

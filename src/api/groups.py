@@ -9,7 +9,8 @@
         edit_group()
 
 """
-from flask import Blueprint, request
+from flask import request
+from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.hacker import Hacker
@@ -19,7 +20,7 @@ from src.models.group import Group
 groups_blueprint = Blueprint("groups", __name__)
 
 
-@groups_blueprint.route("/groups/", methods=["POST"])
+@groups_blueprint.post("/groups/")
 def create_group():
     """
     Creates a group
@@ -69,7 +70,7 @@ def create_group():
     return res, 201
 
 
-@groups_blueprint.route("/groups/<group_name>/", methods=["PUT"])
+@groups_blueprint.put("/groups/<group_name>/")
 def edit_group(group_name: str):
     """
     Updates a Group
@@ -127,7 +128,7 @@ def edit_group(group_name: str):
     return res, 201
 
 
-@groups_blueprint.route("/groups/<group_name>/", methods=["GET"])
+@groups_blueprint.get("/groups/<group_name>/")
 def get_group(group_name: str):
     """
     Retrieves a group's schema from their group name

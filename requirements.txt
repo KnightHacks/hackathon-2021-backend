@@ -9,6 +9,8 @@ pyjwt
 Flask-Mail
 celery
 Flask-Bcrypt
-gunicorn
+sentry-sdk[flask]
+Flask-SocketIO
 kombu
+gunicorn
 eventlet

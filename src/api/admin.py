@@ -9,7 +9,8 @@
         create_sponsor()
 
 """
-from flask import Blueprint, request, current_app as app
+from flask import request, current_app as app
+from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, Unauthorized
 import dateutil.parser
@@ -23,7 +24,7 @@ HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 admin_blueprint = Blueprint("admin", __name__)
 
 
-@admin_blueprint.route("/admin/hackers/", methods=["POST"])
+@admin_blueprint.post("/admin/hackers/")
 @authenticate
 @privileges(ROLES.ADMIN)
 def create_hacker(loggedin_user):
@@ -82,7 +83,7 @@ def create_hacker(loggedin_user):
     return res, 201
 
 
-@admin_blueprint.route("/admin/sponsors/", methods=["POST"])
+@admin_blueprint.post("/admin/sponsors/")
 @authenticate
 @privileges(ROLES.ADMIN)
 def create_sponsor(loggedin_user):

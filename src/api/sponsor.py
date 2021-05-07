@@ -9,7 +9,8 @@
         update_sponsor()
 
 """
-from flask import Blueprint, request, current_app as app
+from flask import request, current_app as app
+from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 from src.models.sponsor import Sponsor
@@ -19,7 +20,7 @@ from src.common.decorators import authenticate, privileges
 sponsors_blueprint = Blueprint("sponsors", __name__)
 
 
-@sponsors_blueprint.route("/sponsors/", methods=["POST"])
+@sponsors_blueprint.post("/sponsors/")
 def create_sponsor():
     """
     Creates a new Sponsor.
@@ -74,7 +75,7 @@ def create_sponsor():
     return res, 201
 
 
-@sponsors_blueprint.route("/sponsors/delete_sponsor/<sponsor_name>/", methods=["DELETE"])  # noqa: E501
+@sponsors_blueprint.delete("/sponsors/delete_sponsor/<sponsor_name>/")
 @authenticate
 @privileges(ROLES.SPONSOR | ROLES.ADMIN)
 def delete_sponsor(loggedin_user, sponsor_name: str):
@@ -121,7 +122,7 @@ def delete_sponsor(loggedin_user, sponsor_name: str):
     return res, 201
 
 
-@sponsors_blueprint.route("/sponsors/<sponsor_name>/", methods=["GET"])
+@sponsors_blueprint.get("/sponsors/<sponsor_name>/")
 def get_sponsor(sponsor_name: str):
     """
     Retrieves a sponsor's information using their name.
@@ -158,7 +159,7 @@ def get_sponsor(sponsor_name: str):
     return res, 200
 
 
-@sponsors_blueprint.route("/sponsors/<sponsor_name>/", methods=["PUT"])
+@sponsors_blueprint.put("/sponsors/<sponsor_name>/")
 def edit_sponsor(sponsor_name: str):
     """
     Updates a sponsor
@@ -210,7 +211,7 @@ def edit_sponsor(sponsor_name: str):
     return res, 201
 
 
-@sponsors_blueprint.route("/sponsors/<username>/accept/", methods=["PUT"])
+@sponsors_blueprint.put("/sponsors/<username>/accept/")
 @authenticate
 @privileges(ROLES.ADMIN)
 def accept_sponsor(_, username: str):

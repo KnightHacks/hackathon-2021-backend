@@ -8,7 +8,7 @@
         count_users()
 
 """
-from flask import Blueprint
+from src.api import Blueprint
 from src.models.user import User
 from src.models.hacker import Hacker
 from src.models.sponsor import Sponsor
@@ -17,7 +17,8 @@ from src.models.sponsor import Sponsor
 stats_blueprint = Blueprint("stats", __name__)
 
 
-@stats_blueprint.route("/stats/user_count/", methods=["GET"])
+# @stats_blueprint.route("/stats/user_count/", methods=["GET"])
+@stats_blueprint.get("/stats/user_count/")
 def count_users():
     """
     Returns the Amount of Users

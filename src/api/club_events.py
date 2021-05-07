@@ -8,7 +8,8 @@
         update_events()
 
 """
-from flask import Blueprint, request
+from flask import request
+from src.api import Blueprint
 from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest
 import dateutil.parser
@@ -21,7 +22,7 @@ from src.models.user import ROLES
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
-@club_events_blueprint.route("/club/update_events/", methods=["PUT"])
+@club_events_blueprint.put("/club/update_events/")
 @authenticate
 @privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
 def update_events(_):
@@ -77,7 +78,7 @@ def update_events(_):
     return res, 201
 
 
-@club_events_blueprint.route("/club/get_events/", methods=["GET"])
+@club_events_blueprint.get("/club/get_events/")
 def get_events():
     """
     Gets the Club Events.

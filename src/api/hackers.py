@@ -12,7 +12,8 @@
         HACKER_PROFILE_FIELDS
 
 """
-from flask import Blueprint, request
+from flask import request
+from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 import dateutil.parser
@@ -26,7 +27,7 @@ hackers_blueprint = Blueprint("hackers", __name__)
 HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 
 
-@hackers_blueprint.route("/hackers/", methods=["POST"])
+@hackers_blueprint.post("/hackers/")
 def create_hacker():
     """
     Creates a new Hacker.
@@ -84,7 +85,7 @@ def create_hacker():
     return res, 201
 
 
-@hackers_blueprint.route("/hackers/<username>/", methods=["GET"])
+@hackers_blueprint.get("/hackers/<username>/")
 def get_user_search(username: str):
     """
     Retrieves a hacker's profile using their username.
@@ -118,7 +119,7 @@ def get_user_search(username: str):
     return res, 200
 
 
-@hackers_blueprint.route("/hackers/<username>/", methods=["DELETE"])
+@hackers_blueprint.delete("/hackers/<username>/")
 @authenticate
 @privileges(ROLES.HACKER | ROLES.MOD | ROLES.ADMIN)
 def delete_hacker(loggedin_user, username: str):
@@ -166,7 +167,7 @@ def delete_hacker(loggedin_user, username: str):
     return res, 201
 
 
-@hackers_blueprint.route("/hackers/<username>/", methods=["PUT"])
+@hackers_blueprint.put("/hackers/<username>/")
 def update_user_profile_settings(username: str):
     """
     Updates hacker profile settings
@@ -229,7 +230,7 @@ def update_user_profile_settings(username: str):
     return res, 201
 
 
-@hackers_blueprint.route("/hackers/<username>/settings/", methods=["GET"])
+@hackers_blueprint.get("/hackers/<username>/settings/")
 def hacker_settings(username: str):
     """
     Gets the hacker settings
@@ -278,7 +279,7 @@ def hacker_settings(username: str):
     return res, 200
 
 
-@hackers_blueprint.route("/hackers/<username>/accept/", methods=["PUT"])
+@hackers_blueprint.put("/hackers/<username>/accept/")
 @authenticate
 @privileges(ROLES.ADMIN)
 def accept_hacker(_, username: str):

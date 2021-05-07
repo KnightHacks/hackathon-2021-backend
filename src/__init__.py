@@ -17,13 +17,17 @@
 
 """
 from os import path, getenv, environ
-from flask import Flask
+from flask import Flask, json
 from werkzeug.exceptions import HTTPException
 from flasgger import Swagger
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from flask_mail import Mail
 from flask_bcrypt import Bcrypt
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
+from flask_socketio import SocketIO
 from src.tasks import make_celery
 import yaml
 
@@ -32,6 +36,8 @@ import yaml
 db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
+socketio = SocketIO()
+
 
 # Load the Schema Definitions
 schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
@@ -89,6 +95,13 @@ def create_app():
     if app.config.get("DEBUG"):
         environ["FLASK_ENV"] = "development"  # pragma: nocover
         environ["FLASK_DEBUG"] = "1"  # pragma: nocover
+    elif app.config.get("SENTRY_DSN"):
+        """Initialize Sentry if we're in production"""
+        sentry_sdk.init(
+            dsn=app.config.get("SENTRY_DSN"),
+            integrations=[FlaskIntegration(), CeleryIntegration()],
+            traces_sample_rate=1.0
+        )
 
     """Setup Extensions"""
     CORS(app)
@@ -96,6 +109,10 @@ def create_app():
     swagger.init_app(app)
     mail.init_app(app)
     bcrypt.init_app(app)
+    socketio.init_app(app,
+                      cors_allowed_origins="*",
+                      json=json,
+                      message_queue=app.config.get("SOCKETIO_MESSAGE_QUEUE"))
 
     from src.common.json import JSONEncoderBase
     app.json_encoder = JSONEncoderBase
@@ -111,6 +128,7 @@ def create_app():
     from src.api.email_verification import email_verify_blueprint
     from src.api.auth import auth_blueprint
     from src.api.admin import admin_blueprint
+    from src.api.live_updates import live_updates_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
@@ -122,6 +140,12 @@ def create_app():
     app.register_blueprint(email_verify_blueprint, url_prefix="/api")
     app.register_blueprint(auth_blueprint, url_prefix="/api")
     app.register_blueprint(admin_blueprint, url_prefix="/api")
+    app.register_blueprint(live_updates_blueprint, url_prefix="/api")
+
+    """Register SocketIO Namespaces"""
+    from src.api.live_updates import LiveUpdates
+
+    socketio.on_namespace(LiveUpdates("/liveupdates"))
 
     """Register Error Handlers"""
     from src.common import error_handlers
