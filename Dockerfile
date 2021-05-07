@@ -22,4 +22,4 @@ ENV PATH="/home/backend/.local/bin:${PATH}"
 COPY --chown=backend:knighthacks . .
 
 ENTRYPOINT [ "gunicorn" ]
-CMD [ "-b 0.0.0.0:5000", "src.__main__:main()" ]
+CMD [ "-k geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-w 1", "-b 0.0.0.0:5000", "src.__main__:main()" ]

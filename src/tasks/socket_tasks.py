@@ -10,15 +10,18 @@
 """
 from src import celery
 from flask_socketio import send, emit
+from flask import current_app as app
 
 
 @celery.task
 def broadcast_ws_message(data: dict, namespace: str = None):
     """Broadcasts events to websocket clients"""
-    send(data, namespace=namespace, broadcast=True)
+    with app.app_context():
+        send(data, namespace=namespace, broadcast=True)
 
 
 @celery.task
 def broadcast_ws_event(event: str, data: dict = None, namespace: str = None):
     """Broadcasts events to websocket clients"""
-    emit(event, data, namespace=namespace, broadcast=True)
+    with app.app_context():
+        emit(event, data, namespace=namespace, broadcast=True)

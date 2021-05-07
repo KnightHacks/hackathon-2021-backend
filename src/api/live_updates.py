@@ -57,12 +57,12 @@ def new_update(_):
     lup = LiveUpdate.createOne(message=data.get("message"))
 
     from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event("NewLiveUpdate", {
+    broadcast_ws_event.apply_async(("NewLiveUpdate", {
         "data": {
             "ID": lup.ID,
             "message": data.get("message")
         }
-    }, "/liveupdates")
+    }, "/liveupdates"))
 
     res = {
         "status": "success",
@@ -91,7 +91,8 @@ def delete_all_updates(_):
     LiveUpdate.drop_collection()
 
     from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event("DeleteAllLiveUpdates", namespace="/liveupdates")
+    broadcast_ws_event.apply_async(("DeleteAllLiveUpdates",),
+                                   {"namespace": "/liveupdates"})
 
     res = {
         "status": "success",
@@ -134,9 +135,9 @@ def delete_update(_, id: int):
     to_delete.delete()
 
     from src.tasks.socket_tasks import broadcast_ws_event
-    broadcast_ws_event("DeleteLiveUpdate", {
+    broadcast_ws_event.apply_async(("DeleteLiveUpdate", {
         "data": id
-    }, "/liveupdates")
+    }, "/liveupdates"))
 
     res = {
         "status": "success",

@@ -13,4 +13,5 @@ sentry-sdk[flask]
 Flask-SocketIO
 kombu
 gunicorn
-eventlet
+gevent
+gevent-websocket
