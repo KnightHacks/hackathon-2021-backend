@@ -69,11 +69,6 @@ swagger_template = {
     "components": {
         "schemas": schema,
         "securitySchemes": {
-            "ApiKeyAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "Authorization"
-            },
             "CookieAuth": {
                 "type": "apiKey",
                 "in": "cookie",
@@ -156,6 +151,9 @@ def create_app():
 
     """Initialize Celery"""
     celery = make_celery(app)
+
+    from src.common.init_defaults import init_default_users
+    init_default_users()
 
     return app, celery
 
