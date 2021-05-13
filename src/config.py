@@ -50,6 +50,8 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_MINUTES = 15
     TOKEN_EXPIRATION_SECONDS = 0
+    DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
+    DISCORD_CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET")
 
 
 class DevelopmentConfig(BaseConfig):
@@ -58,6 +60,10 @@ class DevelopmentConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 4
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
+    DISCORD_REDIRECT_URL = os.getenv(
+        "DISCORD_REDIRECT_URL",
+        "http://localhost:5000/api/auth/connect_discord/"
+    )
 
 
 class TestingConfig(BaseConfig):
@@ -75,3 +81,7 @@ class ProductionConfig(BaseConfig):
     """Production Configuration"""
     DEBUG = False
     SENTRY_DSN = os.getenv("SENTRY_DSN")
+    DISCORD_REDIRECT_URL = os.getenv(
+        "DISCORD_REDIRECT_URL",
+        "https://api.knighthacks.org/api/auth/connect_discord/"
+    )

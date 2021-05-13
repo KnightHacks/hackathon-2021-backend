@@ -4,12 +4,14 @@
     ~~~~~~~~~~~~
 
 """
-from flask import request, make_response
+from flask import request, make_response, redirect, json, current_app as app
 from src.api import Blueprint
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Conflict
+from mongoengine.errors import NotUniqueError
 from src.models.user import User
 from src import bcrypt
 from src.common.decorators import authenticate
+import requests
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -86,3 +88,56 @@ def logout(_):
     res.delete_cookie("sid")
 
     return res
+
+
+@auth_blueprint.get("/auth/connect_discord/")
+@authenticate
+def connect_discord(user):
+    """
+    Connects the User's Discord Account.
+    ---
+    tags:
+        - auth
+    parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+    response:
+        default:
+            description: OK
+    """
+    args = request.args
+
+    if "code" not in args:
+        raise BadRequest()
+
+    t = requests.post(
+        app.config.get("DISCORD_API_URL") + "/oauth2/token",
+        data={
+            "code": args["code"],
+            "grant_type": "authorization_code",
+            "client_id": app.config.get("DISCORD_CLIENT_ID"),
+            "client_secret": app.config.get("DISCORD_CLIENT_SECRET"),
+            "redirect_url": app.config.get("DISCORD_REDIRECT_URL")
+        }
+    )
+
+    access_token = json.loads(t.data.decode()).get("access_token")
+
+    r = requests.get(
+        app.config.get("DISCORD_API_URL") + "/users/@me",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    discord_id = json.loads(r.data.decode()).get("id")
+
+    try:
+        user.update(discord_id=discord_id)
+    except NotUniqueError:
+        raise Conflict(
+            "You can only have your discord account connected once."
+        )
+
+    return redirect("https://knighthacks.org/", code=301)

@@ -52,6 +52,7 @@ class User(BaseDocument):
     roles = db.EnumField(enum=ROLES, required=True)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
+    discord_id = db.StringField(unique=True)
 
     def encode_auth_token(self) -> str:
         """Encode the auth token"""
