@@ -115,6 +115,7 @@ def connect_discord(user):
 
     t = requests.post(
         app.config.get("DISCORD_API_URL") + "/oauth2/token",
+        headers={"Content-Type": "application/json"},
         data={
             "code": args["code"],
             "grant_type": "authorization_code",
