@@ -35,14 +35,14 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 
-# Init Extensions
+"""Init Extensions"""
 db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
 socketio = SocketIO()
 
 
-# Load the Schema Definitions
+"""Load the Schema Definitions"""
 schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
 schemastream = open(schemapath, "r")
 schema = yaml.load(schemastream, Loader=yaml.FullLoader)
@@ -85,7 +85,7 @@ def create_app():
     """Initialize the App"""
     app = Flask(__name__, static_url_path="/static")
 
-    # Flask Config
+    """Flask Config"""
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")
     app.config.from_object(app_settings)
 
