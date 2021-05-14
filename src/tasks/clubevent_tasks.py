@@ -8,7 +8,6 @@
         refresh_notion_clubevents()
 
 """
-from flask import json
 from src import celery
 from src.models.club_event import ClubEvent
 from mongoengine.errors import ValidationError
