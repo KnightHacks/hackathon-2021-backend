@@ -56,7 +56,6 @@ def new_update():
 
     lup = LiveUpdate.createOne(message=data.get("message"))
 
-    from src.tasks.socket_tasks import broadcast_ws_event
     emit("NewLiveUpdate", {
         "data": {
             "ID": lup.ID,

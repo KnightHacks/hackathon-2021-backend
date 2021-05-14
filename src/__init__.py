@@ -16,9 +16,10 @@
         app
 
 """
-from gevent import monkey
-monkey.patch_all()
-from os import path, getenv, environ  # noqa: E402
+from os import path, getenv, environ
+if not getenv("APP_SETTINGS", "src.config.TestingConfig"):
+    from gevent import monkey
+    monkey.patch_all()
 from flask import Flask, json  # noqa: E402
 from werkzeug.exceptions import HTTPException  # noqa: E402
 from flasgger import Swagger  # noqa: E402
