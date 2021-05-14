@@ -152,8 +152,10 @@ def create_app():
     """Initialize Celery"""
     celery = make_celery(app)
 
-    from src.common.init_defaults import init_default_users
-    init_default_users()
+    @app.before_first_request
+    def _init_app():
+        from src.common.init_defaults import init_default_users
+        init_default_users()
 
     return app, celery
 

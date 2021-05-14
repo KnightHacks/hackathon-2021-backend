@@ -124,14 +124,14 @@ ClubEvent:
         type: string
     presenter:
       type: string
-    date:
+    start:
       type: string
       format: date-time
       example: "2014-09-10T11:41:00"
-    duration:
-      type: int
-      example: 3600
-      description: The duration of the event in ms
+    end:
+      type: string
+      format: date-time
+      example: "2014-09-10T11:86:00"
     description:
       type: string
       example: An introductory workshop for the Python language.

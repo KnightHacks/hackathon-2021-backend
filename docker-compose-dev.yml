@@ -28,7 +28,7 @@ services:
         ports:
             - "127.0.0.1:5000:5000"
         volumes:
-            - ./python:/home/backend/app
+            - .:/home/backend/app
         environment:
             APP_SETTINGS: src.config.DevelopmentConfig
             MONGO_URI: "mongodb://kh-mongo/test"
@@ -40,6 +40,39 @@ services:
             MAIL_PASSWORD: "supersecurepassworddontatme"
             MAIL_DEFAULT_SENDER: "noreply@knighthacks.org"
             SECRET_KEY: "vivalapluto"
+            NOTION_API_URI: ""
+            NOTION_TOKEN: ""
+            NOTION_DB_ID: ""
+
+
+    kh-celery:
+        image: knighthacks/backend
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        container_name: kh-celery
+        restart: unless-stopped
+        depends_on:
+            - kh-rabbitmq
+        volumes:
+            - .:/home/backend/app
+        entrypoint: "bash -c"
+        command:
+            - "celery -A src.celery worker -l info"
+        environment:
+            APP_SETTINGS: src.config.DevelopmentConfig
+            MONGO_URI: "mongodb://kh-mongo/test"
+            CELERY_BROKER_URL: "amqp://kh-rabbitmq"
+            MAIL_SERVER: "smtp.knighthacks.org"
+            MAIL_PORT: 587
+            MAIL_USE_TLS: "true"
+            MAIL_USERNAME: "noreply@knighthacks.org"
+            MAIL_PASSWORD: "supersecurepassworddontatme"
+            MAIL_DEFAULT_SENDER: "noreply@knighthacks.org"
+            SECRET_KEY: "vivalapluto"
+            NOTION_API_URI: ""
+            NOTION_TOKEN: ""
+            NOTION_DB_ID: ""
             
 volumes:
     mongo-hackathon-data:

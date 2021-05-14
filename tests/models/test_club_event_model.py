@@ -14,7 +14,8 @@ class TestClubEventModel(BaseTestCase):
             name="foobar",
             tags=["tag1", "tag2"],
             presenter="Arjun",
-            date=now,
+            start=now,
+            end=now,
             description="Lorem ipsum",
             location="link or actual loc",
         )
@@ -23,6 +24,6 @@ class TestClubEventModel(BaseTestCase):
         self.assertEqual(club_event.name, "foobar")
         self.assertEqual(club_event.tags, ["tag1", "tag2"])
         self.assertEqual(club_event.presenter, "Arjun")
-        self.assertEqual(club_event.date, now)
+        self.assertEqual(club_event.start, now)
         self.assertEqual(club_event.description, "Lorem ipsum")
         self.assertEqual(club_event.location, "link or actual loc")

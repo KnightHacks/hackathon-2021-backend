@@ -23,9 +23,9 @@ club_events_blueprint = Blueprint("club_events", __name__)
 
 
 @club_events_blueprint.put("/club/refresh_events/")
-@authenticate
-@privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
-def refresh_events(_):
+# @authenticate
+# @privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
+def refresh_events():
     """
     Refreshed the Club Events from Notion.
     ---
@@ -37,7 +37,7 @@ def refresh_events(_):
             description: OK
     """
 
-    from src.tasks.clubevents_tasks import refresh_notion_clubevents
+    from src.tasks.clubevent_tasks import refresh_notion_clubevents
     refresh_notion_clubevents.apply_async()
 
     res = {
@@ -136,7 +136,7 @@ def get_events():
         raise BadRequest("Parameter `confirmed` must be true or undefined while using date parameters!")  # noqa: E501
 
     if args.get("confirmed", "true") == "true":
-        query["date__type"] = "date"
+        query["start__type"] = "date"
 
     if args.get("rdate"):
         now = datetime.now()
@@ -146,21 +146,21 @@ def get_events():
                           microsecond=0)
 
         if args.get("rdate") == "Today":
-            query["date__gte"] = now
+            query["start__gte"] = now
         elif args.get("rdate") == "NextWeek":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=7)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=7)
         elif args.get("rdate") == "NextMonth":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=30)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=30)
         elif args.get("rdate") == "NextYear":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=365)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=365)
 
     if args.get("start_date") and args.get("end_date"):
         query |= {
-            "date__gte": dateutil.parser.parse(args["start_date"]),
-            "date__lt": dateutil.parser.parse(args["end_date"])
+            "start__gte": dateutil.parser.parse(args["start_date"]),
+            "start__lt": dateutil.parser.parse(args["end_date"])
         }
 
     events = ClubEvent.objects(**query).exclude("id")

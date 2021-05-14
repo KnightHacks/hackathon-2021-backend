@@ -52,6 +52,9 @@ class BaseConfig:
     TOKEN_EXPIRATION_SECONDS = 0
     NOTION_CRONJOB_USERNAME = os.getenv("NOTION_CRONJOB_USERNAME")
     NOTION_CRONJOB_PASSWORD = os.getenv("NOTION_CRONJOB_PASSWORD")
+    NOTION_DB_ID = os.getenv("NOTION_DB_ID")
+    NOTION_TOKEN = os.getenv("NOTION_TOKEN")
+    NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
 
 
 class DevelopmentConfig(BaseConfig):

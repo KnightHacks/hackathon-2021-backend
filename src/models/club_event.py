@@ -17,8 +17,8 @@ class ClubEvent(BaseDocument):
     name = db.StringField(required=True)
     tags = db.ListField(db.StringField())
     presenter = db.StringField()
-    date = db.DateTimeField(requried=True)
-    duration = db.IntField()
+    start = db.DateTimeField(requried=True)
+    end = db.DateTimeField(requried=True)
     description = db.StringField()
     location = db.StringField()
 
