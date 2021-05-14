@@ -23,8 +23,8 @@ club_events_blueprint = Blueprint("club_events", __name__)
 
 
 @club_events_blueprint.put("/club/refresh_events/")
-# @authenticate
-# @privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
+@authenticate
+@privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
 def refresh_events():
     """
     Refreshed the Club Events from Notion.
