@@ -25,8 +25,8 @@ live_updates_blueprint = Blueprint("live_updates", __name__)
 
 
 @live_updates_blueprint.route("/live_updates/", methods=["PUT"])
-# @authenticate
-# @privileges(ROLES.MOD | ROLES.ADMIN)
+@authenticate
+@privileges(ROLES.MOD | ROLES.ADMIN)
 def new_update():
     """
     Adds an update
@@ -72,8 +72,8 @@ def new_update():
 
 
 @live_updates_blueprint.route("/live_updates/all/", methods=["DELETE"])
-# @authenticate
-# @privileges(ROLES.MOD | ROLES.ADMIN)
+@authenticate
+@privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_all_updates():
     """
     Deletes all updates
@@ -102,8 +102,8 @@ def delete_all_updates():
 
 
 @live_updates_blueprint.route("/live_updates/<id>/", methods=["DELETE"])
-# @authenticate
-# @privileges(ROLES.MOD | ROLES.ADMIN)
+@authenticate
+@privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_update(id: int):
     """
     Deletes an Update
