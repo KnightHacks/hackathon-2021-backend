@@ -22,57 +22,27 @@ from src.models.user import ROLES
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
-@club_events_blueprint.put("/club/update_events/")
+@club_events_blueprint.put("/club/refresh_events/")
 @authenticate
 @privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
-def update_events(_):
+def refresh_events(_):
     """
-    Updates the Club Events.
+    Refreshed the Club Events from Notion.
     ---
     tags:
         - club
-    summary: Update Club Events
-    requestBody:
-        content:
-            application/json:
-                schema:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/ClubEvent'
-        required: true
+    summary: Refreshes Club Events
     responses:
-        201:
+        200:
             description: OK
-        400:
-            description: Bad request.
-        401:
-            description: Invalid or Missing API Key.
-        5XX:
-            description: Unexpected error.
     """
-    data = request.get_json()
 
-    if not data:
-        raise BadRequest()
-
-    ClubEvent.drop_collection()
-
-    for event in data:
-        if not isinstance(event, dict):
-            continue
-        if event.get("date"):
-            event["date"] = dateutil.parser.parse(event["date"])
-        else:
-            event["date"] = None
-
-        try:
-            ClubEvent.createOne(**event)
-        except ValidationError:
-            raise BadRequest()
+    from src.tasks.clubevent_tasks import refresh_notion_clubevents
+    refresh_notion_clubevents.apply_async()
 
     res = {
         "status": "success",
-        "message": "Events successfully updated!"
+        "message": "Events successfully refreshed!"
     }
 
     return res, 201
@@ -166,7 +136,7 @@ def get_events():
         raise BadRequest("Parameter `confirmed` must be true or undefined while using date parameters!")  # noqa: E501
 
     if args.get("confirmed", "true") == "true":
-        query["date__type"] = "date"
+        query["start__type"] = "date"
 
     if args.get("rdate"):
         now = datetime.now()
@@ -176,21 +146,21 @@ def get_events():
                           microsecond=0)
 
         if args.get("rdate") == "Today":
-            query["date__gte"] = now
+            query["start__gte"] = now
         elif args.get("rdate") == "NextWeek":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=7)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=7)
         elif args.get("rdate") == "NextMonth":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=30)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=30)
         elif args.get("rdate") == "NextYear":
-            query["date__gte"] = now
-            query["date__lte"] = now + timedelta(days=365)
+            query["start__gte"] = now
+            query["start__lte"] = now + timedelta(days=365)
 
     if args.get("start_date") and args.get("end_date"):
         query |= {
-            "date__gte": dateutil.parser.parse(args["start_date"]),
-            "date__lt": dateutil.parser.parse(args["end_date"])
+            "start__gte": dateutil.parser.parse(args["start_date"]),
+            "start__lt": dateutil.parser.parse(args["end_date"])
         }
 
     events = ClubEvent.objects(**query).exclude("id")

@@ -30,7 +30,7 @@ os.environ["FLASK_APP"] = "src.__main__:main()"
 cli = FlaskGroup(app)
 
 
-def main():
+def main(*args, **kwargs):
     return app
 
 

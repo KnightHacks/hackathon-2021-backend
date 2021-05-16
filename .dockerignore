@@ -22,4 +22,3 @@ Dockerfile.dev
 docker-compose-dev.yml
 docker-compose.yml
 README.md
-requirements-dev.txt

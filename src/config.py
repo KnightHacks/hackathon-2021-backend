@@ -38,7 +38,7 @@ class BaseConfig:
     RABBITMQ_URL = os.getenv("RABBITMQ_URL")
     CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", RABBITMQ_URL)
     SOCKETIO_MESSAGE_QUEUE = os.getenv("SOCKETIO_MESSAGE_QUEUE", RABBITMQ_URL)
-    CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+    RESULT_BACKEND = os.getenv("RESULT_BACKEND")
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = os.getenv("MAIL_PORT")
     MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "false").lower() == "true"
@@ -50,6 +50,11 @@ class BaseConfig:
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_MINUTES = 15
     TOKEN_EXPIRATION_SECONDS = 0
+    NOTION_CRONJOB_USERNAME = os.getenv("NOTION_CRONJOB_USERNAME")
+    NOTION_CRONJOB_PASSWORD = os.getenv("NOTION_CRONJOB_PASSWORD")
+    NOTION_DB_ID = os.getenv("NOTION_DB_ID")
+    NOTION_TOKEN = os.getenv("NOTION_TOKEN")
+    NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
 
 
 class DevelopmentConfig(BaseConfig):

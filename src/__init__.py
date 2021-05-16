@@ -17,29 +17,32 @@
 
 """
 from os import path, getenv, environ
-from flask import Flask, json
-from werkzeug.exceptions import HTTPException
-from flasgger import Swagger
-from flask_cors import CORS
-from flask_mongoengine import MongoEngine
-from flask_mail import Mail
-from flask_bcrypt import Bcrypt
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
-from flask_socketio import SocketIO
-from src.tasks import make_celery
-import yaml
+if not getenv("APP_SETTINGS", "src.config.TestingConfig"):
+    from gevent import monkey
+    monkey.patch_all()
+from flask import Flask, json  # noqa: E402
+from werkzeug.exceptions import HTTPException  # noqa: E402
+from flasgger import Swagger  # noqa: E402
+from flask_cors import CORS  # noqa: E402
+from flask_mongoengine import MongoEngine  # noqa: E402
+from flask_mail import Mail  # noqa: E402
+from flask_bcrypt import Bcrypt  # noqa: E402
+import sentry_sdk  # noqa: E402
+from sentry_sdk.integrations.flask import FlaskIntegration  # noqa: E402
+from sentry_sdk.integrations.celery import CeleryIntegration  # noqa: E402
+from flask_socketio import SocketIO  # noqa: E402
+from src.tasks import make_celery  # noqa: E402
+import yaml  # noqa: E402
 
 
-# Init Extensions
+"""Init Extensions"""
 db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
 socketio = SocketIO()
 
 
-# Load the Schema Definitions
+"""Load the Schema Definitions"""
 schemapath = path.join(path.abspath(path.dirname(__file__)), "schemas.yml")
 schemastream = open(schemapath, "r")
 schema = yaml.load(schemastream, Loader=yaml.FullLoader)
@@ -67,11 +70,6 @@ swagger_template = {
     "components": {
         "schemas": schema,
         "securitySchemes": {
-            "ApiKeyAuth": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "Authorization"
-            },
             "CookieAuth": {
                 "type": "apiKey",
                 "in": "cookie",
@@ -87,7 +85,7 @@ def create_app():
     """Initialize the App"""
     app = Flask(__name__, static_url_path="/static")
 
-    # Flask Config
+    """Flask Config"""
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")
     app.config.from_object(app_settings)
 
@@ -154,6 +152,11 @@ def create_app():
 
     """Initialize Celery"""
     celery = make_celery(app)
+
+    @app.before_first_request
+    def _init_app():
+        from src.common.init_defaults import init_default_users
+        init_default_users()
 
     return app, celery
 
