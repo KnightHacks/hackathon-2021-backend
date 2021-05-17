@@ -137,18 +137,9 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_update_event_not_found(self):
         res = self.client.put(
-            "api/events/update_event/",
+            "api/events/update_event/new_event/",
             data=json.dumps({
-                "name": 12345,
-                "date_time": "newdate",
-                "description": 12345,
-                "image": 12345,
-                "link": 12345,
-                "end_date_time": "anotherdate",
-                "attendees_count": "newcount",
-                "event_status": 12345,
-                "sponsors": "new_sponsor",
-                "users": "new_user"
+                "description": "new description"
             }),
             content_type="application/json")
         
