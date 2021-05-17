@@ -4,7 +4,7 @@ from src.models.event import Event
 from src.models.sponsor import Sponsor
 from src.models.user import User, ROLES
 from tests.base import BaseTestCase
-from datetime import date, datetime
+from datetime import datetime
 
 
 class TestEventsBlueprint(BaseTestCase):
@@ -86,18 +86,37 @@ class TestEventsBlueprint(BaseTestCase):
     """update_event"""
 
     def test_update_event(self):
-        pass
+        now = datetime.now()
+        
+        Event.createOne(name="new_event",
+                        date_time=now.isoformat(),
+                        description="description",
+                        image="https://blob.knighthacks.org/somelogo.png",
+                        link="https://blob.knighthacks.org/somelogo.png",
+                        end_date_time=now.isoformat(),
+                        attendees_count=10,
+                        event_status="status")
+
+        res = self.client.put(
+            "api/events/update_event/new_event/",
+            data=json.dumps({
+                "date_time": now.isoformat(),
+                "description": "another_description",
+                "image": "https://blob.knighthacks.org/somelogo.png",
+                "link": "https://blob.knighthacks.org/somelogo.png",
+                "end_date_time": now.isoformat(),
+                "attendees_count": 20,
+                "event_status": "ongoing",
+            }),
+            content_type="application/json")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(Event.objects.first().event_status, "ongoing")
 
     def test_update_event_invalid_json(self):
         now = datetime.now()
-        
-        Sponsor.createOne(sponsor_name="new_sponsor",
-                          logo="https://blob.knighthacks.org/somelogo.png",
-                          subscription_tier="Gold",
-                          email="sponsor@email.com",
-                          username="new_sponsor",
-                          password="password",
-                          roles=ROLES.SPONSOR)
 
         Event.createOne(name="new_event",
                         date_time=now.isoformat(),
@@ -107,10 +126,9 @@ class TestEventsBlueprint(BaseTestCase):
                         end_date_time=now.isoformat(),
                         attendees_count=10,
                         event_status="status",
-                        sponsors=["new_sponsor"],
                         user="new_user")
         
-        res = self.client.put("api/events/update_event", data=json.dumps({}))
+        res = self.client.put("api/events/update_event/new_event/", data=json.dumps({}))
         
         data = json.loads(res.data.decode())
 
@@ -143,14 +161,6 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_get_all_events(self):
         now = datetime.now()
-
-        Sponsor.createOne(sponsor_name="new_sponsor",
-                          logo="https://blob.knighthacks.org/somelogo.png",
-                          subscription_tier="Gold",
-                          email="sponsor@email.com",
-                          username="new_sponsor",
-                          password="password",
-                          roles=ROLES.SPONSOR)
         
         User.createOne(username="new_user",
                        email="another_new@email.com",
@@ -165,7 +175,6 @@ class TestEventsBlueprint(BaseTestCase):
                         end_date_time=now.isoformat(),
                         attendees_count=10,
                         event_status="status",
-                        sponsors=["new_sponsor"],
                         user="new_user")
         
         Event.createOne(name="another_new_event",
@@ -176,7 +185,6 @@ class TestEventsBlueprint(BaseTestCase):
                         end_date_time=now.isoformat(),
                         attendees_count=10,
                         event_status="status",
-                        sponsors=["new_sponsor"],
                         user="new_user")
         
         res = self.client.get("api/events/get_all_events/")
