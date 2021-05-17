@@ -4,7 +4,7 @@ from src.models.event import Event
 from src.models.sponsor import Sponsor
 from src.models.user import User, ROLES
 from tests.base import BaseTestCase
-from datetime import datetime
+from datetime import date, datetime
 
 
 class TestEventsBlueprint(BaseTestCase):
@@ -56,6 +56,8 @@ class TestEventsBlueprint(BaseTestCase):
         self.assertEqual(data["name"], "Bad Request")
 
     def test_create_event_invalid_datatypes(self):
+        now = datetime.now()
+
         Sponsor.createOne(username="new_sponsor",
                           email="new@email.com",
                           password="new_password",
@@ -70,7 +72,7 @@ class TestEventsBlueprint(BaseTestCase):
                 "description": 12345,
                 "image": 12345,
                 "link": 12345,
-                "end_date_time": "anotherdate",
+                "end_date_time": now.isoformat(),
                 "attendees_count": "newcount",
                 "event_status": 12345,
                 "sponsors": "new_sponsor",
@@ -82,6 +84,58 @@ class TestEventsBlueprint(BaseTestCase):
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(data["name"], "Bad Request")
+
+        res = self.client.post(
+            "api/events/create_event/",
+            data=json.dumps({
+                "name": 12345,
+                "date_time": now.isoformat(),
+                "description": 12345,
+                "image": 12345,
+                "link": 12345,
+                "end_date_time": "newdate",
+                "attendees_count": "newcount",
+                "event_status": 12345,
+                "sponsors": "new_sponsor",
+                "users": "new_user"
+            }),
+            content_type="application/json")
+        
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data["name"], "Bad Request")
+
+    def test_create_event_not_unique(self):
+        now = datetime.now()
+        
+        Event.createOne(name="new_event",
+                        date_time=now.isoformat(),
+                        description="description",
+                        image="https://blob.knighthacks.org/somelogo.png",
+                        link="https://blob.knighthacks.org/somelogo.png",
+                        end_date_time=now.isoformat(),
+                        attendees_count=10,
+                        event_status="status")
+
+        res = self.client.post(
+            "api/events/create_event/",
+            data=json.dumps({
+                "name": "new_event",
+                "date_time": now.isoformat(),
+                "description": "description",
+                "image": "https://blob.knighthacks.org/somelogo.png",
+                "link": "https://blob.knighthacks.org/somelogo.png",
+                "end_date_time": now.isoformat(),
+                "attendees_count": 10,
+                "event_status": "status"
+            }),
+            content_type="application/json")
+        
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 409)
+        self.assertEqual(data["name"], "Conflict")
 
     """update_event"""
 
@@ -109,8 +163,6 @@ class TestEventsBlueprint(BaseTestCase):
                 "event_status": "ongoing",
             }),
             content_type="application/json")
-
-        data = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Event.objects.first().event_status, "ongoing")
