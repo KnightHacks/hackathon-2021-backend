@@ -21,6 +21,7 @@ from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 from src.models.sponsor import Sponsor
 import dateutil.parser
+from dateutil.parser import ParserError
 
 events_blueprint = Blueprint("events", __name__)
 
@@ -59,10 +60,16 @@ def create_event():
         raise BadRequest()
 
     if data["date_time"]:
-        data["date_time"] = dateutil.parser.parse(data["date_time"])
+        try:
+            data["date_time"] = dateutil.parser.parse(data["date_time"])
+        except ParserError:
+            raise BadRequest()
 
     if data["end_date_time"]:
-        data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
+        try:
+            data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
+        except ParserError:
+            raise BadRequest()
 
     if data.get("sponsors"):
         data["sponsors"] = list(map(lambda name: Sponsor.objects(username=name).first(), data["sponsors"]))  # noqa: E501
