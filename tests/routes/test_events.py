@@ -4,7 +4,7 @@ from src.models.event import Event
 from src.models.sponsor import Sponsor
 from src.models.user import User, ROLES
 from tests.base import BaseTestCase
-from datetime import date, datetime
+from datetime import datetime
 
 
 class TestEventsBlueprint(BaseTestCase):
@@ -181,6 +181,54 @@ class TestEventsBlueprint(BaseTestCase):
                         user="new_user")
         
         res = self.client.put("api/events/update_event/new_event/", data=json.dumps({}))
+        
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data["name"], "Bad Request")
+
+    def test_create_event_invalid_datatypes(self):
+        now = datetime.now()
+
+        Event.createOne(name="new_event",
+                        date_time=now.isoformat(),
+                        description="description",
+                        image="https://blob.knighthacks.org/somelogo.png",
+                        link="https://blob.knighthacks.org/somelogo.png",
+                        end_date_time=now.isoformat(),
+                        attendees_count=10,
+                        event_status="status")
+
+        res = self.client.put(
+            "api/events/update_event/new_event/",
+            data=json.dumps({
+                "date_time": "datetime",
+                "description": "another_description",
+                "image": "https://blob.knighthacks.org/somelogo.png",
+                "link": "https://blob.knighthacks.org/somelogo.png",
+                "end_date_time": now.isoformat(),
+                "attendees_count": 20,
+                "event_status": "ongoing",
+            }),
+            content_type="application/json")
+        
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data["name"], "Bad Request")
+
+        res = self.client.put(
+            "api/events/update_event/new_event/",
+            data=json.dumps({
+                "date_time": now.isoformat(),
+                "description": "another_description",
+                "image": "https://blob.knighthacks.org/somelogo.png",
+                "link": "https://blob.knighthacks.org/somelogo.png",
+                "end_date_time": "end_date_time",
+                "attendees_count": 20,
+                "event_status": "ongoing",
+            }),
+            content_type="application/json")
         
         data = json.loads(res.data.decode())
 
