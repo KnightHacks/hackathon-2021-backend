@@ -59,13 +59,13 @@ def create_event():
     if not data:
         raise BadRequest()
 
-    if "date_time" in data and data["date_time"]:
+    if data.get("date_time"):
         try:
             data["date_time"] = dateutil.parser.parse(data["date_time"])
         except ParserError:
             raise BadRequest()
 
-    if "end_date_time" in data and data["end_date_time"]:
+    if data.get("end_date_time"):
         try:
             data["end_date_time"] = dateutil.parser.parse(
                 data["end_date_time"]
@@ -130,13 +130,13 @@ def update_event(event_name: str):
     if not data:
         raise BadRequest()
 
-    if "date_time" in data and data["date_time"]:
+    if data.get("date_time"):
         try:
             data["date_time"] = dateutil.parser.parse(data["date_time"])
         except ParserError:
             raise BadRequest()
 
-    if "end_date_time" in data and data["end_date_time"]:
+    if data.get("end_date_time"):
         try:
             data["end_date_time"] = dateutil.parser.parse(
                 data["end_date_time"]
