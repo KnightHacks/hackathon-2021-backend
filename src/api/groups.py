@@ -183,7 +183,7 @@ def get_all_groups():
         - group
     summary: returns an array of group documents
     responses:
-        201:
+        200:
             description: OK
         404:
             description: No group documents are created.
