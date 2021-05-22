@@ -59,13 +59,13 @@ class TestCategoriesBlueprint(BaseTestCase):
 
 
     def test_create_category_duplicate_category(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
 
         res = self.client.post(
@@ -106,13 +106,13 @@ class TestCategoriesBlueprint(BaseTestCase):
     """edit_category"""
 
     def test_edit_category(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
 
         res = self.client.put(
@@ -129,13 +129,13 @@ class TestCategoriesBlueprint(BaseTestCase):
         self.assertEqual(updated.name, "another_category")
 
     def test_edit_category_sponsor_not_found_query(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
         
         res = self.client.put(
@@ -170,13 +170,13 @@ class TestCategoriesBlueprint(BaseTestCase):
         self.assertEqual(data["description"], "Sorry, no categories exist that match the query.")
 
     def test_edit_category_sponsor_not_found_update(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
         
         res = self.client.put(
@@ -193,16 +193,16 @@ class TestCategoriesBlueprint(BaseTestCase):
         self.assertEqual(data["description"], "A sponsor with that name does not exist!")
 
     def test_edit_category_duplicate_category(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@sponsor.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@sponsor.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
         Category.createOne(name="another_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
 
         res = self.client.put(
@@ -215,16 +215,16 @@ class TestCategoriesBlueprint(BaseTestCase):
         data = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 409)
-        self.assertEqual(data["description"], "Sorry, a category with that name already exists.")
+        self.assertEqual(data["description"], "Sorry, a category already exists with that name.")
 
     def test_edit_category_invalid_datatypes(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@sponsor.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@sponsor.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
 
         res = self.client.put(
@@ -242,13 +242,13 @@ class TestCategoriesBlueprint(BaseTestCase):
     """delete_category"""
 
     def test_delete_category(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         Category.createOne(name="new_category",
-                           sponsor="new_sponsor",
+                           sponsor=sponsor,
                            description="new_description")
 
         token = self.login_user(ROLES.ADMIN)
@@ -290,23 +290,22 @@ class TestCategoriesBlueprint(BaseTestCase):
     """get_category"""
 
     def test_get_category(self):
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
         cat = Category.createOne(name="new_category",
-                                 sponsor="new_sponsor",
+                                 sponsor=sponsor,
                                  description="new_description")
 
         res = self.client.get("/api/categories/?name=new_category&sponsor=new_sponsor")
 
         data = json.loads(res.data.decode())
         
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(cat.name, data["categories"]["name"])
-        self.assertEqual(cat.sponsor, data["categories"]["sponsor"])
-        self.assertEqual(cat.description, data["categories"]["description"])
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(cat.name, data["categories"][0]["name"])
+        self.assertEqual(cat.description, data["categories"][0]["description"])
 
     def test_get_category_sponsor_not_found(self):
         Category.createOne(name="new_category",
