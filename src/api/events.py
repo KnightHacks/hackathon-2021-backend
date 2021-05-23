@@ -63,9 +63,7 @@ def create_event():
 
     if data.get("end_date_time"):
         try:
-            data["end_date_time"] = dateutil.parser.parse(
-                data["end_date_time"]
-                )
+            data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])  # noqa: E501
         except ParserError:
             raise BadRequest()
 
@@ -78,8 +76,6 @@ def create_event():
 
     try:
         Event.createOne(**new_data)
-    except ValidationError:
-        raise BadRequest()
     except NotUniqueError:
         raise Conflict("The event name already exists.")
 
@@ -134,9 +130,7 @@ def update_event(event_name: str):
 
     if data.get("end_date_time"):
         try:
-            data["end_date_time"] = dateutil.parser.parse(
-                data["end_date_time"]
-                )
+            data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])  # noqa: E501
         except ParserError:
             raise BadRequest()
 
