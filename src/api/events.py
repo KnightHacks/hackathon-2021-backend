@@ -2,15 +2,11 @@
 """
     src.api.events
     ~~~~~~~~~~~~~~
-
     Functions:
-
         create_event()
         update_event()
         get_all_events()
-
     Variables:
-
         EVENT_FIELDS
 """
 
