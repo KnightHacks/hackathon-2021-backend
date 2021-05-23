@@ -320,3 +320,32 @@ def accept_hacker(_, username: str):
     }
 
     return res, 201
+
+
+@hackers_blueprint.get("/hackers/get_all_hackers/")
+def get_all_hackers():
+    """
+    Returns an array of hacker documents.
+    ---
+    tags:
+        - hacker
+    summary: returns an array of hacker documents
+    responses:
+        201:
+            description: OK
+        404:
+            description: No hacker documents are created.
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    hackers = Hacker.objects()
+
+    if not hackers:
+        raise NotFound("There are no hackers created.")
+
+    res = {
+        "hackers": hackers,
+        "status": "success"
+    }
+
+    return res, 201

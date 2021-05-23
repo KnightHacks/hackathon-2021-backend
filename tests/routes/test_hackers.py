@@ -293,3 +293,36 @@ class TestHackersBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res.status_code, 404)
+
+    """get_all_hackers"""
+    def test_get_all_hackers(self):
+        Hacker.createOne(
+            username="foobar",
+            email="foobar@email.com",
+            password="123456",
+            roles=ROLES.HACKER
+        )
+
+        Hacker.createOne(
+            username="foobar1",
+            email="foobar1@email.com",
+            password="123456",
+            roles=ROLES.HACKER
+        )
+
+        res = self.client.get("/api/hackers/get_all_hackers/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual(data["hackers"][0]["username"], "foobar")
+        self.assertEqual(data["hackers"][1]["username"], "foobar1")
+
+    
+    def test_get_all_hackers_not_found(self):
+        res = self.client.get("/api/hackers/get_all_hackers/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["name"], "Not Found")
