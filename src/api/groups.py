@@ -172,3 +172,32 @@ def get_group(group_name: str):
     }
 
     return res, 200
+
+
+@groups_blueprint.get("/groups/get_all_groups/")
+def get_all_groups():
+    """
+    Returns an array of group documents.
+    ---
+    tags:
+        - group
+    summary: returns an array of group documents
+    responses:
+        200:
+            description: OK
+        404:
+            description: No group documents are created.
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    groups = Group.objects()
+
+    if not groups:
+        raise NotFound("There are no groups created.")
+
+    res = {
+        "groups": groups,
+        "status": "success"
+    }
+
+    return res, 200

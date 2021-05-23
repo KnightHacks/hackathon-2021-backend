@@ -722,3 +722,69 @@ class TestGroupsBlueprint(BaseTestCase):
         #"get" the group
         res = self.client.get("/api/groups/Obviously Not My Group/")
         self.assertEqual(res.status_code, 404)
+
+    """get_all_groups"""
+
+    def test_get_all_groups(self):
+        hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        hacker3 = Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        group1 = Group.createOne(
+            name = "My Group",
+            members = [
+                        hacker1, 
+                        hacker2,
+                        hacker3],
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+
+        group2 = Group.createOne(
+            name = "His Group",
+            members = [ 
+                        hacker2,
+                        hacker3],
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+
+        res = self.client.get("api/groups/get_all_groups/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["groups"][0]["name"], "My Group")
+        self.assertEqual(data["groups"][1]["name"], "His Group")
+
+    def test_get_all_groups_not_found(self):
+        res = self.client.get("api/groups/get_all_groups/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["name"], "Not Found")
