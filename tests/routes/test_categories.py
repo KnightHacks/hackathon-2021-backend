@@ -326,3 +326,34 @@ class TestCategoriesBlueprint(BaseTestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertIn("Sorry, no categories exist that match the query.", data["description"])
+
+    """get_all_categories"""
+
+    def test_get_all_categories(self):
+        sponsor = Sponsor.createOne(username="new_sponsor",
+                                    email="new@email.com",
+                                    password="new_password",
+                                    roles=ROLES.SPONSOR,
+                                    sponsor_name="new_sponsor")
+        Category.createOne(name="new_category",
+                           sponsor=sponsor,
+                           description="new_description")
+        Category.createOne(name="another_new_category",
+                           sponsor=sponsor,
+                           description="new_description")
+
+        res = self.client.get("api/categories/get_all_categories/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["categories"][0]["name"], "new_category")
+        self.assertEqual(data["categories"][1]["name"], "another_new_category")
+
+    def test_get_all_categories_not_found(self):
+        res = self.client.get("api/categories/get_all_categories/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["name"], "Not Found")

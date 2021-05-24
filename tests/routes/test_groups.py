@@ -750,7 +750,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        group1 = Group.createOne(
+        Group.createOne(
             name = "My Group",
             members = [
                         hacker1, 
@@ -762,7 +762,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        group2 = Group.createOne(
+        Group.createOne(
             name = "His Group",
             members = [ 
                         hacker2,

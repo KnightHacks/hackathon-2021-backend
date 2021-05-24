@@ -287,3 +287,32 @@ def get_category():
     }
 
     return res, 201
+
+
+@categories_blueprint.get("/categories/get_all_categories/")
+def get_all_categories():
+    """
+    Returns an array of category documents.
+    ---
+    tags:
+        - category
+    summary: returns an array of category documents
+    responses:
+        200:
+            description: OK
+        404:
+            description: No category documents are created.
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    categories = Category.objects()
+
+    if not categories:
+        raise NotFound("There are no categories created.")
+
+    res = {
+        "categories": categories,
+        "status": "success"
+    }
+
+    return res, 200
