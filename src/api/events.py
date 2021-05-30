@@ -17,6 +17,7 @@ from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 from src.models.sponsor import Sponsor
 import dateutil.parser
+from dateutil.parser import ParserError
 
 events_blueprint = Blueprint("events", __name__)
 
@@ -54,11 +55,17 @@ def create_event():
     if not data:
         raise BadRequest()
 
-    if data["date_time"]:
-        data["date_time"] = dateutil.parser.parse(data["date_time"])
+    if data.get("date_time"):
+        try:
+            data["date_time"] = dateutil.parser.parse(data["date_time"])
+        except ParserError:
+            raise BadRequest()
 
-    if data["end_date_time"]:
-        data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
+    if data.get("end_date_time"):
+        try:
+            data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])  # noqa: E501
+        except ParserError:
+            raise BadRequest()
 
     if data.get("sponsors"):
         data["sponsors"] = list(map(lambda name: Sponsor.objects(username=name).first(), data["sponsors"]))  # noqa: E501
@@ -69,8 +76,6 @@ def create_event():
 
     try:
         Event.createOne(**new_data)
-    except ValidationError:
-        raise BadRequest()
     except NotUniqueError:
         raise Conflict("The event name already exists.")
 
@@ -117,11 +122,17 @@ def update_event(event_name: str):
     if not data:
         raise BadRequest()
 
-    if "date_time" in data:
-        data["date_time"] = dateutil.parser.parse(data["date_time"])
+    if data.get("date_time"):
+        try:
+            data["date_time"] = dateutil.parser.parse(data["date_time"])
+        except ParserError:
+            raise BadRequest()
 
-    if "end_date_time" in data:
-        data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])
+    if data.get("end_date_time"):
+        try:
+            data["end_date_time"] = dateutil.parser.parse(data["end_date_time"])  # noqa: E501
+        except ParserError:
+            raise BadRequest()
 
     event = Event.objects(name=event_name).first()
 
