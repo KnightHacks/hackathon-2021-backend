@@ -145,6 +145,8 @@ def get_group(group_name: str):
     responses:
         200:
             description: OK
+        404:
+            description: The group with the given name was not found.
 
     """
     group = Group.objects(name=group_name).exclude("id").first()
