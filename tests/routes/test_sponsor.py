@@ -405,3 +405,41 @@ class TestSponsorsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res.status_code, 404)
+    
+    """get_all_sponsors"""
+    def test_get_all_sponsors(self):
+        Sponsor.createOne(
+            sponsor_name="Walmart",
+            logo="https://blob.knighthacks.org/somelogo.png",
+            subscription_tier="Gold",
+            email="walmart@gmail.com",
+            username="walmartofficial",
+            password="pass1234",
+            roles=ROLES.SPONSOR,
+        )
+
+        Sponsor.createOne(
+            sponsor_name="Blu",
+            logo="https://blob.knighthacks.org/somelogo.png",
+            subscription_tier="Silver",
+            email="blu@gmail.com",
+            username="bluofficial",
+            password="pass1234",
+            roles=ROLES.SPONSOR,
+        )
+
+        res = self.client.get("api/sponsors/get_all_sponsors/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["sponsors"][0]["sponsor_name"], "Walmart")
+        self.assertEqual(data["sponsors"][1]["sponsor_name"], "Blu")
+
+    def test_get_all_sponsors_not_found(self):
+        res = self.client.get("api/sponsors/get_all_sponsors/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["name"], "Not Found")
