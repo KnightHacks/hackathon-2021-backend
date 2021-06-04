@@ -305,7 +305,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(Group.objects.count(), 0)
 
     """edit_group (worked on by Conroy)"""
-    
+
     def test_edit_group(self):
 
         #create hackers to put inside group
@@ -358,7 +358,6 @@ class TestGroupsBlueprint(BaseTestCase):
         )        
         
         self.assertEqual(res.status_code, 201)
-          
 
     def test_edit_group_invalid_json(self):
 
@@ -461,7 +460,7 @@ class TestGroupsBlueprint(BaseTestCase):
         )        
         
         self.assertEqual(res.status_code, 404)
-    
+
     def test_edit_group_member_not_found(self):
         
         #create hackers to put inside group
@@ -514,7 +513,7 @@ class TestGroupsBlueprint(BaseTestCase):
         )        
         
         self.assertEqual(res.status_code, 404)
-    
+
     def test_edit_group_duplicate_group(self):
         
         #create hackers to put inside group
@@ -632,7 +631,88 @@ class TestGroupsBlueprint(BaseTestCase):
         )        
         
         self.assertEqual(res.status_code, 400)
-        
+
+    """add_member_to_group"""
+
+    def test_add_member_to_group(self):
+        new_hacker1 = Hacker.createOne(
+            first_name = "Conroy",
+            username = "conroy",
+            email = "conroy@gmail.com",
+            password = "dsafadsgdasg",
+            roles = ROLES.HACKER
+        )
+
+        new_hacker2 = Hacker.createOne(
+            first_name = "John",
+            username = "john",
+            email = "john@gmail.com",
+            password = "fgnjmdsftgjh",
+            roles = ROLES.HACKER
+        )
+
+        Hacker.createOne(
+            first_name = "Doe",
+            username = "doe",
+            email = "doe@gmail.com",
+            password = "sdfghjk",
+            roles = ROLES.HACKER
+        )
+
+        Group.createOne(
+            name = "My Group",
+            members = [
+                        new_hacker1, 
+                        new_hacker2],
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+
+        res = self.client.put("/api/groups/My Group/doe/")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(Group.objects.first()["members"][2]["username"], "doe")
+
+        # Test for the case when the group is initially empty
+        Group.createOne(
+            name = "My Group2",
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+
+        res = self.client.put("/api/groups/My Group2/doe/")
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(Group.objects[1]["members"][0]["username"], "doe")
+
+    def test_add_member_to_group_group_not_found(self):
+        res = self.client.put("/api/groups/group/hacker/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["description"], "Group with the given name was not found.")
+
+    def test_add_member_to_group_member_not_found(self):
+        Group.createOne(
+            name = "My Group",
+            categories = [
+                        "category 1",
+                        "category 2",
+                        "category 3"]
+        )
+
+        res = self.client.put("/api/groups/My Group/hacker/")
+
+        data = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["description"], "Hacker with the given username was not found.")
+
     """get_group (worked on by Conroy)"""
 
     def test_get_group(self):
