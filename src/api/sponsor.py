@@ -252,3 +252,32 @@ def accept_sponsor(_, username: str):
     }
 
     return res, 201
+
+
+@sponsors_blueprint.get("/sponsors/get_all_sponsors/")
+def get_all_sponsors():
+    """
+    Returns an array of sponsor documents.
+    ---
+    tags:
+        - sponsor
+    summary: returns an array of sponsor documents
+    responses:
+        200:
+            description: OK
+        404:
+            description: No sponsor documents are created.
+        5XX:
+            description: Unexpected error (the API issue).
+    """
+    sponsors = Sponsor.objects()
+
+    if not sponsors:
+        raise NotFound("There are no sponsors created.")
+
+    res = {
+        "sponsors": sponsors,
+        "status": "success"
+    }
+
+    return res, 200
