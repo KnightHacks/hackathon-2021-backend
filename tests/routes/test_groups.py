@@ -13,7 +13,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_create_group(self):
 
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -55,7 +55,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        """create a group"""
         res4 = self.client.post(
             "/api/groups/",
             data=json.dumps(
@@ -90,7 +90,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_create_group_member_not_found(self):
 
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -132,7 +132,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        """create a group"""
         res4 = self.client.post(
             "/api/groups/",
             data=json.dumps(
@@ -156,7 +156,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_create_group_duplicate_group(self):
 
-        #create hackers to put inside groups
+        """create hackers to put inside groups"""
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -198,7 +198,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create groups        
+        """create groups"""
         res4 = self.client.post(
             "/api/groups/",
             data=json.dumps(
@@ -240,7 +240,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_create_group_invalid_datatypes(self):
 
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
             data=json.dumps(
@@ -282,7 +282,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res3.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 3)
 
-        #create a group
+        """create a group"""
         res4 = self.client.post(
             "/api/groups/",
             data=json.dumps(
@@ -308,7 +308,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group(self):
 
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -333,7 +333,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -346,7 +346,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #edit group
+        """edit group"""
         res = self.client.put(
             "/api/groups/My Group/",
             data=json.dumps({"name": "My Updated Group",
@@ -361,7 +361,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_invalid_json(self):
 
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -386,7 +386,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -399,7 +399,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
         
-        #edit group
+        """edit group"""
         res = self.client.put(
             "/api/groups/My Group/",
             data=json.dumps({}),
@@ -410,7 +410,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_not_found(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -435,7 +435,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -448,7 +448,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
         
-        #edit group
+        """edit group"""
         res = self.client.put(
             "/api/groups/Not My Group/",
             data=json.dumps({"name": "My Updated Group",
@@ -463,7 +463,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_member_not_found(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -488,7 +488,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -501,7 +501,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
         
-        #edit group
+        """edit group"""
         res = self.client.put(
             "/api/groups/My Group/",
             data=json.dumps({"name": "My Updated Group",
@@ -516,7 +516,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_duplicate_group(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -541,7 +541,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create groups
+        """create groups"""
         new_group1 = Group.createOne(
             name = "Group 1",
             members = [
@@ -566,7 +566,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
         
-        #edit a group
+        """edit a group"""
         res = self.client.put(
             "/api/groups/Group 1/",
             data=json.dumps({"name": "Group 2",
@@ -581,7 +581,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_edit_group_invalid_datatypes(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -606,7 +606,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -619,7 +619,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
         
-        #edit group
+        """edit group"""
         res = self.client.put(
             "/api/groups/My Group/",
             data=json.dumps({"name": 1,
@@ -675,7 +675,7 @@ class TestGroupsBlueprint(BaseTestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(Group.objects.first()["members"][2]["username"], "doe")
 
-        # Test for the case when the group is initially empty
+        """ Test for the case when the group is initially empty"""
         Group.createOne(
             name = "My Group2",
             categories = [
@@ -717,7 +717,7 @@ class TestGroupsBlueprint(BaseTestCase):
 
     def test_get_group(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -742,7 +742,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -755,13 +755,13 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #get the group
+        """get the group"""
         res = self.client.get("/api/groups/My Group/")
         self.assertEqual(res.status_code, 200)
 
     def test_get_group_not_found(self):
         
-        #create hackers to put inside group
+        """create hackers to put inside group"""
         new_hacker1 = Hacker.createOne(
             first_name = "Conroy",
             username = "conroy",
@@ -786,7 +786,7 @@ class TestGroupsBlueprint(BaseTestCase):
             roles = ROLES.HACKER
         )
 
-        #create a group
+        """create a group"""
         new_group = Group.createOne(
             name = "My Group",
             members = [
@@ -799,7 +799,7 @@ class TestGroupsBlueprint(BaseTestCase):
                         "category 3"]
         )
 
-        #"get" the group
+        """ "get" the group"""
         res = self.client.get("/api/groups/Obviously Not My Group/")
         self.assertEqual(res.status_code, 404)
 
