@@ -1,4 +1,4 @@
-#flake8: noqa
+# flake8: noqa
 import json
 from src.models.sponsor import Sponsor
 from tests.base import BaseTestCase
@@ -405,7 +405,7 @@ class TestSponsorsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res.status_code, 404)
-    
+
     """get_all_sponsors"""
     def test_get_all_sponsors(self):
         Sponsor.createOne(
