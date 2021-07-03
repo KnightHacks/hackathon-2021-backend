@@ -8,8 +8,14 @@ Backend server for Knight Hacks '21
 - [Backend Environment Variables](#backend-environment-variables)
 - [Testing](#testing)
 
+## QuickStart with Docker (recommended)
 
-## QuickStart
+Install [Docker](https://www.docker.com/get-started) if you don't have it, then
+run the following in the terminal to start a development server:
+
+`docker-compose -f docker-compose-dev.yml up`
+
+## QuickStart without Docker
 
 **Requirements:**
 
@@ -24,7 +30,6 @@ Backend server for Knight Hacks '21
 
 `python -m src run --port=5000`
 
-
 ## Backend Environment Variables
 
 These are the default values, feel free to change them.
@@ -33,7 +38,6 @@ These are the default values, feel free to change them.
 APP_SETTINGS=src.config.ProductionConfig
 MONGO_URI=mongo://localhost:27017/test
 ```
-
 
 ## Testing
 
