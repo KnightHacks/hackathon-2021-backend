@@ -143,7 +143,7 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        token = sponsor.encode_auth_token()
+        token = self.login_as(sponsor, password="123456")
 
         res = self.client.delete(
             "/api/sponsors/delete_sponsor/foobar/", headers=[("sid", token)]

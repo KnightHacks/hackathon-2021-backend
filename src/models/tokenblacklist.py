@@ -4,7 +4,6 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 """
-from flask import current_app
 from src import db
 from src.models import BaseDocument
 from datetime import datetime
@@ -17,14 +16,4 @@ class TokenBlacklist(BaseDocument):
     from src.models.user import User
     user = db.ReferenceField(User, required=True)
 
-    meta = {
-        "indexes": [
-            {
-                "fields": ["created_at"],
-                "expireAfterSeconds": (
-                    60 * current_app.config.get("TOKEN_EXPIRATION_MINUTES")
-                    + current_app.config.get("TOKEN_EXPIRATION_SECONDS")
-                )
-            }
-        ]
-    }
+    meta = {"indexes": []}

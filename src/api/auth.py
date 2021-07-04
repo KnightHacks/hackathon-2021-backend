@@ -11,7 +11,7 @@ from src.models.user import User
 from src.models.tokenblacklist import TokenBlacklist
 from src import bcrypt
 from src.common.decorators import authenticate
-import jwt
+from src.common.jwt import decode_jwt
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -65,9 +65,7 @@ def login():
 
     auth_token = user.encode_auth_token()
 
-    decoded_token = jwt.decode(auth_token,
-                               current_app.config.get("SECRET_KEY"),
-                               algorithms=["HS256"])
+    decoded_token = decode_jwt(auth_token)
 
     """ Add token to Token Blacklist as a non-revoked token """
     TokenBlacklist.createOne(
@@ -98,12 +96,10 @@ def logout(_):
     elif current_app.config.get("TESTING"):
         token = request.headers.get("sid")
 
-    decoded_token = jwt.decode(token,
-                               current_app.config.get("SECRET_KEY"),
-                               algorithms=["HS256"])
+    decoded_token = decode_jwt(token)
 
     """ Set the token as revoked """
-    TokenBlacklist.findOne(jti=decoded_token["jti"]).update(revoked=True)
+    TokenBlacklist.objects(jti=decoded_token["jti"]).modify(revoked=True)
 
     res = make_response()
     res.delete_cookie("sid")
