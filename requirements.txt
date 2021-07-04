@@ -16,3 +16,4 @@ gunicorn
 gevent
 gevent-websocket
 requests
+blinker

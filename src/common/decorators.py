@@ -12,6 +12,8 @@ from flask import request, current_app
 from functools import wraps
 from werkzeug.exceptions import Forbidden, Unauthorized, NotFound
 from src.models.user import User, ROLES
+from src.models.tokenblacklist import TokenBlacklist
+import jwt
 
 
 def privileges(roles):
@@ -57,11 +59,23 @@ def authenticate(f):
         if not token:
             raise Unauthorized("User is not signed in!")
 
+        decoded_token = jwt.decode(token,
+                                   current_app.config.get("SECRET_KEY"),
+                                   algorithms=["HS256"])
+
+        fromBL = TokenBlacklist.findOne(
+            jti=decoded_token["jti"],
+            revoked=False
+        )
+
+        if not fromBL:
+            raise Unauthorized("User is not signed in!")
+
         data = User.decode_auth_token(token)
         user = User.objects(username=data).first()
 
-        if not user:
-            raise NotFound()
+        if not user or fromBL.user == user:
+            raise Forbidden()
 
         return f(user, *args, **kwargs)
 

@@ -4,12 +4,14 @@
     ~~~~~~~~~~~~
 
 """
-from flask import request, make_response
+from flask import request, make_response, current_app
 from src.api import Blueprint
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from src.models.user import User
+from src.models.tokenblacklist import TokenBlacklist
 from src import bcrypt
 from src.common.decorators import authenticate
+import jwt
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -63,6 +65,16 @@ def login():
 
     auth_token = user.encode_auth_token()
 
+    decoded_token = jwt.decode(auth_token,
+                               current_app.config.get("SECRET_KEY"),
+                               algorithms=["HS256"])
+
+    """ Add token to Token Blacklist as a non-revoked token """
+    TokenBlacklist.createOne(
+        jti=decoded_token["jti"],
+        user=user
+    )
+
     res = make_response()
     res.set_cookie("sid", auth_token)
 
@@ -81,6 +93,17 @@ def logout(_):
         default:
             description: OK
     """
+    if request.cookies.get("sid"):
+        token = request.cookies.get("sid")
+    elif current_app.config.get("TESTING"):
+        token = request.headers.get("sid")
+
+    decoded_token = jwt.decode(token,
+                               current_app.config.get("SECRET_KEY"),
+                               algorithms=["HS256"])
+
+    """ Set the token as revoked """
+    TokenBlacklist.findOne(jti=decoded_token["jti"]).update(revoked=True)
 
     res = make_response()
     res.delete_cookie("sid")

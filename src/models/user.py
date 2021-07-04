@@ -20,6 +20,7 @@ from src import db, bcrypt
 from src.models import BaseDocument
 from werkzeug.exceptions import Unauthorized
 from enum import Flag, auto
+from mongoengine import signals
 
 
 class ROLES(Flag):
@@ -52,6 +53,13 @@ class User(BaseDocument):
     roles = db.EnumField(enum=ROLES, required=True)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
+
+    @classmethod
+    def pre_delete(cls, sender, document, **kwargs):
+        from src.models.tokenblacklist import TokenBlacklist
+        TokenBlacklist.objects(user=document).delete()
+        current_app.logger.info("Deleted all tokens from tokenblacklist for "
+                                f"the deleted user {document.username}.")
 
     def encode_auth_token(self) -> str:
         """Encode the auth token"""
@@ -127,3 +135,6 @@ class User(BaseDocument):
                 conf)
 
         super(User, self).__init__(*args, **kwargs)
+
+
+signals.pre_delete.connect(User.pre_delete, sender=User)
