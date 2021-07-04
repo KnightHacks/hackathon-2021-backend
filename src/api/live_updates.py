@@ -14,7 +14,7 @@
         delete_update(id: int)
 
 """
-from flask import Blueprint, request, current_app as app
+from flask import Blueprint, request
 from werkzeug.exceptions import BadRequest, NotFound
 from src.common.decorators import authenticate, privileges
 from flask_socketio import Namespace, emit
