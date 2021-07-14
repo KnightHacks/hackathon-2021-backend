@@ -1,47 +1,57 @@
 Hacker:
   type: object
   properties:
-    first_name:
-      type: string
-    last_name:
-      type: string
-    school_name:
-      type: string
-    email:
-      type: string
-      example: foobar@email.com
     username:
       type: string
     password:
       type: string
       format: password
+    email:
+      type: string
+      example: foobar@email.com
+    first_name:
+      type: string
+    last_name:
+      type: string
     phone_number:
       type: string
       example: +1 (555) 555-5555
+    can_share_info:
+      type: boolean
+      description: Permission from the Hacker to share information with Sponsors
+    beginner:
+      type: boolean
+    ethnicity:
+      type: string
+    pronouns:
+      type: string
+    edu_info:
+      type: object
+      properties:
+        college:
+          type: string
+        major:
+          type: string
+        graduation_date:
+          type: int
     resume:
       type: string
-      format: uri
-      example: https://blob.knighthacks.org/someresume.pdf
-    date:
-      type: string
-      format: date-time
-      example: "2014-09-10T11:41:00"
-    tracks:
-      type: array
-      description: The tracks that the Hacker is participating in.
-      items:
-        type: string
-    grad_year:
-      type: int
-      description: The Hacker's expected graduation year.
-      example: 2024
+      format: binary
     socials:
+      type: object
+      properties:
+        github:
+          type: string
+        linkedin:
+          type: string
+    why_attend:
+      type: string
+      maxLength: 200
+    what_learn:
       type: array
       items:
         type: string
-    current_status:
-      type: boolean
-      description: If the Hacker is accepted or not.
+        description: What the hacker wants to learn at Knight Hacks
 Group:
   type: object
   properties:

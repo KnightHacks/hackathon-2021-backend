@@ -15,16 +15,19 @@
 from flask import request
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
-import dateutil.parser
+from werkzeug.exceptions import (
+    BadRequest,
+    Conflict,
+    NotFound,
+    Unauthorized,
+    UnsupportedMediaType
+)
 from src.models.hacker import Hacker
 from src.models.user import ROLES
 from src.common.decorators import authenticate, privileges
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
-
-HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 
 
 @hackers_blueprint.post("/hackers/")
@@ -37,9 +40,12 @@ def create_hacker():
     summary: Create Hacker
     requestBody:
         content:
-            application/json:
+            multipart/form-data:
                 schema:
                     $ref: '#/components/schemas/Hacker'
+                encoding:
+                    resume:
+                        contentType: application/pdf
         description: Created Hacker Object
         required: true
     responses:
@@ -53,19 +59,36 @@ def create_hacker():
             description: Unexpected error.
     """
     data = request.get_json()
+    resume = None
+
+    if "roles" in data:
+        del data["roles"]
+
+    if "date" in data:
+        del data["date"]
+
+    if "email_verification" in data:
+        del data["email_verification"]
+
+    if "email_token_hash" in data:
+        del data["email_token_hash"]
 
     if not data:
         raise BadRequest()
 
-    if data.get("date"):
-        data["date"] = dateutil.parser.parse(data["date"])
+    if "resume" in request.files:
+        resume = request.files["resume"]
 
-    data["hacker_profile"] = {}
-    for f in HACKER_PROFILE_FIELDS:
-        data["hacker_profile"][f] = data.pop(f, None)
+        if resume.content_type != "application/pdf":
+            raise UnsupportedMediaType()
 
     try:
-        hacker = Hacker.createOne(**data, roles=ROLES.HACKER)
+        hacker = Hacker(**data, roles=ROLES.HACKER)
+
+        if resume:
+            hacker.resume.put(resume, content_type="application/pdf")
+
+        hacker.save()
 
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
@@ -86,7 +109,7 @@ def create_hacker():
 
 
 @hackers_blueprint.get("/hackers/<username>/")
-def get_user_search(username: str):
+def get_hacker_search(username: str):
     """
     Retrieves a hacker's profile using their username.
     ---
