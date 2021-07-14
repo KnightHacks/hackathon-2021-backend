@@ -33,10 +33,7 @@ Hacker:
         major:
           type: string
         graduation_date:
-          type: int
-    resume:
-      type: string
-      format: binary
+          type: number
     socials:
       type: object
       properties:

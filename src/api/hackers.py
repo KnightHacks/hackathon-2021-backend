@@ -12,7 +12,7 @@
         HACKER_PROFILE_FIELDS
 
 """
-from flask import request
+from flask import request, make_response, current_app as app, json
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import (
@@ -42,8 +42,16 @@ def create_hacker():
         content:
             multipart/form-data:
                 schema:
-                    $ref: '#/components/schemas/Hacker'
+                    type: object
+                    properties:
+                        hacker:
+                            $ref: '#/components/schemas/Hacker'
+                        resume:
+                             type: string
+                             format: binary
                 encoding:
+                    hacker:
+                        contentType: application/json
                     resume:
                         contentType: application/pdf
         description: Created Hacker Object
@@ -58,7 +66,7 @@ def create_hacker():
         5XX:
             description: Unexpected error.
     """
-    data = request.get_json()
+    data = json.loads(request.form.get("hacker"))
     resume = None
 
     if "roles" in data:
@@ -106,6 +114,45 @@ def create_hacker():
     }
 
     return res, 201
+
+
+@hackers_blueprint.get("/hackers/resume/<username>.pdf")
+def get_hacker_resume(username: str):
+    """
+    Get Hacker Resume
+    ---
+    tags:
+        - hacker
+    parameters:
+        - name: username
+          in: path
+          schema:
+              type: string
+          description: The hacker's username
+          required: true
+    responses:
+        200:
+            content:
+                application/pdf:
+                    schema:
+                        type: string
+                        format: binary
+    """
+
+    hacker = Hacker.findOne(username=username)
+
+    if not hacker:
+        raise NotFound("A hacker with that username does not exist")
+
+    if not hacker.resume:
+        raise NotFound("There is no resume for this hacker")
+
+    resume = hacker.resume.read()
+
+    res = make_response(resume)
+    res.headers["Content-Type"] = "application/pdf"
+
+    return res
 
 
 @hackers_blueprint.get("/hackers/<username>/")
