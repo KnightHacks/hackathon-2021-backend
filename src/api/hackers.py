@@ -7,12 +7,8 @@
 
         create_hacker()
 
-    Variables:
-
-        HACKER_PROFILE_FIELDS
-
 """
-from flask import request, make_response, current_app as app, json
+from flask import request, make_response, json
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import (
@@ -139,7 +135,8 @@ def get_hacker_resume(username: str):
                         format: binary
     """
 
-    hacker = Hacker.findOne(username=username)
+    hacker = Hacker.findOne(username=username,
+                            excludes=[Hacker.private_fields])
 
     if not hacker:
         raise NotFound("A hacker with that username does not exist")
@@ -175,12 +172,14 @@ def get_hacker_search(username: str):
             description: OK
 
     """
-    hacker = Hacker.objects(username=username).first()
+    hacker = Hacker.objects(username=username).exclude(
+        *Hacker.private_fields).first()
+
     if not hacker:
         raise NotFound()
 
     res = {
-        "Hacker Profile": hacker.hacker_profile,
+        "Hacker Profile": hacker,
         "User Name": hacker.username,
         "message": "Successfully reached profile.",
         "status": "success"
@@ -325,12 +324,8 @@ def hacker_settings(username: str):
     """
 
     hacker = Hacker.objects(username=username).exclude(
-        "password",
-        "date",
-        "email_token_hash",
-        "tracks",
-        "hacker_profile",
-        "id").first()
+        *Hacker.private_fields
+    ).first()
 
     if not hacker:
         raise NotFound()
@@ -408,7 +403,7 @@ def get_all_hackers():
         5XX:
             description: Unexpected error (the API issue).
     """
-    hackers = Hacker.objects()
+    hackers = Hacker.objects().exclude(*Hacker.private_fields)
 
     if not hackers:
         raise NotFound("There are no hackers created.")

@@ -45,6 +45,12 @@ class User(BaseDocument):
     meta = {"allow_inheritance": True,
             "ordering": ["date"]}
 
+    private_fields = [
+        "password",
+        "email_verification",
+        "email_token_hash"
+    ]
+
     username = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
     password = db.BinaryField(required=True)

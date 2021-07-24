@@ -19,8 +19,6 @@ from src.models.sponsor import Sponsor
 from src.models.user import ROLES
 from src.common.decorators import authenticate, privileges
 
-HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
-
 admin_blueprint = Blueprint("admin", __name__)
 
 
@@ -61,10 +59,6 @@ def create_hacker(loggedin_user):
 
     if data.get("date"):
         data["date"] = dateutil.parser.parse(data["date"])
-
-    data["hacker_profile"] = {}
-    for f in HACKER_PROFILE_FIELDS:
-        data["hacker_profile"][f] = data.pop(f, None)
 
     try:
         Hacker.createOne(**data, roles=ROLES.HACKER, isaccepted=True,

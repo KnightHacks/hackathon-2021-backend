@@ -26,11 +26,12 @@ class Socials(db.EmbeddedDocument):
 
 
 class Hacker(User):  # Stored in the "user" collection
-    first_name = db.StringField(required=True)
-    last_name = db.StringField(required=True)
-    phone_number = db.StringField(required=True)
+    first_name = db.StringField()
+    last_name = db.StringField()
+    phone_number = db.StringField()
     isaccepted = db.BooleanField(default=False)
     can_share_info = db.BooleanField(default=False)
+    rsvp_status = db.BooleanField(default=False)
     beginner = db.BooleanField(default=False)
     ethnicity = db.StringField()
     pronouns = db.StringField()

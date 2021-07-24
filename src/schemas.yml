@@ -1,4 +1,5 @@
 Hacker:
+  id: Hacker
   type: object
   properties:
     username:
