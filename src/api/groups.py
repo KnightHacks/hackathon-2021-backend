@@ -128,6 +128,62 @@ def edit_group(group_name: str):
     return res, 201
 
 
+@groups_blueprint.put("/groups/<group_name>/<username>/")
+def add_member_to_group(group_name: str, username: str):
+    """
+    Add a member to a group
+    ---
+    tags:
+        - groups
+    summary: Adds a member to a group
+    parameters:
+        - name: group_name
+          in: path
+          description: The name of the group to be updated.
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: path
+          description: The username of the user to be added to a group.
+          required: true
+          schema:
+            type: string
+    responses:
+        200:
+            description: OK
+        404:
+            description: A group or a user doesn't exist.
+        5XX:
+            description: Unexpected error.
+    """
+    group = Group.objects(name=group_name).first()
+
+    if not group:
+        raise NotFound("Group with the given name was not found.")
+
+    new_member = Hacker.objects(username=username).first()
+
+    if not new_member:
+        raise NotFound("Hacker with the given username was not found.")
+
+    members = group.members
+    members.append(new_member)
+
+    update = {
+        "members": members
+    }
+
+    group.update(**update)
+
+    res = {
+        "status": "success",
+        "message": "The member is successfully added."
+    }
+
+    return res, 200
+
+
 @groups_blueprint.get("/groups/<group_name>/")
 def get_group(group_name: str):
     """
@@ -145,6 +201,8 @@ def get_group(group_name: str):
     responses:
         200:
             description: OK
+        404:
+            description: The group with the given name was not found.
 
     """
     group = Group.objects(name=group_name).exclude("id").first()
