@@ -11,6 +11,7 @@
 from mongoengine.errors import ValidationError
 from src import db
 from src.models.user import User
+from mongoengine import signals
 
 
 class Sponsor(User):
@@ -37,3 +38,6 @@ class Sponsor(User):
             pass
 
         return data
+
+
+signals.pre_delete.connect(User.pre_delete, sender=Sponsor)

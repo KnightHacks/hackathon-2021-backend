@@ -10,8 +10,10 @@
 """
 from flask import request, current_app
 from functools import wraps
-from werkzeug.exceptions import Forbidden, Unauthorized, NotFound
+from werkzeug.exceptions import Forbidden, Unauthorized
 from src.models.user import User, ROLES
+from src.models.tokenblacklist import TokenBlacklist
+from src.common.jwt import decode_jwt
 
 
 def privileges(roles):
@@ -57,11 +59,23 @@ def authenticate(f):
         if not token:
             raise Unauthorized("User is not signed in!")
 
-        data = User.decode_auth_token(token)
-        user = User.objects(username=data).first()
+        decoded_token = decode_jwt(token)
+
+        fromBL = TokenBlacklist.findOne(
+            jti=decoded_token["jti"],
+            revoked=False
+        )
+
+        if not fromBL:
+            raise Unauthorized("User is not signed in!")
+
+        user = User.objects(username=decoded_token["sub"]).first()
 
         if not user:
-            raise NotFound()
+            raise Forbidden()
+
+        if user.username != fromBL.user.username:
+            raise Forbidden()
 
         return f(user, *args, **kwargs)
 
