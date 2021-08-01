@@ -15,41 +15,30 @@
 """
 from src.common.jwt import encode_jwt, decode_jwt
 from flask import current_app as app
+from flask_security import RoleMixin, UserMixin
 from datetime import datetime, timedelta
-from src import db, bcrypt
+from src import db, bcrypt, security
 from src.models import BaseDocument
-from enum import Flag, auto
 from mongoengine import signals
 
 
-class ROLES(Flag):
-    HACKER = auto()
-    EVENTORG = auto()
-    SPONSOR = auto()
-    MOD = auto()
-    ADMIN = auto()
-
-    @staticmethod
-    def members():
-        return {r.name: r for r in ROLES}
-
-    @classmethod
-    def _missing_(cls, value):
-        members = cls.members()
-        if value in members.keys():
-            return cls(members[value])
-        return super()._missing_(value)
+class Role(BaseDocument, RoleMixin):
+    name = db.StringField(max_length=80, unique=True)
+    description = db.StringField(max_length=255)
+    permissions = db.StringField(max_length=255)  
 
 
-class User(BaseDocument):
+class User(BaseDocument, UserMixin):
     meta = {"allow_inheritance": True,
             "ordering": ["date"]}
 
     username = db.StringField(unique=True, required=True)
     email = db.EmailField(unique=True, required=True)
-    password = db.BinaryField(required=True)
+    password = db.StringField(required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    roles = db.EnumField(enum=ROLES, required=True)
+    roles = db.ListField(db.ReferenceField(Role), default=[])
+    active = db.BooleanField(default=True)
+    fs_uniquifier = db.StringField(max_length=64, unique=True)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
 
@@ -103,15 +92,7 @@ class User(BaseDocument):
         """Decodes the email token"""
         return decode_jwt(email_token)["sub"]
 
-    def __init__(self, *args, **kwargs):
-        conf = app.config["BCRYPT_LOG_ROUNDS"]
-        if (kwargs.get("password") is not None
-                and isinstance(kwargs.get('password'), str)):
-            kwargs['password'] = bcrypt.generate_password_hash(
-                kwargs['password'],
-                conf)
 
-        super(User, self).__init__(*args, **kwargs)
 
 
 signals.pre_delete.connect(User.pre_delete, sender=User)

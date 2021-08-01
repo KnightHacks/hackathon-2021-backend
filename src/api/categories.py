@@ -17,8 +17,7 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound
 from src.models.category import Category
 from src.models.sponsor import Sponsor
-from src.models.user import ROLES
-from src.common.decorators import authenticate, privileges
+from src.common.decorators import authenticate
 
 
 categories_blueprint = Blueprint("categories", __name__)
@@ -157,7 +156,6 @@ def edit_category():
 
 @categories_blueprint.delete("/categories/")
 @authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_category(_):
     """
     Deletes a Category

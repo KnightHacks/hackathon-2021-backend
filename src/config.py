@@ -34,7 +34,7 @@ class BaseConfig:
     }
     TOKEN_EMAIL_EXPIRATION_MINUTES = 30
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
-    SECRET_KEY = os.getenv("SECRET_KEY")
+    SECRET_KEY = os.environ.get("SECRET_KEY", 'pf9Wkove4IKEAXvy-cQkeDPhv9Cb3Ag-wyJILbq_dFw')
     RABBITMQ_URL = os.getenv("RABBITMQ_URL")
     CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", RABBITMQ_URL)
     SOCKETIO_MESSAGE_QUEUE = os.getenv("SOCKETIO_MESSAGE_QUEUE", RABBITMQ_URL)
@@ -56,6 +56,7 @@ class BaseConfig:
     NOTION_DB_ID = os.getenv("NOTION_DB_ID")
     NOTION_TOKEN = os.getenv("NOTION_TOKEN")
     NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
+    SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT", '146585145368132386173505678016728509634')
 
 
 class DevelopmentConfig(BaseConfig):

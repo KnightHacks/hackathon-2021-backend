@@ -14,8 +14,7 @@ from werkzeug.exceptions import BadRequest
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
-from src.common.decorators import authenticate, privileges
-from src.models.user import ROLES
+from src.common.decorators import authenticate
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
@@ -23,7 +22,6 @@ club_events_blueprint = Blueprint("club_events", __name__)
 
 @club_events_blueprint.put("/club/refresh_events/")
 @authenticate
-@privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
 def refresh_events(_):
     """
     Refreshed the Club Events from Notion.

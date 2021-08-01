@@ -13,7 +13,6 @@ import datetime
 from flask.json import JSONEncoder
 from mongoengine.base import BaseDocument
 from mongoengine.queryset import QuerySet
-from src.models.user import ROLES
 from bson.objectid import ObjectId
 
 
@@ -22,8 +21,6 @@ class JSONEncoderBase(JSONEncoder):
         try:
             if isinstance(obj, datetime.date):
                 return obj.isoformat()
-            elif isinstance(obj, ROLES):
-                return [r.name for r in ROLES if r & obj]
             elif isinstance(obj, BaseDocument):
                 return obj.to_mongo(use_db_field=False)
             elif isinstance(obj, QuerySet):

@@ -7,7 +7,7 @@
         init_default_users()
 
 """
-from src.models.user import User, ROLES
+from src.models.user import User
 
 
 def init_default_users():

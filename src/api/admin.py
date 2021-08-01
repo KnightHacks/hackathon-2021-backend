@@ -16,8 +16,7 @@ from werkzeug.exceptions import BadRequest, Conflict, Unauthorized
 import dateutil.parser
 from src.models.hacker import Hacker
 from src.models.sponsor import Sponsor
-from src.models.user import ROLES
-from src.common.decorators import authenticate, privileges
+from src.common.decorators import authenticate
 
 HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 
@@ -26,7 +25,6 @@ admin_blueprint = Blueprint("admin", __name__)
 
 @admin_blueprint.post("/admin/hackers/")
 @authenticate
-@privileges(ROLES.ADMIN)
 def create_hacker(loggedin_user):
     """
     Creates a new Hacker manually and bypasses email verification.
@@ -85,7 +83,6 @@ def create_hacker(loggedin_user):
 
 @admin_blueprint.post("/admin/sponsors/")
 @authenticate
-@privileges(ROLES.ADMIN)
 def create_sponsor(loggedin_user):
     """
     Creates a new Sponsor manually and bypasses email verification.

@@ -8,34 +8,13 @@
         privileges(roles)
 
 """
-from flask import request, current_app
+from flask import request, current_app 
+from flask_security import current_user
 from functools import wraps
 from werkzeug.exceptions import Forbidden, Unauthorized
-from src.models.user import User, ROLES
+from src.models.user import User
 from src.models.tokenblacklist import TokenBlacklist
 from src.common.jwt import decode_jwt
-
-
-def privileges(roles):
-    """
-    Ensures the logged in user has the required privileges.
-
-        Parameters:
-            roles (ROLES): example: ROLES.MOD | ROLES.ADMIN
-    """
-    def decorator(f):
-        @wraps(f)
-        def decorated_function(user, *args, **kwargs):
-            user_roles = ROLES(user.roles)
-
-            """ Check if the user has the required permission(s) """
-            if not(user_roles & roles):
-                raise Forbidden()
-
-            return f(user, *args, **kwargs)
-        return decorated_function
-    return decorator
-
 
 def authenticate(f):
     """
@@ -69,7 +48,12 @@ def authenticate(f):
         if not fromBL:
             raise Unauthorized("User is not signed in!")
 
-        user = User.objects(username=decoded_token["sub"]).first()
+        user = current_app.hacker_datastore.find_user(username=decoded_token["sub"])
+        current_user = user
+        if current_user.has_role('hacker'):
+            print('Has Hacker Role')
+        else:
+            print('nope')
 
         if not user:
             raise Forbidden()

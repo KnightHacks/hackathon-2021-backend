@@ -12,14 +12,14 @@
         HACKER_PROFILE_FIELDS
 
 """
-from flask import request
+from flask import request, current_app as app
+from flask_security import roles_accepted, current_user, auth_required, login_required
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 import dateutil.parser
 from src.models.hacker import Hacker
-from src.models.user import ROLES
-from src.common.decorators import authenticate, privileges
+from src.common.decorators import authenticate
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -84,6 +84,60 @@ def create_hacker():
 
     return res, 201
 
+@hackers_blueprint.post("/hackerz/")
+def create_hackerz():
+    """
+    Creates a new Hacker.
+    ---
+    tags:
+        - hacker
+    summary: Create Hacker
+    requestBody:
+        content:
+            application/json:
+                schema:
+                    $ref: '#/components/schemas/Hacker'
+        description: Created Hacker Object
+        required: true
+    responses:
+        201:
+            description: OK
+        400:
+            description: Bad request.
+        409:
+            description: Sorry, that username or email already exists.
+        5XX:
+            description: Unexpected error.
+    """
+    data = request.get_json()
+
+    if not data:
+        raise BadRequest()
+
+    if data.get("date"):
+        data["date"] = dateutil.parser.parse(data["date"])
+
+    data["hacker_profile"] = {}
+    for f in HACKER_PROFILE_FIELDS:
+        data["hacker_profile"][f] = data.pop(f, None)
+
+    try:
+        app.hacker_datastore.create_user(**data)
+        user = app.hacker_datastore.find_user(email=data["email"])
+        hacker_role = app.hacker_datastore.find_or_create_role('hacker')
+        app.hacker_datastore.add_role_to_user(user, hacker_role)
+
+    except NotUniqueError:
+        raise Conflict("Sorry, that username or email already exists.")
+    except ValidationError:
+        raise BadRequest()
+
+    res = {
+        "status": "success",
+        "message": "Hacker was created!"
+    }
+
+    return res, 201
 
 @hackers_blueprint.get("/hackers/<username>/")
 def get_user_search(username: str):
@@ -121,7 +175,6 @@ def get_user_search(username: str):
 
 @hackers_blueprint.delete("/hackers/<username>/")
 @authenticate
-@privileges(ROLES.HACKER | ROLES.MOD | ROLES.ADMIN)
 def delete_hacker(loggedin_user, username: str):
     """
     Deletes an existing Hacker.
@@ -281,7 +334,6 @@ def hacker_settings(username: str):
 
 @hackers_blueprint.put("/hackers/<username>/accept/")
 @authenticate
-@privileges(ROLES.ADMIN)
 def accept_hacker(_, username: str):
     """
     Accepts a Hacker
@@ -321,8 +373,9 @@ def accept_hacker(_, username: str):
 
     return res, 201
 
-
 @hackers_blueprint.get("/hackers/get_all_hackers/")
+@auth_required('session', within=1)
+@roles_accepted('hacker')
 def get_all_hackers():
     """
     Returns an array of hacker documents.
@@ -339,6 +392,8 @@ def get_all_hackers():
             description: Unexpected error (the API issue).
     """
     hackers = Hacker.objects()
+
+    print(current_user)
 
     if not hackers:
         raise NotFound("There are no hackers created.")

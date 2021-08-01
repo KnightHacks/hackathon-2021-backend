@@ -11,7 +11,7 @@
 """
 from src.api import Blueprint
 from werkzeug.exceptions import NotFound, Unauthorized
-from src.models.user import User, ROLES
+from src.models.user import User
 from src.common.decorators import authenticate
 from src import bcrypt
 

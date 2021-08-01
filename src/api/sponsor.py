@@ -14,8 +14,7 @@ from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
 from src.models.sponsor import Sponsor
-from src.models.user import ROLES
-from src.common.decorators import authenticate, privileges
+from src.common.decorators import authenticate
 
 sponsors_blueprint = Blueprint("sponsors", __name__)
 
@@ -77,7 +76,6 @@ def create_sponsor():
 
 @sponsors_blueprint.delete("/sponsors/delete_sponsor/<sponsor_name>/")
 @authenticate
-@privileges(ROLES.SPONSOR | ROLES.ADMIN)
 def delete_sponsor(loggedin_user, sponsor_name: str):
     """
     Deletes an existing Sponsor.
@@ -213,7 +211,6 @@ def edit_sponsor(sponsor_name: str):
 
 @sponsors_blueprint.put("/sponsors/<username>/accept/")
 @authenticate
-@privileges(ROLES.ADMIN)
 def accept_sponsor(_, username: str):
     """
     Accepts a Sponsor

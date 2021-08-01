@@ -27,6 +27,7 @@ from flask_cors import CORS  # noqa: E402
 from flask_mongoengine import MongoEngine  # noqa: E402
 from flask_mail import Mail  # noqa: E402
 from flask_bcrypt import Bcrypt  # noqa: E402
+from flask_security import Security, MongoEngineUserDatastore, UserMixin, RoleMixin # noqa: E402
 import sentry_sdk  # noqa: E402
 from sentry_sdk.integrations.flask import FlaskIntegration  # noqa: E402
 from sentry_sdk.integrations.celery import CeleryIntegration  # noqa: E402
@@ -40,6 +41,7 @@ db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
 socketio = SocketIO()
+security = Security()
 
 
 """Load the Schema Definitions"""
@@ -111,6 +113,12 @@ def create_app():
                       cors_allowed_origins="*",
                       json=json,
                       message_queue=app.config.get("SOCKETIO_MESSAGE_QUEUE"))
+
+    from src.models.user import Role, User
+    from src.models.hacker import Hacker
+    app.user_datastore = MongoEngineUserDatastore(db, User, Role)
+    app.hacker_datastore = MongoEngineUserDatastore(db, Hacker, Role)
+    security.init_app(app, datastore=app.hacker_datastore)
 
     from src.common.json import JSONEncoderBase
     app.json_encoder = JSONEncoderBase
