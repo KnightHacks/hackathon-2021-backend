@@ -12,6 +12,7 @@
 """
 from src import db
 from src.models.user import User
+from mongoengine import signals
 
 
 class Education_Info(db.EmbeddedDocument):
@@ -40,3 +41,6 @@ class Hacker(User):  # Stored in the "user" collection
     socials = db.EmbeddedDocumentField(Socials)
     why_attend = db.StringField(max_length=200)
     what_learn = db.ListField()
+
+
+signals.pre_delete.connect(User.pre_delete, sender=Hacker)

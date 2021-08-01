@@ -158,6 +158,13 @@ def create_app():
         from src.common.init_defaults import init_default_users
         init_default_users()
 
+        """ Create expiration index for TokenBlacklist """
+        from src.models.tokenblacklist import TokenBlacklist
+        TokenBlacklist.create_index("created_at", expireAfterSeconds=(
+            60 * app.config.get("TOKEN_EXPIRATION_MINUTES")
+            + app.config.get("TOKEN_EXPIRATION_SECONDS")
+        ), background=True)
+
     return app, celery
 
 

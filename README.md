@@ -16,13 +16,17 @@ Backend server for Knight Hacks '21
 - MongoDB Server
 - Python 3.9
 
-1. Install the requirements.
+1. Install the requirements. It is suggested that you use a Python virtual environment.
 
 `pip install -r requirements.txt`
 
 2. Run the server
 
 `python -m src run --port=5000`
+
+3. Access Swagger API Documentation
+
+Type `localhost:5000/apidocs` in your browser
 
 
 ## Backend Environment Variables

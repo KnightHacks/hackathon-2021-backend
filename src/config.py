@@ -47,6 +47,7 @@ class BaseConfig:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "https://knighthacks.org/")
+    BACKEND_URL = os.getenv("BACKEND_URL", "https://api.knighthacks.org/")
     BCRYPT_LOG_ROUNDS = 13
     TOKEN_EXPIRATION_MINUTES = 15
     TOKEN_EXPIRATION_SECONDS = 0

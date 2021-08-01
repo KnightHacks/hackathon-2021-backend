@@ -10,7 +10,6 @@
 """
 from flask import request
 from src.api import Blueprint
-from mongoengine.errors import ValidationError
 from werkzeug.exceptions import BadRequest
 import dateutil.parser
 from datetime import datetime, timedelta

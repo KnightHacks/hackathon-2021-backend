@@ -6,6 +6,7 @@ flask-mongoengine
 pyyaml
 python-dateutil
 pyjwt
+uuid
 Flask-Mail
 celery
 Flask-Bcrypt
@@ -16,3 +17,4 @@ gunicorn
 gevent
 gevent-websocket
 requests
+blinker

@@ -132,7 +132,7 @@ class TestHackersBlueprint(BaseTestCase):
             roles=ROLES.HACKER,
         )
 
-        token = hacker.encode_auth_token()
+        token = self.login_as(hacker, password="123456")
 
         res = self.client.delete("/api/hackers/foobar/", headers=[("sid", token)])
 

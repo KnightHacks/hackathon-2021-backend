@@ -12,7 +12,7 @@
 
 from flask import request
 from src.api import Blueprint
-from mongoengine.errors import ValidationError, NotUniqueError
+from mongoengine.errors import NotUniqueError
 from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 from src.models.sponsor import Sponsor

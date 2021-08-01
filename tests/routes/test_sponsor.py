@@ -12,7 +12,7 @@ class TestSponsorsBlueprint(BaseTestCase):
 
     def test_create_sponsor(self):
 
-        # resemble someone using the create sponsor route to make a new sponsor
+        """resemble someone using the create sponsor route to make a new sponsor"""
         res = self.client.post(
             "/api/sponsors/",
             data=json.dumps(
@@ -28,28 +28,28 @@ class TestSponsorsBlueprint(BaseTestCase):
             content_type="application/json",
         )
 
-        # ensure that the sponsor was successfully created
+        """ensure that the sponsor was successfully created"""
         self.assertEqual(res.status_code, 201)
 
-        # ensure that a sponsor object exists in MonogDB
+        """ensure that a sponsor object exists in MonogDB"""
         self.assertEqual(Sponsor.objects.count(), 1)
 
     def test_create_sponsor_invalid_json(self):
 
-        # resemble someone using the create sponsor route to make a new sponsor but with no data (i.e. an empty json)
+        """resemble someone using the create sponsor route to make a new sponsor but with no data (i.e. an empty json)"""
         res = self.client.post(
             "/api/sponsors/", data=json.dumps({}), content_type="application/json"
         )
 
-        # ensure that the sponsor was unsuccessfully created (due to invalid json file)
+        """ensure that the sponsor was unsuccessfully created (due to invalid json file)"""
         self.assertEqual(res.status_code, 400)
 
-        # ensure that no sponsor objects exist in MonogDB
+        """ensure that no sponsor objects exist in MonogDB"""
         self.assertEqual(Sponsor.objects.count(), 0)
 
     def test_create_sponsor_not_unique(self):
 
-        # resemble someone using the create sponsor route to make a new sponsor
+        """resemble someone using the create sponsor route to make a new sponsor"""
         res = self.client.post(
             "/api/sponsors/",
             data=json.dumps(
@@ -65,10 +65,10 @@ class TestSponsorsBlueprint(BaseTestCase):
             content_type="application/json",
         )
 
-        # ensure that the sponsor was successfully created
+        """ensure that the sponsor was successfully created"""
         self.assertEqual(res.status_code, 201)
 
-        # resemble someone using the create sponsor route to make another new sponsor but with a non-unique username
+        """resemble someone using the create sponsor route to make another new sponsor but with a non-unique username"""
         res2 = self.client.post(
             "/api/sponsors/",
             data=json.dumps(
@@ -84,15 +84,15 @@ class TestSponsorsBlueprint(BaseTestCase):
             content_type="application/json",
         )
 
-        # ensure that the sponsor was unsuccessfully created due to not being unique
+        """ensure that the sponsor was unsuccessfully created due to not being unique"""
         self.assertEqual(res2.status_code, 409)
 
-        # ensure that only 1 sponsor object exists in MonogDB
+        """ensure that only 1 sponsor object exists in MonogDB"""
         self.assertEqual(Sponsor.objects.count(), 1)
 
     def test_create_sponsor_invalid_datatype(self):
 
-        # resemble someone using the create sponsor route to make a new sponsor but with an invalid datatype for the email
+        """resemble someone using the create sponsor route to make a new sponsor but with an invalid datatype for the email"""
         res = self.client.post(
             "/api/sponsors/",
             data=json.dumps(
@@ -108,10 +108,10 @@ class TestSponsorsBlueprint(BaseTestCase):
             content_type="application/json",
         )
 
-        # ensure that the sponsor was unsuccessfully created due to an invalid datatype
+        """ensure that the sponsor was unsuccessfully created due to an invalid datatype"""
         self.assertEqual(res.status_code, 400)
 
-        # ensure that no sponsor objects exist in MonogDB
+        """ensure that no sponsor objects exist in MongoDB"""
         self.assertEqual(Sponsor.objects.count(), 0)
 
     """delete_sponsor (worked on by Simon and Conroy)"""
@@ -143,7 +143,7 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        token = sponsor.encode_auth_token()
+        token = self.login_as(sponsor, password="123456")
 
         res = self.client.delete(
             "/api/sponsors/delete_sponsor/foobar/", headers=[("sid", token)]
@@ -179,7 +179,7 @@ class TestSponsorsBlueprint(BaseTestCase):
 
     def test_delete_sponsor_not_found(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Bose",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -190,23 +190,23 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the delete sponsor route to delete the one that we just created but they used the wrong name
+        """resemble someone using the delete sponsor route to delete the one that we just created but they used the wrong name"""
         token = self.login_user(ROLES.ADMIN)
         res = self.client.delete(
             "/api/sponsors/delete_sponsor/Boses/", headers=[("sid", token)]
         )
 
-        # ensure that the sponsor was unsuccessfully deleted due to incorrect name
+        """ensure that the sponsor was unsuccessfully deleted due to incorrect name"""
         self.assertEqual(res.status_code, 404)
 
-        # ensure that 1 sponsor object exists in MonogDB
+        """ensure that 1 sponsor object exists in MongoDB"""
         self.assertEqual(Sponsor.objects.count(), 1)
 
     """get_sponsor (worked on by Conroy)"""
 
     def test_get_sponsor(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         new_sponsor = Sponsor.createOne(
             sponsor_name="Bose",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -217,15 +217,15 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the get sponsor route to get the sponsor that we created
+        """resemble someone using the get sponsor route to get the sponsor that we created"""
         res = self.client.get("/api/sponsors/Bose/")
 
-        # ensure that we successfully got the sponsor
+        """ensure that we successfully got the sponsor"""
         self.assertEqual(res.status_code, 200)
 
     def test_get_sponsor_not_found(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         new_sponsor = Sponsor.createOne(
             sponsor_name="Bose",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -236,17 +236,17 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the get sponsor route to get the sponsor that we created but they used the wrong name
+        """resemble someone using the get sponsor route to get the sponsor that we created but they used the wrong name"""
         res = self.client.get("/api/sponsors/Boses/")
 
-        # ensure that we unsuccessfully got the sponsor due to an incorrect name
+        """ensure that we unsuccessfully got the sponsor due to an incorrect name"""
         self.assertEqual(res.status_code, 404)
 
     """edit_sponsor (worked on by Conroy)"""
 
     def test_edit_sponsor(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Bose",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -257,25 +257,25 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the edit_sponsor route in order to update the email associated with the sponsor we just created in MongoDB
+        """resemble someone using the edit_sponsor route in order to update the email associated with the sponsor we just created in MongoDB"""
         res = self.client.put(
             "/api/sponsors/Bose/",
             data=json.dumps({"email": "boseofficial@gmail.com"}),
             content_type="application/json",
         )
 
-        # ensure that the result indicates a success
+        """ensure that the result indicates a success"""
         self.assertEqual(res.status_code, 201)
 
-        # attempt to find the sponsor that we just updated
+        """attempt to find the sponsor that we just updated"""
         updated_sponsor = Sponsor.findOne(sponsor_name="Bose")
 
-        # ensure that the sponsor was actually updated
+        """ensure that the sponsor was actually updated"""
         self.assertEqual(updated_sponsor.email, "boseofficial@gmail.com")
 
     def test_edit_sponsor_invalid_json(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Hulu",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -286,17 +286,17 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the edit_sponsor route to update the sponsor with an empty json file
+        """resemble someone using the edit_sponsor route to update the sponsor with an empty json file"""
         res = self.client.put(
             "/api/sponsors/Hulu/", data=json.dumps({}), content_type="application/json"
         )
 
-        # ensure that the json file was invalid
+        """ensure that the json file was invalid"""
         self.assertEqual(res.status_code, 400)
 
     def test_edit_sponsor_invalid_datatype(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Blu",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -307,19 +307,19 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the edit sposonor route to update the email with an invalid datatype
+        """resemble someone using the edit sposonor route to update the email with an invalid datatype"""
         res = self.client.put(
             "/api/sponsors/Blu/",
             data=json.dumps({"email": 123}),
             content_type="application/json",
         )
 
-        # ensure that an invalid datatype was used to update the sponsor's email
+        """ensure that an invalid datatype was used to update the sponsor's email"""
         self.assertEqual(res.status_code, 400)
 
     def test_edit_sponsor_not_found(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Walmart",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -330,19 +330,19 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the edit_sponsor route but they used the wrong sponsor name
+        """resemble someone using the edit_sponsor route but they used the wrong sponsor name"""
         res = self.client.put(
             "/api/sponsors/Walmarts/",
             data=json.dumps({"email": "walmartofficial@gmail.com"}),
             content_type="application/json",
         )
 
-        # ensure that the sponsor was not found due to an incorrect name
+        """ensure that the sponsor was not found due to an incorrect name"""
         self.assertEqual(res.status_code, 404)
 
     def test_edit_sponsor_not_unique(self):
 
-        # create a new sponsor document in MongoDB
+        """create a new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="WellsFargo",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -353,7 +353,7 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # create a another, new sponsor document in MongoDB
+        """create a another, new sponsor document in MongoDB"""
         Sponsor.createOne(
             sponsor_name="Walmart",
             logo="https://blob.knighthacks.org/somelogo.png",
@@ -364,14 +364,14 @@ class TestSponsorsBlueprint(BaseTestCase):
             roles=ROLES.SPONSOR,
         )
 
-        # resemble someone using the edit_sponsor route but they used a non-unique username
+        """resemble someone using the edit_sponsor route but they used a non-unique username"""
         res = self.client.put(
             "/api/sponsors/WellsFargo/",
             data=json.dumps({"username": "walmartofficial"}),
             content_type="application/json",
         )
 
-        # ensure that the sponsor username was not unique
+        """ensure that the sponsor username was not unique"""
         self.assertEqual(res.status_code, 409)
 
     """accept_sponsor"""
@@ -405,7 +405,7 @@ class TestSponsorsBlueprint(BaseTestCase):
         )
 
         self.assertEqual(res.status_code, 404)
-    
+
     """get_all_sponsors"""
     def test_get_all_sponsors(self):
         Sponsor.createOne(
