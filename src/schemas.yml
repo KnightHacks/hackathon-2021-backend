@@ -42,23 +42,6 @@ Hacker:
     current_status:
       type: boolean
       description: If the Hacker is accepted or not.
-Group:
-  type: object
-  properties:
-    name:
-      type: string
-    icon:
-      type: string
-    members:
-      type: array
-      items:
-        type: string
-        description: Member emails
-    categories:
-      type: array
-      items:
-        type: string
-        description: Category Names
 Sponsor:
   type: object
   properties:
@@ -137,13 +120,4 @@ ClubEvent:
       example: An introductory workshop for the Python language.
     location:
       type: string
-Category:
-  type: object
-  properties:
-    name:
-      type: string
-    sponsor:
-      type: string
-      description: Sponsor name
-    description:
-      type: string
+
