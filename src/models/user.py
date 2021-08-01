@@ -46,6 +46,7 @@ class User(BaseDocument):
             "ordering": ["date"]}
 
     private_fields = [
+        "id",
         "password",
         "email_verification",
         "email_token_hash"

@@ -112,7 +112,7 @@ def create_hacker():
     return res, 201
 
 
-@hackers_blueprint.get("/hackers/resume/<username>.pdf")
+@hackers_blueprint.get("/hackers/<username>/resume/")
 def get_hacker_resume(username: str):
     """
     Get Hacker Resume
@@ -135,8 +135,9 @@ def get_hacker_resume(username: str):
                         format: binary
     """
 
-    hacker = Hacker.findOne(username=username,
-                            excludes=[Hacker.private_fields])
+    hacker = Hacker.objects(
+        username=username
+    ).exclude(*Hacker.private_fields).first()
 
     if not hacker:
         raise NotFound("A hacker with that username does not exist")
