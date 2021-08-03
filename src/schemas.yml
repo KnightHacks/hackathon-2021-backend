@@ -105,6 +105,12 @@ Event:
       type: string
       format: uri
       example: https://ucf.zoom.us/j/96765484043?pwd=TjBYRU5UbU0p6SlNzTC9lTjJvZz09&from=msft
+    event_type:
+      type: string
+    loc:
+      type: string
+    description:
+      type: string
     end_date_time:
       type: string
       format: date-time
