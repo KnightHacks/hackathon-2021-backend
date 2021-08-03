@@ -10,6 +10,7 @@
         Hacker
 
 """
+from flask import current_app as app
 from src import db
 from src.models.user import User
 from mongoengine import signals
