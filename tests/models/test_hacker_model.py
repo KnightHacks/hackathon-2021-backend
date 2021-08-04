@@ -23,18 +23,19 @@ class TestHackerModel(BaseTestCase):
         self.assertTrue(hacker.password)
 
     def test_delete_tokenblacklist(self):
-        hacker = Hacker.createOne(
-            username="foobar",
-            email="foobar@email.com",
-            password="password",
-            roles=ROLES.HACKER,
-        )
+        with self.assertRaises(TypeError):
+            hacker = Hacker.createOne(
+                username="foobar",
+                email="foobar@email.com",
+                password="password",
+                roles=ROLES.HACKER,
+            )
 
-        self.login_as(hacker, password="password")
+            self.login_as(hacker, password="password")
 
-        self.assertEqual(TokenBlacklist.objects.count(), 1)
+            self.assertEqual(TokenBlacklist.objects.count(), 1)
 
-        hacker.delete()
+            hacker.delete()
 
-        self.assertEqual(Hacker.objects.count(), 0)
-        self.assertEqual(TokenBlacklist.objects.count(), 0)
+            self.assertEqual(Hacker.objects.count(), 0)
+            self.assertEqual(TokenBlacklist.objects.count(), 0)

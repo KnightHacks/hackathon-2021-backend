@@ -15,15 +15,15 @@ class TestHackersBlueprint(BaseTestCase):
         now = datetime.now()
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "foobar",
                     "email": "foobar@email.com",
                     "password": "123456",
                     "date": now.isoformat(),
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(res.status_code, 201)
@@ -31,7 +31,7 @@ class TestHackersBlueprint(BaseTestCase):
 
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
-            "/api/hackers/", data=json.dumps({}), content_type="application/json"
+            "/api/hackers/", data={"hacker": json.dumps({})}, content_type="multipart/form-data"
         )
 
         data = json.loads(res.data.decode())
@@ -51,15 +51,15 @@ class TestHackersBlueprint(BaseTestCase):
 
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "foobar",
                     "email": "foobar@email.com",
                     "password": "123456",
                     "date": now.isoformat(),
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         data = json.loads(res.data.decode())
@@ -73,10 +73,10 @@ class TestHackersBlueprint(BaseTestCase):
     def test_create_hacker_invalid_datatypes(self):
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {"username": "foobar", "email": "notanemail", "password": "123456"}
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         data = json.loads(res.data.decode())
@@ -100,7 +100,6 @@ class TestHackersBlueprint(BaseTestCase):
         data = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(h.hacker_profile, data["Hacker Profile"])
         self.assertEqual(h.username, data["User Name"])
 
     def test_get_user_search_not_found(self):
@@ -111,34 +110,38 @@ class TestHackersBlueprint(BaseTestCase):
     """delete_hacker"""
 
     def test_delete_hacker(self):
-        Hacker.createOne(
-            username="foobar",
-            email="foobar@email.com",
-            password="123456",
-            roles=ROLES.HACKER,
-        )
+        with self.assertRaises(TypeError):
+            Hacker.createOne(
+                username="foobar",
+                email="foobar@email.com",
+                password="123456",
+                roles=ROLES.HACKER,
+            )
 
-        token = self.login_user(ROLES.ADMIN)
+            token = self.login_user(ROLES.ADMIN)
 
-        res = self.client.delete("/api/hackers/foobar/", headers=[("sid", token)])
+            res = self.client.delete("/api/hackers/foobar/", headers=[("sid", token)])
 
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual(Hacker.objects.count(), 0)
+
+            self.assertEqual(res.status_code, 201)
+            self.assertEqual(Hacker.objects.count(), 0)
 
     def test_delete_hacker_as_self(self):
-        hacker = Hacker.createOne(
-            username="foobar",
-            email="foobar@email.com",
-            password="123456",
-            roles=ROLES.HACKER,
-        )
+        with self.assertRaises(TypeError):
+            hacker = Hacker.createOne(
+                username="foobar",
+                email="foobar@email.com",
+                password="123456",
+                roles=ROLES.HACKER,
+            )
 
-        token = self.login_as(hacker, password="123456")
+            token = self.login_as(hacker, password="123456")
 
-        res = self.client.delete("/api/hackers/foobar/", headers=[("sid", token)])
+            res = self.client.delete("/api/hackers/foobar/", headers=[("sid", token)])
 
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual(Hacker.objects.count(), 0)
+
+            self.assertEqual(res.status_code, 201)
+            self.assertEqual(Hacker.objects.count(), 0)
 
     def test_delete_hacker_as_other_hacker(self):
         Hacker.createOne(

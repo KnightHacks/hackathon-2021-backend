@@ -15,21 +15,32 @@ from src.models.user import User
 from mongoengine import signals
 
 
-class HackerProfile(db.EmbeddedDocument):
-    school_name = db.StringField()
-    grad_year = db.IntField()
-    resume = db.URLField()
-    socials = db.ListField(db.StringField())
+class Education_Info(db.EmbeddedDocument):
+    college = db.StringField()
+    major = db.StringField()
+    graduation_date = db.IntField()
+
+
+class Socials(db.EmbeddedDocument):
+    github = db.StringField()
+    linkedin = db.StringField()
 
 
 class Hacker(User):  # Stored in the "user" collection
     first_name = db.StringField()
     last_name = db.StringField()
     phone_number = db.StringField()
-    tracks = db.ListField(db.StringField())
-    current_status = db.BooleanField()
-    hacker_profile = db.EmbeddedDocumentField(HackerProfile)
     isaccepted = db.BooleanField(default=False)
+    can_share_info = db.BooleanField(default=False)
+    rsvp_status = db.BooleanField(default=False)
+    beginner = db.BooleanField(default=False)
+    ethnicity = db.StringField()
+    pronouns = db.StringField()
+    edu_info = db.EmbeddedDocumentField(Education_Info)
+    resume = db.FileField()
+    socials = db.EmbeddedDocumentField(Socials)
+    why_attend = db.StringField(max_length=200)
+    what_learn = db.ListField()
 
 
 signals.pre_delete.connect(User.pre_delete, sender=Hacker)

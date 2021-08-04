@@ -16,38 +16,38 @@ class TestGroupsBlueprint(BaseTestCase):
         """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "conroy",
                     "email": "conroy@gmail.com",
-                    "password": "fdsagfwedgasd",
+                    "password": "fdsagfwedgasd"
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data"
         )
 
         res2 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "john",
                     "email": "john@gmail.com",
-                    "password": "fgnjmdsftgjh",
+                    "password": "fgnjmdsftgjh"
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data"
         )
 
         res3 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "doe",
                     "email": "doe@gmail.com",
-                    "password": "sdfghjk",
+                    "password": "sdfghjk"
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data"
         )
 
         self.assertEqual(res1.status_code, 201)
@@ -93,38 +93,38 @@ class TestGroupsBlueprint(BaseTestCase):
         """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "conroy",
                     "email": "conroy@gmail.com",
                     "password": "fdsagfwedgasd",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res2 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "john",
                     "email": "john@gmail.com",
                     "password": "fgnjmdsftgjh",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res3 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "doe",
                     "email": "doe@gmail.com",
                     "password": "sdfghjk",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(res1.status_code, 201)
@@ -159,38 +159,38 @@ class TestGroupsBlueprint(BaseTestCase):
         """create hackers to put inside groups"""
         res1 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "conroy",
                     "email": "conroy@gmail.com",
                     "password": "fdsagfwedgasd",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res2 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "john",
                     "email": "john@gmail.com",
                     "password": "fgnjmdsftgjh",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res3 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "doe",
                     "email": "doe@gmail.com",
                     "password": "sdfghjk",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(res1.status_code, 201)
@@ -243,38 +243,38 @@ class TestGroupsBlueprint(BaseTestCase):
         """create hackers to put inside group"""
         res1 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "conroy",
                     "email": "conroy@gmail.com",
                     "password": "fdsagfwedgasd",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res2 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "john",
                     "email": "john@gmail.com",
                     "password": "fgnjmdsftgjh",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         res3 = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "username": "doe",
                     "email": "doe@gmail.com",
                     "password": "sdfghjk",
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(res1.status_code, 201)

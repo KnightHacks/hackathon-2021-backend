@@ -21,8 +21,7 @@ class TestAdminBlueprint(BaseTestCase):
                 {
                     "username": "foobar",
                     "email": "foobar@email.com",
-                    "password": "123456",
-                    "date": now.isoformat(),
+                    "password": "123456"
                 }
             ),
             content_type="application/json",

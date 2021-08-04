@@ -7,24 +7,23 @@
 
         create_hacker()
 
-    Variables:
-
-        HACKER_PROFILE_FIELDS
-
 """
-from flask import request
+from flask import request, make_response, json
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
-from werkzeug.exceptions import BadRequest, Conflict, NotFound, Unauthorized
-import dateutil.parser
+from werkzeug.exceptions import (
+    BadRequest,
+    Conflict,
+    NotFound,
+    Unauthorized,
+    UnsupportedMediaType
+)
 from src.models.hacker import Hacker
 from src.models.user import ROLES
 from src.common.decorators import authenticate, privileges
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
-
-HACKER_PROFILE_FIELDS = ("resume", "socials", "school_name", "grad_year")
 
 
 @hackers_blueprint.post("/hackers/")
@@ -37,9 +36,20 @@ def create_hacker():
     summary: Create Hacker
     requestBody:
         content:
-            application/json:
+            multipart/form-data:
                 schema:
-                    $ref: '#/components/schemas/Hacker'
+                    type: object
+                    properties:
+                        hacker:
+                            $ref: '#/components/schemas/Hacker'
+                        resume:
+                             type: string
+                             format: binary
+                encoding:
+                    hacker:
+                        contentType: application/json
+                    resume:
+                        contentType: application/pdf
         description: Created Hacker Object
         required: true
     responses:
@@ -52,20 +62,37 @@ def create_hacker():
         5XX:
             description: Unexpected error.
     """
-    data = request.get_json()
+    data = json.loads(request.form.get("hacker"))
+    resume = None
+
+    if "roles" in data:
+        del data["roles"]
+
+    if "date" in data:
+        del data["date"]
+
+    if "email_verification" in data:
+        del data["email_verification"]
+
+    if "email_token_hash" in data:
+        del data["email_token_hash"]
 
     if not data:
         raise BadRequest()
 
-    if data.get("date"):
-        data["date"] = dateutil.parser.parse(data["date"])
+    if "resume" in request.files:
+        resume = request.files["resume"]
 
-    data["hacker_profile"] = {}
-    for f in HACKER_PROFILE_FIELDS:
-        data["hacker_profile"][f] = data.pop(f, None)
+        if resume.content_type != "application/pdf":
+            raise UnsupportedMediaType()
 
     try:
-        hacker = Hacker.createOne(**data, roles=ROLES.HACKER)
+        hacker = Hacker(**data, roles=ROLES.HACKER)
+
+        if resume:
+            hacker.resume.put(resume, content_type="application/pdf")
+
+        hacker.save()
 
     except NotUniqueError:
         raise Conflict("Sorry, that username or email already exists.")
@@ -85,8 +112,49 @@ def create_hacker():
     return res, 201
 
 
+@hackers_blueprint.get("/hackers/<username>/resume/")
+def get_hacker_resume(username: str):
+    """
+    Get Hacker Resume
+    ---
+    tags:
+        - hacker
+    parameters:
+        - name: username
+          in: path
+          schema:
+              type: string
+          description: The hacker's username
+          required: true
+    responses:
+        200:
+            content:
+                application/pdf:
+                    schema:
+                        type: string
+                        format: binary
+    """
+
+    hacker = Hacker.objects(
+        username=username
+    ).exclude(*Hacker.private_fields).first()
+
+    if not hacker:
+        raise NotFound("A hacker with that username does not exist")
+
+    if not hacker.resume:
+        raise NotFound("There is no resume for this hacker")
+
+    resume = hacker.resume.read()
+
+    res = make_response(resume)
+    res.headers["Content-Type"] = "application/pdf"
+
+    return res
+
+
 @hackers_blueprint.get("/hackers/<username>/")
-def get_user_search(username: str):
+def get_hacker_search(username: str):
     """
     Retrieves a hacker's profile using their username.
     ---
@@ -105,12 +173,14 @@ def get_user_search(username: str):
             description: OK
 
     """
-    hacker = Hacker.objects(username=username).first()
+    hacker = Hacker.objects(username=username).exclude(
+        *Hacker.private_fields).first()
+
     if not hacker:
         raise NotFound()
 
     res = {
-        "Hacker Profile": hacker.hacker_profile,
+        "Hacker Profile": hacker,
         "User Name": hacker.username,
         "message": "Successfully reached profile.",
         "status": "success"
@@ -255,12 +325,8 @@ def hacker_settings(username: str):
     """
 
     hacker = Hacker.objects(username=username).exclude(
-        "password",
-        "date",
-        "email_token_hash",
-        "tracks",
-        "hacker_profile",
-        "id").first()
+        *Hacker.private_fields
+    ).first()
 
     if not hacker:
         raise NotFound()
@@ -338,7 +404,7 @@ def get_all_hackers():
         5XX:
             description: Unexpected error (the API issue).
     """
-    hackers = Hacker.objects()
+    hackers = Hacker.objects().exclude(*Hacker.private_fields)
 
     if not hackers:
         raise NotFound("There are no hackers created.")
