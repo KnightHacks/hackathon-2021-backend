@@ -24,7 +24,7 @@ events_blueprint = Blueprint("events", __name__)
 EVENT_FIELDS = ("name", "date_time", "description",
                 "image", "link", "end_date_time",
                 "attendees_count", "event_status",
-                "sponsors", "user")
+                "sponsors", "user", "event_type", "loc", "description")
 
 
 @events_blueprint.post("/events/create_event/")
