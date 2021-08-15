@@ -10,11 +10,6 @@ Hacker:
     email:
       type: string
       example: foobar@email.com
-    username:
-      type: string
-    password:
-      type: string
-      format: password
     phone_number:
       type: string
       example: +1 (555) 555-5555
@@ -42,26 +37,6 @@ Hacker:
     current_status:
       type: boolean
       description: If the Hacker is accepted or not.
-Sponsor:
-  type: object
-  properties:
-    sponsor_name:
-      type: string
-      example: "Microsoft"
-    logo:
-      type: uri
-      example: https://blob.knighthacks.org/somelogo.png
-    subscription_tier:
-      type: string
-      example: "Gold"
-    email:
-      type: string
-      example: foobar@email.com
-    username:
-      type: string
-    password:
-      type: string
-      format: password
 Event:
   type: object
   properties:
@@ -90,12 +65,6 @@ Event:
     event_status:
       type: string
       example: cancelled
-    sponsors:
-      type: array
-      items:
-        $ref: '#/components/schemas/Sponsor'
-    user:
-      type: string
 ClubEvent:
   type: object
   properties:

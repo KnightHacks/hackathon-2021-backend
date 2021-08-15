@@ -1,7 +1,6 @@
 # flake8: noqa
 import json
 from src.models.hacker import Hacker
-from src.models.sponsor import Sponsor
 from tests.base import BaseTestCase
 
 
@@ -18,5 +17,3 @@ class TestStatsBlueprint(BaseTestCase):
         self.assertEqual(res.status_code, 200)
 
         self.assertEqual(data["hackers"], 0)
-        self.assertEqual(data["sponsors"], 0)
-        self.assertEqual(data["total"], 0)

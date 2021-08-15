@@ -7,7 +7,7 @@
         init_default_users()
 
 """
-from src.models.user import User, ROLES
+from src.models.user import User
 
 
 def init_default_users():
@@ -23,7 +23,6 @@ def init_default_users():
                     username=notion_uname,
                     password=notion_passwd,
                     email_verification=True,
-                    roles=ROLES.EVENTORG
                 )
             except Exception as err:
                 app.logger.error("Notion Job User was not created!", err)
