@@ -10,6 +10,10 @@
 
 """
 from celery import Celery
+from celery.signals import worker_process_init
+import sentry_sdk
+from sentry_sdk.integrations.celery import FlaskIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 
 def make_celery(app) -> Celery:
@@ -31,4 +35,17 @@ def make_celery(app) -> Celery:
                 return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
+
+    @worker_process_init.connect
+    def init_sentry(*args, **kwargs):
+        if app.config.get("SENTRY_DSN"):
+            sentry_sdk.init(
+                dsn=app.config.get("SENTRY_DSN"),
+                integrations=[
+                    FlaskIntegration(),
+                    CeleryIntegration()
+                ],
+                traces_sample_rate=1.0
+            )
+
     return celery

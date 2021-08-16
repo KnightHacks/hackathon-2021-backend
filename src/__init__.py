@@ -93,7 +93,8 @@ def create_app():
     if app.config.get("DEBUG"):
         environ["FLASK_ENV"] = "development"  # pragma: nocover
         environ["FLASK_DEBUG"] = "1"  # pragma: nocover
-    elif app.config.get("SENTRY_DSN"):
+
+    if app.config.get("SENTRY_DSN"):
         """Initialize Sentry if we're in production"""
         sentry_sdk.init(
             dsn=app.config.get("SENTRY_DSN"),

@@ -13,7 +13,7 @@ from src.models.club_event import ClubEvent
 from mongoengine.errors import ValidationError
 import requests
 import dateutil.parser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @celery.task
@@ -25,7 +25,14 @@ def refresh_notion_clubevents():
             p = r["properties"]
 
             def fix_date(d: str) -> datetime:
+                if not d:
+                    return None
                 return dateutil.parser.parse(d)
+
+            start_date = fix_date(p["Date"]["date"]["start"])
+            end_date = fix_date(p["Date"]["date"]["end"])
+            if end_date is None:
+                end_date = start_date + timedelta(hours=1)
 
             return {
                 "name": p["Name"]["title"][0]["plain_text"],
@@ -33,8 +40,8 @@ def refresh_notion_clubevents():
                     map(lambda t: t["name"], p["Tags"]["multi_select"])
                 ),
                 "presenter": p["Presenter"]["rich_text"][0]["plain_text"],
-                "start": fix_date(p["Date"]["date"]["start"]),
-                "end": fix_date(p["Date"]["date"]["end"]),
+                "start": start_date,
+                "end": end_date,
                 "description": p["Description"]["rich_text"][0]["plain_text"],
                 "location": p["Location"]["rich_text"][0]["plain_text"]
             }
@@ -47,7 +54,7 @@ def refresh_notion_clubevents():
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {app.config.get('NOTION_TOKEN')}",
-                "Notion-Version": "2021-05-13"
+                "Notion-Version": "2021-07-27"
             },
             json={
                 "filter": {
@@ -91,4 +98,8 @@ def refresh_notion_clubevents():
             except ValidationError:
                 app.logger.warning(
                     "Invalid Club Event(s) from Notion, did not refresh!"
+                )
+            else:
+                app.logger.info(
+                    "Club Event(s) grabbed from Notion, refresh successfull!"
                 )
