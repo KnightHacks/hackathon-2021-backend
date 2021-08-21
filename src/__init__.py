@@ -89,6 +89,10 @@ def create_app():
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")
     app.config.from_object(app_settings)
 
+    if (app_settings == "src.config.ProductionConfig" and
+            not app.config.get("SEND_MAIL")):
+        app.logger.warning("Sending Emails disabled on production!")
+
     """Set FLASK_ENV and FLASK_DEBUG cause that doesn't happen auto anymore"""
     if app.config.get("DEBUG"):
         environ["FLASK_ENV"] = "development"  # pragma: nocover
