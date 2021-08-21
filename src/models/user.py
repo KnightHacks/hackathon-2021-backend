@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 from src import db, bcrypt
 from src.models import BaseDocument
 from enum import Flag, auto
-from mongoengine import signals
+
 
 class User(BaseDocument):
     meta = {"allow_inheritance": True,
@@ -39,7 +39,7 @@ class User(BaseDocument):
                     seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]
                 )
             ),
-            sub=self.username
+            sub=self.email
         )
 
         conf = app.config["BCRYPT_LOG_ROUNDS"]
@@ -55,4 +55,3 @@ class User(BaseDocument):
         """Decodes the email token"""
         return decode_jwt(email_token)["sub"]
 
-signals.pre_delete.connect(User.pre_delete, sender=User)

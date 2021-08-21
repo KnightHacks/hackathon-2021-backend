@@ -16,17 +16,14 @@
 """
 from flask import Blueprint, request
 from werkzeug.exceptions import BadRequest, NotFound
-from src.common.decorators import authenticate, privileges
 from flask_socketio import Namespace, emit
 from src.models.live_update import LiveUpdate
-from src.models.user import ROLES
+
 
 live_updates_blueprint = Blueprint("live_updates", __name__)
 
 
 @live_updates_blueprint.route("/live_updates/", methods=["PUT"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
 def new_update(_):
     """
     Adds an update
@@ -72,8 +69,6 @@ def new_update(_):
 
 
 @live_updates_blueprint.route("/live_updates/all/", methods=["DELETE"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_all_updates(_):
     """
     Deletes all updates
@@ -102,8 +97,6 @@ def delete_all_updates(_):
 
 
 @live_updates_blueprint.route("/live_updates/<id>/", methods=["DELETE"])
-@authenticate
-@privileges(ROLES.MOD | ROLES.ADMIN)
 def delete_update(_, id: int):
     """
     Deletes an Update

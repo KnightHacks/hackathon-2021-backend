@@ -30,6 +30,3 @@ class Hacker(User):  # Stored in the "user" collection
     current_status = db.BooleanField()
     hacker_profile = db.EmbeddedDocumentField(HackerProfile)
     isaccepted = db.BooleanField(default=False)
-
-
-signals.pre_delete.connect(User.pre_delete, sender=Hacker)

@@ -83,16 +83,16 @@ def create_hacker():
     return res, 201
 
 
-@hackers_blueprint.get("/hackers/<username>/")
-def get_user_search(username: str):
+@hackers_blueprint.get("/hackers/<email>/")
+def get_user_search(email: str):
     """
-    Retrieves a hacker's profile using their username.
+    Retrieves a hacker's profile using their email.
     ---
     tags:
         - hacker
-    summary: Gets a hacker's profile from their username.
+    summary: Gets a hacker's profile from their email.
     parameters:
-        - name: username
+        - name: email
           in: path
           schema:
               type: string
@@ -103,30 +103,30 @@ def get_user_search(username: str):
             description: OK
 
     """
-    hacker = Hacker.objects(username=username).first()
+    hacker = Hacker.objects(email=email).first()
     if not hacker:
         raise NotFound()
 
     res = {
         "Hacker Profile": hacker.hacker_profile,
-        "User Name": hacker.username,
+        "Email": hacker.email,
         "message": "Successfully reached profile.",
         "status": "success"
     }
 
     return res, 200
 
-@hackers_blueprint.put("/hackers/<username>/accept/")
-def accept_hacker(_, username: str):
+@hackers_blueprint.put("/hackers/<email>/accept/")
+def accept_hacker(_, email: str):
     """
     Accepts a Hacker
     ---
     tags:
         - hacker
     parameters:
-        - id: username
+        - id: email
           in: path
-          description: username
+          description: email
           required: true
           schema:
             type: string
@@ -139,7 +139,7 @@ def accept_hacker(_, username: str):
             description: Unexpected error.
     """
 
-    hacker = Hacker.objects(username=username).first()
+    hacker = Hacker.objects(email=email).first()
     if not hacker:
         raise NotFound()
 
