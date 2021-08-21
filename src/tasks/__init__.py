@@ -12,7 +12,7 @@
 from celery import Celery
 from celery.signals import worker_process_init
 import sentry_sdk
-from sentry_sdk.integrations.celery import FlaskIntegration
+from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
 
 
