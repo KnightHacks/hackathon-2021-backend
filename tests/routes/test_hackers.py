@@ -14,13 +14,13 @@ class TestHackersBlueprint(BaseTestCase):
         now = datetime.now()
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "email": "foobar@email.com",
                     "date": now.isoformat(),
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         self.assertEqual(res.status_code, 201)
@@ -28,7 +28,7 @@ class TestHackersBlueprint(BaseTestCase):
 
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
-            "/api/hackers/", data=json.dumps({}), content_type="application/json"
+            "/api/hackers/", data={"hacker": json.dumps({})}, content_type="multipart/form-data"
         )
 
         data = json.loads(res.data.decode())
@@ -45,13 +45,13 @@ class TestHackersBlueprint(BaseTestCase):
 
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {
                     "email": "foobar@email.com",
                     "date": now.isoformat(),
                 }
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         data = json.loads(res.data.decode())

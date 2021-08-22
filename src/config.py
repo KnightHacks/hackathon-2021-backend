@@ -75,6 +75,7 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_MINUTES = 1440
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
 
 
 class ProductionConfig(BaseConfig):

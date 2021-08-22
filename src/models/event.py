@@ -24,4 +24,7 @@ class Event(BaseDocument):
     end_date_time = db.DateTimeField(required=True)
     attendees_count = db.IntField()
     event_status = db.StringField()
+    event_type = db.StringField()
+    loc = db.StringField()
+
 
