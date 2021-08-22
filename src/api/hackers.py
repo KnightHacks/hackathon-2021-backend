@@ -109,6 +109,7 @@ def create_hacker():
 
     return res, 201
 
+
 @hackers_blueprint.get("/hackers/<email>/resume/")
 def get_hacker_resume(email: str):
     """
@@ -184,6 +185,7 @@ def get_hacker_search(email: str):
     }
 
     return res, 200
+
 
 @hackers_blueprint.put("/hackers/<email>/accept/")
 def accept_hacker(_, email: str):
