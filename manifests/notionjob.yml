@@ -16,7 +16,12 @@ spec:
               - /bin/bash
               - -c
             args:
-              - curl -X POST -H "Content-Type: application/json" -d '{"username":"'"$NOTION_CRONJOB_USERNAME"'","password":"'"$NOTION_CRONJOB_PASSWORD"'"}' -c /tmp/cookies http://kh-backend/api/auth/login/ && curl -X PUT -b /tmp/cookies http://kh-backend/api/club/refresh_events/
+              - |-
+                curl -X POST 
+                -H "Content-Type: application/json" 
+                -d '{"username":"'"$NOTION_CRONJOB_USERNAME"'","password":"'"$NOTION_CRONJOB_PASSWORD"'"}' 
+                -c /tmp/cookies http://kh-backend/api/auth/login/ && 
+                curl -X PUT -b /tmp/cookies http://kh-backend/api/club/refresh_events/
             envFrom:
             - secretRef:
                 name: kh-notionjob-secret
