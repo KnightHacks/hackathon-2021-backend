@@ -72,9 +72,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      CLUSTER_NAME: knighthacks
-      REGISTRY_NAME: knighthacks
-      CLUSTER_RESOURCE_GROUP: hackathon
+      CLUSTER_NAME: 2021-hackathon-k8s
+      REGISTRY_NAME: knighthacks2021
+      CLUSTER_RESOURCE_GROUP: 2021-hackathon-k8s-cluster
       NAMESPACE: production
       SECRET: backendpullsecret
     steps:
