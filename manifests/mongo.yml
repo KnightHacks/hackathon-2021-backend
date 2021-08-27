@@ -15,12 +15,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: kh-mongo-volume
 spec:
-  storageClassName: azureDisk
+  storageClassName: default
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 24Gi
 ---
 apiVersion: v1
 kind: Pod

@@ -49,7 +49,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: kh-backend
-  namespace: default
+  namespace: production
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

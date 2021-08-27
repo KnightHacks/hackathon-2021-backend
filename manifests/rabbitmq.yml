@@ -15,7 +15,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: kh-rabbitmq-volume
 spec:
-  storageClassName: azureDisk
+  storageClassName: default
   accessModes:
     - ReadWriteOnce
   resources:
