@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: kh-backend-celery
-          image: <registry-name>.azurecr.io/backend
+          image: knighthacks2021.azurecr.io/backend
           command:
             - "bash"
             - "-c"

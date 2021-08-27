@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: kh-backend
-          image: <registry-name>.azurecr.io/backend
+          image: knighthacks2021.azurecr.io/backend
           ports:
             - containerPort: 5000
           resources:
