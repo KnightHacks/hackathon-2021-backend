@@ -10,6 +10,8 @@ from src.tasks.mail_tasks import send_async_email
 
 def send_verification_email(user, token):
     """Sends a verification email to the user"""
+    if not currapp.config["SEND_MAIL"]:
+        return
     href = f"{currapp.config['FRONTEND_URL']}/verifyemail?token={token}"
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(

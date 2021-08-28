@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kh-backend-celery
+  labels:
+    app: kh-backend-celery
+spec:
+  ports:
+    - port: 80
+      targetPort: 5000
+      protocol: TCP
+  selector:
+    app: kh-backend-celery
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kh-backend-celery
+spec:
+  selector:
+    matchLabels:
+      app: kh-backend-celery
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kh-backend-celery
+    spec:
+      containers:
+        - name: kh-backend-celery
+          image: knighthacks2021.azurecr.io/backend
+          command:
+            - "bash"
+            - "-c"
+            - "celery -A src.celery worker -l info -P gevent"
+          envFrom:
+          - configMapRef:
+              name: kh-backend-config
+          - secretRef:
+              name: kh-backend-secret

@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kh-notionjob
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: kh-notionjob
+            image: torrentofshame/alpine-curl
+            imagePullPolicy: IfNotPresent
+            command:
+              - /bin/bash
+              - -c
+            args:
+              - |-
+                curl -X POST 
+                -H "Content-Type: application/json" 
+                -d '{"username":"'"$NOTION_CRONJOB_USERNAME"'","password":"'"$NOTION_CRONJOB_PASSWORD"'"}' 
+                -c /tmp/cookies http://kh-backend/api/auth/login/ && 
+                curl -X PUT -b /tmp/cookies http://kh-backend/api/club/refresh_events/
+            envFrom:
+            - secretRef:
+                name: kh-notionjob-secret
+          restartPolicy: OnFailure

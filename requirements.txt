@@ -11,6 +11,7 @@ Flask-Mail
 celery
 Flask-Bcrypt
 sentry-sdk[flask]
+sentry-sdk[celery]
 Flask-SocketIO
 kombu
 gunicorn
