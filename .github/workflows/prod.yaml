@@ -1,0 +1,148 @@
+name: Backend Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+    - name: Use flake8
+      run: |
+        flake8 --ignore=E121,E123,W503,W292 .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+    - name: Test the app
+      run: |
+        coverage run --source=src -m src test
+        coverage xml
+    - name: Comment Test Report
+      uses: mikepenz/action-junit-report@v2
+      with:
+        report_paths: '**/junit/test-results.xml'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Comment Coverage
+      uses: 5monkeys/cobertura-action@master
+      with:
+        path: coverage.xml
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        minimum_coverage: 75
+
+  sentry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: 'knight-hacks'
+          SENTRY_PROJECT: 'hackathon-backend'
+        with:
+          environment: production
+  
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLUSTER_NAME: 2021-hackathon-k8s
+      REGISTRY_NAME: knighthacks2021
+      CLUSTER_RESOURCE_GROUP: 2021-hackathon-k8s-cluster
+      NAMESPACE: production
+      SECRET: backendpullsecret
+    steps:
+      - uses: actions/checkout@v2
+
+      # Connect to ACR
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - run: |
+          docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
+          docker push ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
+
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+
+      # Create namespace if it doesn't exist
+      - run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+
+      # Create image pull secret for ACR
+      - uses: azure/k8s-create-secret@v1
+        with:
+          container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: ${{ env.SECRET }}
+          namespace: ${{ env.NAMESPACE }}
+          force: true
+
+      # Create backend secret
+      - uses: azure/k8s-create-secret@v1
+        with:
+          secret-name: kh-backend-secret
+          namespace: ${{ env.NAMESPACE }}
+          secret-type: generic
+          arguments: >
+            --from-literal=MAIL_SERVER=${{ secrets.MAIL_SERVER }}
+            --from-literal=MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+            --from-literal=MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            --from-literal=MAIL_DEFAULT_SENDER=${{ secrets.MAIL_DEFAULT_SENDER }}
+            --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
+            --from-literal=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+
+      # Create NotionJob secret
+      - uses: azure/k8s-create-secret@v1
+        with:
+          secret-name: kh-notionjob-secret
+          namespace: ${{ env.NAMESPACE }}
+          secret-type: generic
+          arguments: >
+            --from-literal=NOTIONJOB_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
+            --from-literal=NOTIONJOB_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
+
+      # Deploy to AKS
+      - uses: azure/k8s-deploy@v1
+        with:
+          manifests: |
+            manifests/backend.yml
+            manifests/celery.yml
+            manifests/config.yml
+            manifests/ingress.yml
+            manifests/mongo.yml
+            manifests/notionjob.yml
+            manifests/rabbitmq.yml
+          images: |
+            ${{ env.REGISTRY_NAME }}.azurecr.io/backend }}:${{ github.sha }}
+          imagepullsecrets: |
+            ${{ env.SECRET }}
+            kh-backend-secret
+          namespace: ${{ env.NAMESPACE }}

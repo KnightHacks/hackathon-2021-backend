@@ -56,6 +56,7 @@ class BaseConfig:
     NOTION_DB_ID = os.getenv("NOTION_DB_ID")
     NOTION_TOKEN = os.getenv("NOTION_TOKEN")
     NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
+    SEND_MAIL = True
 
 
 class DevelopmentConfig(BaseConfig):
@@ -64,6 +65,7 @@ class DevelopmentConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 4
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
+    SEND_MAIL = False
 
 
 class TestingConfig(BaseConfig):
@@ -76,6 +78,7 @@ class TestingConfig(BaseConfig):
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
     PRESERVE_CONTEXT_ON_EXCEPTION = False
+    SEND_MAIL = False
 
 
 class ProductionConfig(BaseConfig):

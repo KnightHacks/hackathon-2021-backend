@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kh-rabbitmq
+spec:
+  ports:
+    - port: 5672
+      protocol: TCP
+  selector:
+    app: kh-rabbitmq
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kh-rabbitmq-volume
+spec:
+  storageClassName: default
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kh-rabbitmq
+  labels:
+    app: kh-rabbitmq
+spec:
+  volumes:
+    - name: kh-rabbitmq-volume
+      persistentVolumeClaim:
+        claimName: kh-rabbitmq-volume
+  containers:
+    - name: kh-rabbitmq
+      image: rabbitmq
+      ports:
+        - containerPort: 5672
+      volumeMounts:
+        - mountPath: "/var/lib/rabbitmq/mnesia"
+          name: kh-rabbitmq-volume
