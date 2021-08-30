@@ -3,7 +3,6 @@ import json
 from tests.base import BaseTestCase
 from src import app, socketio
 from src.models.live_update import LiveUpdate
-from src.models.user import ROLES
 
 
 class TestLiveUpdatesBlueprint(BaseTestCase):
