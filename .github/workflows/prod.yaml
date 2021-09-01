@@ -118,6 +118,8 @@ jobs:
             --from-literal=MAIL_DEFAULT_SENDER=${{ secrets.MAIL_DEFAULT_SENDER }}
             --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
             --from-literal=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            --from-literal=NOTION_DB_ID=${{ secrets.NOTION_DB_ID }}
+            --from-literal=NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
 
       # Create NotionJob secret
       - uses: azure/k8s-create-secret@v1
