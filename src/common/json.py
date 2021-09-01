@@ -21,7 +21,7 @@ class JSONEncoderBase(JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, datetime.date):
-                return obj.isoformat()
+                return obj.isoformat() + "Z"
             elif isinstance(obj, ROLES):
                 return [r.name for r in ROLES if r & obj]
             elif isinstance(obj, BaseDocument):
