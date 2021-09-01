@@ -55,6 +55,7 @@ class BaseConfig:
     NOTION_CRONJOB_PASSWORD = os.getenv("NOTION_CRONJOB_PASSWORD")
     NOTION_DB_ID = os.getenv("NOTION_DB_ID")
     NOTION_TOKEN = os.getenv("NOTION_TOKEN")
+    NOTION_VERSION = os.getenv("NOTION_VERSION")
     NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
     SEND_MAIL = True
 

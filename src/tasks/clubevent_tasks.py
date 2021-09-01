@@ -54,7 +54,7 @@ def refresh_notion_clubevents():
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {app.config.get('NOTION_TOKEN')}",
-                "Notion-Version": "2021-07-27"
+                "Notion-Version": app.config.get("NOTION_VERSION")
             },
             json={
                 "filter": {
