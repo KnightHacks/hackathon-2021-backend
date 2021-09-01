@@ -118,8 +118,6 @@ jobs:
             --from-literal=MAIL_DEFAULT_SENDER=${{ secrets.MAIL_DEFAULT_SENDER }}
             --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
             --from-literal=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-            --from-literal=NOTIONJOB_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
-            --from-literal=NOTIONJOB_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
 
       # Create NotionJob secret
       - uses: azure/k8s-create-secret@v1
@@ -128,8 +126,8 @@ jobs:
           namespace: ${{ env.NAMESPACE }}
           secret-type: generic
           arguments: >
-            --from-literal=NOTIONJOB_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
-            --from-literal=NOTIONJOB_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
+            --from-literal=NOTION_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
+            --from-literal=NOTION_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
 
       # Deploy to AKS
       - uses: azure/k8s-deploy@v1
