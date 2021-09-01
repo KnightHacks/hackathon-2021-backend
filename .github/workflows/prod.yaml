@@ -142,8 +142,7 @@ jobs:
             manifests/mongo.yml
             manifests/notionjob.yml
             manifests/rabbitmq.yml
-          images: |
-            ${{ env.REGISTRY_NAME }}.azurecr.io/backend }}:${{ github.sha }}
+          images: '${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}'
           imagepullsecrets: |
             ${{ env.SECRET }}
             kh-backend-secret
