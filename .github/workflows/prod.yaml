@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "src/**"
+      - "manifests/**"
+      - "requirements.txt"
+      - "Dockerfile"
 
 env:
   CLUSTER_NAME: 2021-hackathon-k8s
@@ -19,14 +24,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+        
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}
+      
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+      
     - name: Use flake8
       run: flake8 --ignore=E121,E123,W503,W292 .
 
@@ -35,14 +48,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+        
     - name: Test the app
       run: coverage run --source=src -m src test
 
