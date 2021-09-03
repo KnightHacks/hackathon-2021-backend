@@ -1,12 +1,21 @@
 name: Backend Production
+concurrency: deploy_workflow
 
 on:
   push:
     branches:
       - main
 
+env:
+  CLUSTER_NAME: 2021-hackathon-k8s
+  REGISTRY_NAME: knighthacks2021
+  CLUSTER_RESOURCE_GROUP: 2021-hackathon-k8s-cluster
+  SECRET: backendpullsecret
+
 jobs:
+
   lint:
+    name: Run Linter
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,10 +28,10 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
     - name: Use flake8
-      run: |
-        flake8 --ignore=E121,E123,W503,W292 .
+      run: flake8 --ignore=E121,E123,W503,W292 .
 
   test:
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -35,78 +44,56 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
     - name: Test the app
-      run: |
-        coverage run --source=src -m src test
-        coverage xml
-    - name: Comment Test Report
-      uses: mikepenz/action-junit-report@v2
-      with:
-        report_paths: '**/junit/test-results.xml'
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Comment Coverage
-      uses: 5monkeys/cobertura-action@master
-      with:
-        path: coverage.xml
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        minimum_coverage: 75
+      run: coverage run --source=src -m src test
 
-  sentry:
+  staging:
+    name: Deploy to Staging
+    needs:
+      - lint
+      - test
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: 'knight-hacks'
-          SENTRY_PROJECT: 'hackathon-backend'
-        with:
-          environment: production
-  
-  deploy:
-    runs-on: ubuntu-latest
+    environment:
+      name: Staging
+      url: https://staging.api.knighthacks.org
     env:
-      CLUSTER_NAME: 2021-hackathon-k8s
-      REGISTRY_NAME: knighthacks2021
-      CLUSTER_RESOURCE_GROUP: 2021-hackathon-k8s-cluster
-      NAMESPACE: production
-      SECRET: backendpullsecret
+      NAMESPACE: staging
     steps:
       - uses: actions/checkout@v2
 
-      # Connect to ACR
-      - uses: azure/docker-login@v1
+      - name: Connect to ACR
+        uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - run: |
+      - name: Build and Push to ACR
+        run: |
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
 
-      - uses: azure/aks-set-context@v1
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
-      # Create namespace if it doesn't exist
-      - run: |
+      - name: Create k8s namespace if it doesn't exist
+        run: |
           kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
 
-      # Create image pull secret for ACR
-      - uses: azure/k8s-create-secret@v1
+      - name: Create image pull secret for ACR
+        uses: azure/k8s-create-secret@v1
         with:
           container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
           container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
           container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           secret-name: ${{ env.SECRET }}
           namespace: ${{ env.NAMESPACE }}
-          force: true
 
-      # Create backend secret
-      - uses: azure/k8s-create-secret@v1
+      - name: Create backend secret
+        uses: azure/k8s-create-secret@v1
         with:
           secret-name: kh-backend-secret
           namespace: ${{ env.NAMESPACE }}
@@ -118,11 +105,16 @@ jobs:
             --from-literal=MAIL_DEFAULT_SENDER=${{ secrets.MAIL_DEFAULT_SENDER }}
             --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
             --from-literal=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            --from-literal=SENTRY_ENV=${{ env.NAMESPACE }}
+            --from-literal=SENTRY_RELEASE=${{ github.sha }}
             --from-literal=NOTION_DB_ID=${{ secrets.NOTION_DB_ID }}
             --from-literal=NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
+            --from-literal=MAIL_SUPPRESS_SEND=false
+            --from-literal=SEND_MAIL=false
+            --from-literal=SUPPRESS_EMAIL=true
 
-      # Create NotionJob secret
-      - uses: azure/k8s-create-secret@v1
+      - name: Create notionjob secret
+        uses: azure/k8s-create-secret@v1
         with:
           secret-name: kh-notionjob-secret
           namespace: ${{ env.NAMESPACE }}
@@ -131,8 +123,11 @@ jobs:
             --from-literal=NOTION_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
             --from-literal=NOTION_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
 
-      # Deploy to AKS
-      - uses: azure/k8s-deploy@v1
+      - name: Modify Ingress manifest for staging environment
+        run: "sed -is \"s@api.@staging.api.@\" manifests/ingress.yml"
+
+      - name: Deploy to AKS
+        uses: azure/k8s-deploy@v1
         with:
           manifests: |
             manifests/backend.yml
@@ -147,3 +142,110 @@ jobs:
             ${{ env.SECRET }}
             kh-backend-secret
           namespace: ${{ env.NAMESPACE }}
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: 'knight-hacks'
+          SENTRY_PROJECT: 'hackathon-backend'
+        with:
+          environment: ${{ env.NAMESPACE }}
+
+  production:
+    name: Deploy to Production
+    needs: staging
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: https://api.knighthacks.org
+    env:
+      NAMESPACE: production
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Connect to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and Push to ACR
+        run: |
+          docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
+          docker push ${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}
+
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+
+      - name: Create k8s namespace if it doesn't exist
+        run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run -o json | kubectl apply -f -
+
+      - name: Create image pull secret for ACR
+        uses: azure/k8s-create-secret@v1
+        with:
+          container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
+          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+          secret-name: ${{ env.SECRET }}
+          namespace: ${{ env.NAMESPACE }}
+
+      - name: Create backend secret
+        uses: azure/k8s-create-secret@v1
+        with:
+          secret-name: kh-backend-secret
+          namespace: ${{ env.NAMESPACE }}
+          secret-type: generic
+          arguments: >
+            --from-literal=MAIL_SERVER=${{ secrets.MAIL_SERVER }}
+            --from-literal=MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
+            --from-literal=MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            --from-literal=MAIL_DEFAULT_SENDER=${{ secrets.MAIL_DEFAULT_SENDER }}
+            --from-literal=SECRET_KEY=${{ secrets.SECRET_KEY }}
+            --from-literal=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            --from-literal=SENTRY_ENV=${{ env.NAMESPACE }}
+            --from-literal=SENTRY_RELEASE=${{ github.sha }}
+            --from-literal=NOTION_DB_ID=${{ secrets.NOTION_DB_ID }}
+            --from-literal=NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
+
+      - name: Create notionjob secret
+        uses: azure/k8s-create-secret@v1
+        with:
+          secret-name: kh-notionjob-secret
+          namespace: ${{ env.NAMESPACE }}
+          secret-type: generic
+          arguments: >
+            --from-literal=NOTION_CRONJOB_USERNAME=${{ secrets.NOTIONJOB_CRONJOB_USERNAME }}
+            --from-literal=NOTION_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
+
+      - name: Deploy to AKS
+        uses: azure/k8s-deploy@v1
+        with:
+          manifests: |
+            manifests/backend.yml
+            manifests/celery.yml
+            manifests/config.yml
+            manifests/ingress.yml
+            manifests/mongo.yml
+            manifests/notionjob.yml
+            manifests/rabbitmq.yml
+          images: '${{ env.REGISTRY_NAME }}.azurecr.io/backend:${{ github.sha }}'
+          imagepullsecrets: |
+            ${{ env.SECRET }}
+            kh-backend-secret
+          namespace: ${{ env.NAMESPACE }}
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: 'knight-hacks'
+          SENTRY_PROJECT: 'hackathon-backend'
+        with:
+          environment: ${{ env.NAMESPACE }}
