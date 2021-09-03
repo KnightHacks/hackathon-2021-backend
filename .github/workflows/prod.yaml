@@ -124,7 +124,7 @@ jobs:
             --from-literal=NOTION_CRONJOB_PASSWORD=${{ secrets.NOTIONJOB_CRONJOB_PASSWORD }}
 
       - name: Modify Ingress manifest for staging environment
-        run: "sed -is \"s@api.@staging.api.@\" manifests/ingress.yml"
+        run: "sed -is \"s@api.@stagingapi.@\" manifests/ingress.yml"
 
       - name: Deploy to AKS
         uses: azure/k8s-deploy@v1
