@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: Staging
-      url: https://staging.api.knighthacks.org
+      url: https://stagingapi.knighthacks.org
     env:
       NAMESPACE: staging
     steps:
