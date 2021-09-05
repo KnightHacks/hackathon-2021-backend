@@ -21,7 +21,7 @@ class TestUserModel(BaseTestCase):
             email="foobar@email.com"
         )
 
-        user = User.findOne(username="foobar")
+        user = User.findOne(email="foobar@email.com")
 
         self.assertIsNone(user.id)
         self.assertEqual(user.email, "foobar@email.com")
