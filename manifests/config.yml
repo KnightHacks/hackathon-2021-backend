@@ -10,3 +10,4 @@ data:
   CELERY_BROKER_URL: "amqp://kh-rabbitmq"
   MAIL_PORT: "587"
   MAIL_USE_TLS: "true"
+  NOTION_VERSION: "2021-08-16"

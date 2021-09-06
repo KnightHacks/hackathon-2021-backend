@@ -102,8 +102,9 @@ def create_app():
         """Initialize Sentry if we're in production"""
         sentry_sdk.init(
             dsn=app.config.get("SENTRY_DSN"),
+            environment=app.config.get("SENTRY_ENV"),
             integrations=[FlaskIntegration(), CeleryIntegration()],
-            traces_sample_rate=1.0
+            traces_sample_rate=1.0,
         )
 
     """Setup Extensions"""
