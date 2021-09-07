@@ -15,6 +15,7 @@ from mongoengine.base import BaseDocument
 from mongoengine.queryset import QuerySet
 from src.models.user import ROLES
 from bson.objectid import ObjectId
+from flask import current_app as app
 
 
 class JSONEncoderBase(JSONEncoder):

@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
 from src.common.decorators import authenticate, privileges
 from src.models.user import ROLES
-
+import base64
 
 club_events_blueprint = Blueprint("club_events", __name__)
 
@@ -24,7 +24,7 @@ club_events_blueprint = Blueprint("club_events", __name__)
 @club_events_blueprint.put("/club/refresh_events/")
 @authenticate
 @privileges(ROLES.EVENTORG | ROLES.MOD | ROLES.ADMIN)
-def refresh_events(_):
+def refresh_events():
     """
     Refreshed the Club Events from Notion.
     ---
@@ -168,9 +168,35 @@ def get_events():
     if count:
         events = events[:int(count)]
 
+    event_array = []
+    for e in events:
+        if e.image:
+            img = e.image.read()
+            if img is not None:
+                image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
+            else:
+                image = None
+        else:
+            image = None
+        if e.presenter.image:
+            img = e.presenter.image.read()
+            if img is not None:
+                pres_image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
+            else:
+                pres_image = None
+        else:
+            pres_image = None
+        newE = e.to_mongo().to_dict()
+
+        newE["image"] = image
+
+        newE["presenter"]["image"] = pres_image
+
+        event_array.append(newE)
+
     res = {
         "count": events.count(),
-        "events": events
+        "events": event_array
     }
 
     return res, 200
