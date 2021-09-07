@@ -8,9 +8,9 @@
         update_events()
 
 """
-from flask import request
+from flask import request, make_response
 from src.api import Blueprint
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
@@ -162,7 +162,7 @@ def get_events():
             "start__lt": dateutil.parser.parse(args["end_date"])
         }
 
-    events = ClubEvent.objects(**query).exclude("id")
+    events = ClubEvent.objects(**query)
 
     count = args.get("count")
     if count:
@@ -171,7 +171,7 @@ def get_events():
     event_array = []
     for e in events:
         if e.image:
-            img = e.image.read()
+            img = e.image.thumbnail.read()
             if img is not None:
                 image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
             else:
@@ -179,7 +179,7 @@ def get_events():
         else:
             image = None
         if e.presenter.image:
-            img = e.presenter.image.read()
+            img = e.presenter.image.thumbnail.read()
             if img is not None:
                 pres_image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
             else:
@@ -200,3 +200,84 @@ def get_events():
     }
 
     return res, 200
+
+@club_events_blueprint.get("/club/<id>/image/")
+def get_club_event_image(id):
+    """
+    Gets the image for the specified Club Event
+    ---
+    tags:
+        - club
+    parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+    responses:
+        200:
+            content:
+                image/png:
+                    schema:
+                        type: string
+                        format: binary
+                image/*:
+                    schema:
+                        type: string
+                        format: binary
+    """
+    event = ClubEvent.objects(id=id).first()
+
+    if not event:
+        raise NotFound("Club Event with the specified id was not found.")
+
+    img = event.image.read()
+
+    if not img:
+        raise NotFound("Specified Club Event does not have an image.")
+
+    res = make_response(img)
+    res.headers["Content-Type"] = event.image.content_type
+
+    return res
+
+
+@club_events_blueprint.get("/club/<id>/presenter/image/")
+def get_club_event_presenter_image(id):
+    """
+    Gets the presenter image for the specified Club Event
+    ---
+    tags:
+        - club
+    parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+    responses:
+        200:
+            content:
+                image/png:
+                    schema:
+                        type: string
+                        format: binary
+                image/*:
+                    schema:
+                        type: string
+                        format: binary
+    """
+    event = ClubEvent.objects(id=id).first()
+
+    if not event:
+        raise NotFound("Club Event with the specified id was not found.")
+
+    img = event.presenter.image.read()
+
+    if not img:
+        raise NotFound("Specified Club Event does not have an image.")
+
+    res = make_response(img)
+    res.headers["Content-Type"] = event.presenter.image.content_type
+
+    return res
