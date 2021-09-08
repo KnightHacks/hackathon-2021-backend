@@ -33,6 +33,7 @@ Types of Changes:
 - Flasgger gets version number from `__version__`
 - Hacker is no longer a user.
 - Sponsor is no longer a user.
+- Added description and socials fields to Sponsor model
 
 ### Removed
 
