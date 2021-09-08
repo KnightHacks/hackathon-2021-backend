@@ -50,6 +50,9 @@ Hacker:
       items:
         type: string
         description: What the hacker wants to learn at Knight Hacks
+    in_person:
+      type: boolean
+      description: Whether the hacker is present in-person or not
 Group:
   type: object
   properties:
@@ -124,7 +127,7 @@ Event:
     sponsors:
       type: array
       items:
-        $ref: '#/components/schemas/Sponsor'
+        $ref: "#/components/schemas/Sponsor"
     user:
       type: string
 ClubEvent:

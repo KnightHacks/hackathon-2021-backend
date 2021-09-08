@@ -41,6 +41,7 @@ class Hacker(User):  # Stored in the "user" collection
     socials = db.EmbeddedDocumentField(Socials)
     why_attend = db.StringField(max_length=200)
     what_learn = db.ListField()
+    in_person = db.BooleanField(default=False)
 
 
 signals.pre_delete.connect(User.pre_delete, sender=Hacker)
