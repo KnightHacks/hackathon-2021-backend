@@ -102,4 +102,4 @@ class TestHackersBlueprint(BaseTestCase):
         data = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 404)
-        self.assertEqual(data["email"], "Not Found")
+        self.assertEqual(data["name"], "Not Found")

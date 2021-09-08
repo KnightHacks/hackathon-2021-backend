@@ -60,7 +60,7 @@ def create_hacker():
         5XX:
             description: Unexpected error.
     """
-    data = json.loads(request.form.get("hacker"))
+    data = json.loads(request.form.get("hacker", "{}"))
     resume = None
 
     if "date" in data:
