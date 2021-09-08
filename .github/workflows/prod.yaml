@@ -190,7 +190,9 @@ jobs:
 
   production:
     name: Deploy to Production
-    needs: staging
+    needs:
+      - staging
+      - getRelease
     runs-on: ubuntu-latest
     environment:
       name: Production
@@ -284,14 +286,16 @@ jobs:
           SENTRY_PROJECT: 'hackathon-backend'
         with:
           environment: ${{ env.NAMESPACE }}
-          version: backend@${{ jobs.getRelease.outputs.versionNumber }}
+          version: backend@${{ needs.getRelease.outputs.versionNumber }}
 
   tagRelease:
     name: Tag Release
-    needs: production
+    needs:
+      - production
+      - getRelease
     runs-on: ubuntu-latest
     env:
-      VERSION_NUMBER: ${{ jobs.getRelease.outputs.versionNumber }}
+      VERSION_NUMBER: ${{ needs.getRelease.outputs.versionNumber }}
     steps:
       - uses: actions/checkout@v2
 
