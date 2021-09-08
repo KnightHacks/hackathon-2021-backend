@@ -15,7 +15,6 @@ from src.api import Blueprint
 from mongoengine.errors import NotUniqueError
 from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
-from src.models.sponsor import Sponsor
 import dateutil.parser
 from dateutil.parser import ParserError
 
@@ -24,7 +23,7 @@ events_blueprint = Blueprint("events", __name__)
 EVENT_FIELDS = ("name", "date_time", "description",
                 "image", "link", "end_date_time",
                 "attendees_count", "event_status",
-                "sponsors", "user", "event_type", "loc", "description")
+                "event_type", "loc")
 
 
 @events_blueprint.post("/events/create_event/")
@@ -67,8 +66,6 @@ def create_event():
         except ParserError:
             raise BadRequest()
 
-    if data.get("sponsors"):
-        data["sponsors"] = list(map(lambda name: Sponsor.objects(username=name).first(), data["sponsors"]))  # noqa: E501
     new_data = {}
 
     for field in EVENT_FIELDS:

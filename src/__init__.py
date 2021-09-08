@@ -35,7 +35,7 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 """Init Extensions"""
@@ -128,32 +128,15 @@ def create_app():
     """Register Blueprints"""
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
-    from src.api.sponsor import sponsors_blueprint
     from src.api.events import events_blueprint
-    from src.api.groups import groups_blueprint
     from src.api.club_events import club_events_blueprint
-    from src.api.categories import categories_blueprint
     from src.api.email_verification import email_verify_blueprint
-    from src.api.auth import auth_blueprint
-    from src.api.admin import admin_blueprint
-    from src.api.live_updates import live_updates_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
-    app.register_blueprint(sponsors_blueprint, url_prefix="/api")
     app.register_blueprint(events_blueprint, url_prefix="/api")
-    app.register_blueprint(groups_blueprint, url_prefix="/api")
     app.register_blueprint(club_events_blueprint, url_prefix="/api")
-    app.register_blueprint(categories_blueprint, url_prefix="/api")
     app.register_blueprint(email_verify_blueprint, url_prefix="/api")
-    app.register_blueprint(auth_blueprint, url_prefix="/api")
-    app.register_blueprint(admin_blueprint, url_prefix="/api")
-    app.register_blueprint(live_updates_blueprint, url_prefix="/api")
-
-    """Register SocketIO Namespaces"""
-    from src.api.live_updates import LiveUpdates
-
-    socketio.on_namespace(LiveUpdates("/liveupdates"))
 
     """Register Error Handlers"""
     from src.common import error_handlers
@@ -167,13 +150,6 @@ def create_app():
     def _init_app():
         from src.common.init_defaults import init_default_users
         init_default_users()
-
-        """ Create expiration index for TokenBlacklist """
-        from src.models.tokenblacklist import TokenBlacklist
-        TokenBlacklist.create_index("created_at", expireAfterSeconds=(
-            60 * app.config.get("TOKEN_EXPIRATION_MINUTES")
-            + app.config.get("TOKEN_EXPIRATION_SECONDS")
-        ), background=True)
 
     return app, celery
 
