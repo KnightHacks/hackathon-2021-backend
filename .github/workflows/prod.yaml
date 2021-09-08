@@ -41,7 +41,7 @@ jobs:
         if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
       
     - name: Use flake8
-      run: flake8 --ignore=E121,E123,W503,W292 .
+      run: flake8 --ignore=E121,E123,W503,W292,W504 .
 
   test:
     name: Run Tests
