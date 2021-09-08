@@ -20,7 +20,7 @@ class JSONEncoderBase(JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, datetime.date):
-                return obj.isoformat()
+                return obj.isoformat() + "Z"
             elif isinstance(obj, BaseDocument):
                 return obj.to_mongo(use_db_field=False)
             elif isinstance(obj, QuerySet):
