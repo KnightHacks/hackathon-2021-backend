@@ -18,7 +18,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -41,7 +41,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -50,7 +50,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -67,7 +67,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -77,7 +77,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         res = self.client.get("/api/club/get_events/?rdate=Today")
@@ -92,7 +92,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -102,7 +102,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         res = self.client.get("/api/club/get_events/?rdate=NextWeek")
@@ -118,7 +118,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -128,7 +128,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         res = self.client.get("/api/club/get_events/?rdate=NextMonth")
@@ -144,7 +144,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -154,7 +154,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         res = self.client.get("/api/club/get_events/?rdate=NextYear")
@@ -174,7 +174,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         start_date = datetime.now() - timedelta(days=1)
@@ -194,7 +194,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
 
@@ -204,7 +204,7 @@ class TestClubEventsBlueprint(BaseTestCase):
             description="An introductory workshop for the Python language.",
             location="https://www.zoom.com",
             name="string",
-            presenter="string",
+            presenter={"name": "string"},
             tags=["string"],
         )
         res = self.client.get("/api/club/get_events/?count=1")
