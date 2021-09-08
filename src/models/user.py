@@ -18,7 +18,6 @@ from flask import current_app as app
 from datetime import datetime, timedelta
 from src import db, bcrypt
 from src.models import BaseDocument
-from enum import Flag, auto
 
 
 class User(BaseDocument):
@@ -59,4 +58,3 @@ class User(BaseDocument):
     def decode_email_token(email_token: str) -> str:
         """Decodes the email token"""
         return decode_jwt(email_token)["sub"]
-

@@ -12,7 +12,6 @@
 """
 from src import db
 from src.models.user import User
-from mongoengine import signals
 
 
 class Education_Info(db.EmbeddedDocument):

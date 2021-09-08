@@ -15,7 +15,6 @@ from werkzeug.exceptions import (
     BadRequest,
     Conflict,
     NotFound,
-    Unauthorized,
     UnsupportedMediaType
 )
 from src.models.hacker import Hacker
@@ -146,6 +145,7 @@ def get_hacker_resume(email: str):
     res.headers["Content-Type"] = "application/pdf"
 
     return res
+
 
 @hackers_blueprint.put("/hackers/<email>/accept/")
 def accept_hacker(_, email: str):

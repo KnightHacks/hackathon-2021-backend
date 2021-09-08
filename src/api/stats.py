@@ -9,7 +9,6 @@
 
 """
 from src.api import Blueprint
-from src.models.user import User
 from src.models.hacker import Hacker
 
 

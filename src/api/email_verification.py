@@ -10,7 +10,7 @@
 
 """
 from src.api import Blueprint
-from werkzeug.exceptions import NotFound, Unauthorized
+from werkzeug.exceptions import NotFound
 from src.models.user import User
 from src import bcrypt
 
