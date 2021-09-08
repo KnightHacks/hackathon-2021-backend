@@ -1,8 +1,7 @@
 # flake8: noqa
 import json
 from src.models.event import Event
-from src.models.user import User, ROLES
-from src.models.sponsor import Sponsor
+from src.models.user import User
 from tests.base import BaseTestCase
 from datetime import datetime
 
@@ -14,12 +13,6 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_create_event(self):
         now = datetime.now()
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
-
         res = self.client.post(
             "/api/events/create_event/",
             data=json.dumps({
@@ -30,9 +23,7 @@ class TestEventsBlueprint(BaseTestCase):
                 "link": "https://blob.knighthacks.org/somelogo.png",
                 "end_date_time": now.isoformat(),
                 "attendees_count": 10,
-                "event_status": "status",
-                "sponsors": ["new_sponsor"],
-                "users": "new_user"
+                "event_status": "status"
             }),
             content_type="application/json")
 
@@ -49,13 +40,6 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_create_event_invalid_datatypes(self):
         now = datetime.now()
-
-        Sponsor.createOne(username="new_sponsor",
-                          email="new@email.com",
-                          password="new_password",
-                          roles=ROLES.SPONSOR,
-                          sponsor_name="new_sponsor")
-
         res = self.client.post(
             "api/events/create_event/",
             data=json.dumps({
@@ -66,9 +50,7 @@ class TestEventsBlueprint(BaseTestCase):
                 "link": 12345,
                 "end_date_time": now.isoformat(),
                 "attendees_count": "newcount",
-                "event_status": 12345,
-                "sponsors": "new_sponsor",
-                "users": "new_user"
+                "event_status": 12345
             }),
             content_type="application/json")
         
@@ -87,9 +69,7 @@ class TestEventsBlueprint(BaseTestCase):
                 "link": 12345,
                 "end_date_time": "newdate",
                 "attendees_count": "newcount",
-                "event_status": 12345,
-                "sponsors": "new_sponsor",
-                "users": "new_user"
+                "event_status": 12345
             }),
             content_type="application/json")
         
@@ -233,11 +213,6 @@ class TestEventsBlueprint(BaseTestCase):
     def test_get_all_events(self):
         now = datetime.now()
         
-        User.createOne(username="new_user",
-                       email="another_new@email.com",
-                       password="new_password",
-                       roles=ROLES.HACKER)
-        
         Event.createOne(name="new_event",
                         date_time=now.isoformat(),
                         description="description",
@@ -245,8 +220,7 @@ class TestEventsBlueprint(BaseTestCase):
                         link="https://blob.knighthacks.org/somelogo.png",
                         end_date_time=now.isoformat(),
                         attendees_count=10,
-                        event_status="status",
-                        user="new_user")
+                        event_status="status")
         
         Event.createOne(name="another_new_event",
                         date_time=now.isoformat(),
@@ -255,8 +229,7 @@ class TestEventsBlueprint(BaseTestCase):
                         link="https://blob.knighthacks.org/somelogo.png",
                         end_date_time=now.isoformat(),
                         attendees_count=10,
-                        event_status="status",
-                        user="new_user")
+                        event_status="status")
         
         res = self.client.get("api/events/get_all_events/")
 

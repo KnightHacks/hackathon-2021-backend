@@ -2,24 +2,27 @@ Hacker:
   id: Hacker
   type: object
   properties:
-    username:
+    first_name:
       type: string
-    password:
+      example: John
+    last_name:
       type: string
-      format: password
+      example: Doe
     email:
       type: string
       example: foobar@email.com
-    first_name:
-      type: string
-    last_name:
-      type: string
     phone_number:
       type: string
       example: +1 (555) 555-5555
+    isaccepted:
+      type: boolean
+      description: Is the Hacker accepted
     can_share_info:
       type: boolean
       description: Permission from the Hacker to share information with Sponsors
+    rsvp_status:
+      type: boolean
+      description: RSVP status
     beginner:
       type: boolean
     ethnicity:
@@ -53,43 +56,24 @@ Hacker:
     in_person:
       type: boolean
       description: Whether the hacker is present in-person or not
-Group:
-  type: object
-  properties:
-    name:
-      type: string
-    icon:
-      type: string
-    members:
-      type: array
-      items:
-        type: string
-        description: Member emails
-    categories:
-      type: array
-      items:
-        type: string
-        description: Category Names
 Sponsor:
   type: object
   properties:
     sponsor_name:
       type: string
       example: "Microsoft"
+    description:
+      type: string
+      example: "Microsoft will be sponsoring x events"
     logo:
       type: uri
       example: https://blob.knighthacks.org/somelogo.png
+    socials:
+      type: dict
+      example: {linkedIn: https://blob.knighthackslinkedIn.org}
     subscription_tier:
       type: string
       example: "Gold"
-    email:
-      type: string
-      example: foobar@email.com
-    username:
-      type: string
-    password:
-      type: string
-      format: password
 Event:
   type: object
   properties:
@@ -124,12 +108,6 @@ Event:
     event_status:
       type: string
       example: cancelled
-    sponsors:
-      type: array
-      items:
-        $ref: "#/components/schemas/Sponsor"
-    user:
-      type: string
 ClubEvent:
   type: object
   properties:
@@ -154,13 +132,4 @@ ClubEvent:
       example: An introductory workshop for the Python language.
     location:
       type: string
-Category:
-  type: object
-  properties:
-    name:
-      type: string
-    sponsor:
-      type: string
-      description: Sponsor name
-    description:
-      type: string
+

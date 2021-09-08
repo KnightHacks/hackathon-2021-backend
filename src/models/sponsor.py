@@ -8,26 +8,17 @@
 
         Sponsor
 """
+from src.models import BaseDocument
 from mongoengine.errors import ValidationError
 from src import db
-from src.models.user import User
-from mongoengine import signals
 
 
-class Sponsor(User):
+class Sponsor(BaseDocument):
     sponsor_name = db.StringField()
+    description = db.StringField()
     logo = db.URLField()
+    socials = db.DictField()
     subscription_tier = db.StringField()
-    isaccepted = db.BooleanField(default=False)
-
-    @property
-    def events(self):
-        """Gets the Events for this sponsor"""
-        from src.models.event import Event
-
-        events = Event.objects(sponsors=self)
-
-        return events
 
     def to_mongo(self, *args, **kwargs):
         data = super().to_mongo(*args, **kwargs)
@@ -38,6 +29,3 @@ class Sponsor(User):
             pass
 
         return data
-
-
-signals.pre_delete.connect(User.pre_delete, sender=Sponsor)
