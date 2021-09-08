@@ -18,8 +18,6 @@ Types of Changes:
 
 ### Added
 
-### Added
-
 - `CHANGELOG.md`
 - `create_release` workflow to facilitate the creation and preparation of new releases.
 - Issue Templates
@@ -27,7 +25,6 @@ Types of Changes:
 - Pull Request template
 - Version number stored in `__version__` 
 - Dependabot
-
   
 ### Changed
 
