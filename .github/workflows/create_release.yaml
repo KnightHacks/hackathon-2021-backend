@@ -42,6 +42,10 @@ jobs:
           git add src/__init__.py
           git commit --message "Prepare release ${{ env.VERSION_NUMBER }}"
           echo "::set-output name=commit::$(git rev-parse HEAD)"
+        
+      - name: Push commit
+        run: |
+          git push origin release/v${{ env.VERSION_NUMBER }}
 
       - name: Create pull request into main
         uses: thomaseizinger/create-pull-request@1.2.1
