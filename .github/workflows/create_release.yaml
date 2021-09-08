@@ -46,7 +46,7 @@ jobs:
       - name: Create pull request into main
         uses: thomaseizinger/create-pull-request@1.0.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           head: release/v${{ env.VERSION_NUMBER }}
           base: main
           title: v${{ env.VERSION_NUMBER }} into main
@@ -58,7 +58,7 @@ jobs:
       - name: Create pull request into dev
         uses: thomaseizinger/create-pull-request@1.0.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           head: release/v${{ env.VERSION_NUMBER }}
           base: dev
           title: v${{ env.VERSION_NUMBER }} into dev
