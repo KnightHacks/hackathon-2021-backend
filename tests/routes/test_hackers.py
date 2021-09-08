@@ -28,7 +28,7 @@ class TestHackersBlueprint(BaseTestCase):
 
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
-            "/api/hackers/", data={"hacker": json.dumps({})}, content_type="multipart/form-data"
+            "/api/hackers/", data={"hacker": ""}, content_type="multipart/form-data"
         )
 
         data = json.loads(res.data.decode())
