@@ -31,6 +31,17 @@ Types of Changes:
 - `README.md`  now contains org links and contributing section.
 - Sentry release name uses `__version__`
 - Flasgger gets version number from `__version__`
+- Hacker is no longer a user.
+- Sponsor is no longer a user.
+
+### Removed
+
+- Admin routes.
+- Authentication routes.
+- Authentication using JWT tokens and session management.
+- Category routes.
+- Group routes.
+- Live Update routes.
 
 ## [0.0.1]
 
