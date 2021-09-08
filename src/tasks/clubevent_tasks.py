@@ -129,9 +129,10 @@ def refresh_notion_clubevents():
                     )
 
                 if presenter_image is not None:
+                    p_img_type = presenter_image.headers.get("content-type")
                     ce.presenter.image.put(
                         BytesIO(presenter_image.content),
-                        content_type=presenter_image.headers.get("content-type")
+                        content_type=p_img_type
                     )
 
                 ce.save()

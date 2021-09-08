@@ -173,7 +173,10 @@ def get_events():
         if e.image:
             img = e.image.thumbnail.read()
             if img is not None:
-                image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
+                image = (
+                    "data:image/png;base64," +
+                    base64.b64encode(img).decode("utf-8")
+                )
             else:
                 image = None
         else:
@@ -181,7 +184,10 @@ def get_events():
         if e.presenter.image:
             img = e.presenter.image.thumbnail.read()
             if img is not None:
-                pres_image = "data:image/png;base64," + base64.b64encode(img).decode("utf-8")
+                pres_image = (
+                    "data:image/png;base64," +
+                    base64.b64encode(img).decode("utf-8")
+                )
             else:
                 pres_image = None
         else:
@@ -200,6 +206,7 @@ def get_events():
     }
 
     return res, 200
+
 
 @club_events_blueprint.get("/club/<id>/image/")
 def get_club_event_image(id):
