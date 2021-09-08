@@ -34,6 +34,9 @@ from flask_socketio import SocketIO  # noqa: E402
 from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
+""" Version Number (DO NOT TOUCH) """
+__version__ = "0.0.1"
+
 
 """Init Extensions"""
 db = MongoEngine()
@@ -60,7 +63,7 @@ swagger_template = {
             "email": "webmaster@knighthacks.org",
             "url": "https://knighthacks.org"
         },
-        "version": "0.0.1"
+        "version": __version__
     },
     "basePath": "/api",
     "schemes": [
@@ -103,6 +106,7 @@ def create_app():
         sentry_sdk.init(
             dsn=app.config.get("SENTRY_DSN"),
             environment=app.config.get("SENTRY_ENV"),
+            release=f"backend@{__version__}",
             integrations=[FlaskIntegration(), CeleryIntegration()],
             traces_sample_rate=1.0,
         )

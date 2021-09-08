@@ -52,6 +52,10 @@ Hacker:
       type: array
       items:
         type: string
+        description: What the hacker wants to learn at Knight Hacks
+    in_person:
+      type: boolean
+      description: Whether the hacker is present in-person or not
 Sponsor:
   type: object
   properties:

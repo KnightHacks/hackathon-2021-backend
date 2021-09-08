@@ -48,3 +48,18 @@ MONGO_URI=mongo://localhost:27017/test
 2. Run the tests
 
 `python -m src test`
+
+## Contributing
+
+For guidance on setting up a development environment and how to make a contribution, see the [contributing guidelines](./CONTRIBUTING.md)
+
+## Links
+
+- Website: [https://knighthacks.org](https://knighthacks.org)
+- LinkTree: [https://knighthacks.org/linktree](https://knighthacks.org/linktree)
+- Discord: [https://discord.gg/Kv5g9vf](https://discord.gg/Kv5g9vf)
+- Instagram: [https://www.instagram.com/knighthacks/](https://www.instagram.com/knighthacks/)
+- Facebook: [https://www.facebook.com/KnightHacks/](https://www.facebook.com/KnightHacks/)
+- Twitter: [https://twitter.com/KnightHacks/](https://twitter.com/KnightHacks/)
+- Linkedin: [https://www.linkedin.com/company/knight-hacks/](https://www.linkedin.com/company/knight-hacks/)
+- TikTok: [https://www.tiktok.com/@knight.hacks](https://www.tiktok.com/@knight.hacks)
