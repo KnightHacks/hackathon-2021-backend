@@ -18,9 +18,22 @@ Types of Changes:
 
 ### Added
 
-- This CHANGELOG file.
-- Pull request template file
-- Dependabot config file
+### Added
+
+- `CHANGELOG.md`
+- `create_release` workflow to facilitate the creation and preparation of new releases.
+- Issue Templates
+- Security Policy
+- Pull Request template
+- Version number stored in `__version__` 
+- Dependabot
+
+  
+### Changed
+
+- `README.md`  now contains org links and contributing section.
+- Sentry release name uses `__version__`
+- Flasgger gets version number from `__version__`
 
 ## [0.0.1]
 
