@@ -56,15 +56,12 @@ def create_hacker():
         400:
             description: Bad request.
         409:
-            description: Sorry, that username or email already exists.
+            description: Sorry, that email already exists.
         5XX:
             description: Unexpected error.
     """
     data = json.loads(request.form.get("hacker"))
     resume = None
-
-    if "roles" in data:
-        del data["roles"]
 
     if "date" in data:
         del data["date"]
@@ -93,7 +90,7 @@ def create_hacker():
         hacker.save()
 
     except NotUniqueError:
-        raise Conflict("Sorry, that username or email already exists.")
+        raise Conflict("Sorry, that email already exists.")
     except ValidationError:
         raise BadRequest()
 
@@ -149,43 +146,6 @@ def get_hacker_resume(email: str):
     res.headers["Content-Type"] = "application/pdf"
 
     return res
-
-
-@hackers_blueprint.get("/hackers/<email>/")
-def get_hacker_search(email: str):
-    """
-    Retrieves a hacker's profile using their email.
-    ---
-    tags:
-        - hacker
-    summary: Gets a hacker's profile from their email.
-    parameters:
-        - name: email
-          in: path
-          schema:
-              type: string
-          description: The hacker's profile.
-          required: true
-    responses:
-        200:
-            description: OK
-
-    """
-    hacker = Hacker.objects(email=email).exclude(
-        *Hacker.private_fields).first()
-
-    if not hacker:
-        raise NotFound()
-
-    res = {
-        "Hacker Profile": hacker.hacker_profile,
-        "Email": hacker.email,
-        "message": "Successfully reached profile.",
-        "status": "success"
-    }
-
-    return res, 200
-
 
 @hackers_blueprint.put("/hackers/<email>/accept/")
 def accept_hacker(_, email: str):

@@ -2,20 +2,27 @@ Hacker:
   id: Hacker
   type: object
   properties:
-    username:
+    first_name:
       type: string
-    password:
+      example: John
+    last_name:
       type: string
-      format: password
+      example: Doe
     email:
       type: string
       example: foobar@email.com
     phone_number:
       type: string
       example: +1 (555) 555-5555
+    isaccepted:
+      type: boolean
+      description: Is the Hacker accepted
     can_share_info:
       type: boolean
       description: Permission from the Hacker to share information with Sponsors
+    rsvp_status:
+      type: boolean
+      description: RSVP status
     beginner:
       type: boolean
     ethnicity:
@@ -45,9 +52,6 @@ Hacker:
       type: array
       items:
         type: string
-    current_status:
-      type: boolean
-      description: If the Hacker is accepted or not.
 Sponsor:
   type: object
   properties:

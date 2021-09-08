@@ -77,26 +77,6 @@ class TestHackersBlueprint(BaseTestCase):
         self.assertEqual(data["name"], "Bad Request")
         self.assertEqual(Hacker.objects.count(), 0)
 
-    """get_user_search"""
-
-    def test_get_user_search(self):
-        h = Hacker.createOne(
-            email="foobar@email.com"
-        )
-
-        res = self.client.get("/api/hackers/foobar/")
-
-        data = json.loads(res.data.decode())
-
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(h.hacker_profile, data["Hacker Profile"])
-        self.assertEqual(h.email, data["Email"])
-
-    def test_get_user_search_not_found(self):
-        res = self.client.get("/api/hackers/foobar/")
-
-        self.assertEqual(res.status_code, 404)
-
     """get_all_hackers"""
     def test_get_all_hackers(self):
         Hacker.createOne(

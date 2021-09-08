@@ -126,19 +126,12 @@ def create_app():
     from src.api.events import events_blueprint
     from src.api.club_events import club_events_blueprint
     from src.api.email_verification import email_verify_blueprint
-    from src.api.live_updates import live_updates_blueprint
 
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
     app.register_blueprint(events_blueprint, url_prefix="/api")
     app.register_blueprint(club_events_blueprint, url_prefix="/api")
     app.register_blueprint(email_verify_blueprint, url_prefix="/api")
-    app.register_blueprint(live_updates_blueprint, url_prefix="/api")
-
-    """Register SocketIO Namespaces"""
-    from src.api.live_updates import LiveUpdates
-
-    socketio.on_namespace(LiveUpdates("/liveupdates"))
 
     """Register Error Handlers"""
     from src.common import error_handlers
