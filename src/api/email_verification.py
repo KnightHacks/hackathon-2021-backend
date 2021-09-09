@@ -110,7 +110,7 @@ def send_registration_email(email: str):
           in: path
           schema:
             type: string
-            format:email
+            format: email
           required: true
     responses:
         201:
