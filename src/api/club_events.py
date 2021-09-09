@@ -14,11 +14,13 @@ from werkzeug.exceptions import BadRequest
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
+from src.common.decorators import authenticate
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
+@authenticate
 @club_events_blueprint.put("/club/refresh_events/")
 def refresh_events(_):
     """

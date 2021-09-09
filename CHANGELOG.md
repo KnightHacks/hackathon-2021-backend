@@ -16,6 +16,19 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Added
+
+- Authentication
+
+### Changed
+
+- Verifying email is done through a get request.
+- Require authentication for routes that create/update resources and for endpoints that return sensitive data.
+
+### Fixed
+
+- Verifying email
+
 ## [0.0.2] - 2021-09-08
 
 ### Added
