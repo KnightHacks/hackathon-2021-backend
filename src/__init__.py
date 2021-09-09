@@ -35,7 +35,7 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 
 """Init Extensions"""
