@@ -20,8 +20,8 @@ from src.common.decorators import authenticate
 club_events_blueprint = Blueprint("club_events", __name__)
 
 
-@authenticate
 @club_events_blueprint.put("/club/refresh_events/")
+@authenticate
 def refresh_events(_):
     """
     Refreshed the Club Events from Notion.

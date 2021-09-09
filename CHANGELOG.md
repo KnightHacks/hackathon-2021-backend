@@ -16,6 +16,12 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [0.0.4] - 2021-09-09
+
+### Fixed
+
+-   Fixed ordering by start date of Club Events
+
 ## [0.0.3] - 2021-09-09
 
 ### Added
@@ -78,7 +84,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.3...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.4...HEAD
+
+[0.0.4]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.3...0.0.4
 
 [0.0.3]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.2...0.0.3
 
