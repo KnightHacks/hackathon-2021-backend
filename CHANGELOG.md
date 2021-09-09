@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed ordering by start date of Club Events
+
 ## [0.0.3] - 2021-09-09
 
 ### Added

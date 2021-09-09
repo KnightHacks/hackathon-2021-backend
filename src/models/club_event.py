@@ -23,5 +23,5 @@ class ClubEvent(BaseDocument):
     location = db.StringField()
 
     meta = {
-        "ordering": ["date"]
+        "ordering": ["start"]
     }
