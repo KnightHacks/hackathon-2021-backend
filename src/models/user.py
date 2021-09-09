@@ -10,12 +10,12 @@
 
 
 """
+from src.common.jwt import encode_jwt, decode_jwt
 from flask import current_app as app
-from src import db, bcrypt
 from datetime import datetime, timedelta
+from src import db, bcrypt
 from src.models import BaseDocument
-from werkzeug.exceptions import Unauthorized
-import jwt
+from mongoengine import signals
 
 
 class User(BaseDocument):
@@ -23,34 +23,30 @@ class User(BaseDocument):
     username = db.StringField(unique=True, required=True)
     password = db.BinaryField(required=True)
 
+    @classmethod
+    def pre_delete(cls, sender, document, **kwargs):
+        from src.models.tokenblacklist import TokenBlacklist
+        TokenBlacklist.objects(user=document).delete()
+        app.logger.info("Deleted all tokens from tokenblacklist for "
+                        f"the deleted user {document.username}.")
+
     def encode_auth_token(self) -> str:
         """Encode the auth token"""
-        payload = {
-            "exp": datetime.now() + timedelta(
-                minutes=app.config["TOKEN_EXPIRATION_MINUTES"],
-                seconds=app.config["TOKEN_EXPIRATION_SECONDS"]),
-            "iat": datetime.now(),
-            "sub": self.username
-        }
 
-        return jwt.encode(
-            payload,
-            app.config.get("SECRET_KEY"),
-            algorithm="HS256"
+        return encode_jwt(
+            exp=(
+                datetime.utcnow() + timedelta(
+                    minutes=app.config["TOKEN_EXPIRATION_MINUTES"],
+                    seconds=app.config["TOKEN_EXPIRATION_SECONDS"]
+                )
+            ),
+            sub=self.username
         )
 
     @staticmethod
     def decode_auth_token(auth_token: str) -> str:
         """Decode the auth token"""
-        try:
-            payload = jwt.decode(auth_token,
-                                 app.config.get("SECRET_KEY"),
-                                 algorithms=["HS256"])
-            return payload["sub"]
-        except jwt.ExpiredSignatureError:
-            raise Unauthorized("Expired Token")
-        except jwt.InvalidTokenError:
-            raise Unauthorized("Invalid Token")
+        return decode_jwt(auth_token)["sub"]
 
     def __init__(self, *args, **kwargs):
         conf = app.config["BCRYPT_LOG_ROUNDS"]
@@ -61,3 +57,6 @@ class User(BaseDocument):
                 conf)
 
         super(User, self).__init__(*args, **kwargs)
+
+
+signals.pre_delete.connect(User.pre_delete, sender=User)

@@ -12,7 +12,7 @@
 from src import db
 
 
-class BaseDocument(db.Document):
+class BaseDocument(db.DynamicDocument):
     """A Base Class to be inherited by all other Document Classes"""
     meta = {
         "abstract": True
