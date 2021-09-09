@@ -35,7 +35,7 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 """Init Extensions"""
@@ -126,12 +126,14 @@ def create_app():
     app.json_encoder = JSONEncoderBase
 
     """Register Blueprints"""
+    from src.api.auth import auth_blueprint
     from src.api.hackers import hackers_blueprint
     from src.api.stats import stats_blueprint
     from src.api.events import events_blueprint
     from src.api.club_events import club_events_blueprint
     from src.api.email_verification import email_verify_blueprint
 
+    app.register_blueprint(auth_blueprint, url_prefix="/api")
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
     app.register_blueprint(events_blueprint, url_prefix="/api")
