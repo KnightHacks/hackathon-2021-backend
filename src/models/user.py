@@ -8,55 +8,56 @@
 
         User
 
-    Variables:
-
-        ROLES
 
 """
-from src.common.jwt import encode_jwt, decode_jwt
 from flask import current_app as app
-from datetime import datetime, timedelta
 from src import db, bcrypt
+from datetime import datetime, timedelta
 from src.models import BaseDocument
-from enum import Flag, auto
+from werkzeug.exceptions import Unauthorized
+import jwt
 
 
 class User(BaseDocument):
-    meta = {"allow_inheritance": True,
-            "ordering": ["date"]}
 
-    private_fields = [
-        "id",
-        "email_verification",
-        "email_token_hash"
-    ]
-    email = db.EmailField(unique=True, required=True)
-    date = db.DateTimeField(default=datetime.utcnow)
-    email_verification = db.BooleanField(default=False)
-    email_token_hash = db.BinaryField()
+    username = db.StringField(unique=True, required=True)
+    password = db.BinaryField(required=True)
 
-    def encode_email_token(self) -> str:
-        """Encode the email token"""
-        email_token = encode_jwt(
-            exp=(
-                datetime.utcnow() + timedelta(
-                    minutes=app.config["TOKEN_EMAIL_EXPIRATION_MINUTES"],
-                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]
-                )
-            ),
-            sub=self.email
+    def encode_auth_token(self) -> str:
+        """Encode the auth token"""
+        payload = {
+            "exp": datetime.now() + timedelta(
+                minutes=app.config["TOKEN_EXPIRATION_MINUTES"],
+                seconds=app.config["TOKEN_EXPIRATION_SECONDS"]),
+            "iat": datetime.now(),
+            "sub": self.username
+        }
+
+        return jwt.encode(
+            payload,
+            app.config.get("SECRET_KEY"),
+            algorithm="HS256"
         )
 
-        conf = app.config["BCRYPT_LOG_ROUNDS"]
-        email_token_hash = bcrypt.generate_password_hash(email_token, conf)
-
-        self.modify(set__email_token_hash=email_token_hash)
-        self.save()
-
-        return email_token
-
     @staticmethod
-    def decode_email_token(email_token: str) -> str:
-        """Decodes the email token"""
-        return decode_jwt(email_token)["sub"]
+    def decode_auth_token(auth_token: str) -> str:
+        """Decode the auth token"""
+        try:
+            payload = jwt.decode(auth_token,
+                                 app.config.get("SECRET_KEY"),
+                                 algorithms=["HS256"])
+            return payload["sub"]
+        except jwt.ExpiredSignatureError:
+            raise Unauthorized("Expired Token")
+        except jwt.InvalidTokenError:
+            raise Unauthorized("Invalid Token")
 
+    def __init__(self, *args, **kwargs):
+        conf = app.config["BCRYPT_LOG_ROUNDS"]
+        if (kwargs.get("password") is not None
+                and isinstance(kwargs.get("password"), str)):
+            kwargs["password"] = bcrypt.generate_password_hash(
+                kwargs["password"],
+                conf)
+
+        super(User, self).__init__(*args, **kwargs)

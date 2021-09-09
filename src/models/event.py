@@ -11,7 +11,6 @@
 """
 
 from src import db
-from src.models.user import User
 from src.models import BaseDocument
 
 
@@ -26,5 +25,3 @@ class Event(BaseDocument):
     event_status = db.StringField()
     event_type = db.StringField()
     loc = db.StringField()
-
-

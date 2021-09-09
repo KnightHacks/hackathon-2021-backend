@@ -16,6 +16,21 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [0.0.3] - 2021-09-09
+
+### Added
+
+-   Authentication
+
+### Changed
+
+-   Verifying email is done through a get request.
+-   Require authentication for routes that create/update resources and for endpoints that return sensitive data.
+
+### Fixed
+
+-   Verifying email
+
 ## [0.0.2] - 2021-09-08
 
 ### Added
@@ -63,6 +78,8 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.2...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.3...HEAD
+
+[0.0.3]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.2...0.0.3
 
 [0.0.2]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.1...0.0.2

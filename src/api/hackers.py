@@ -15,10 +15,10 @@ from werkzeug.exceptions import (
     BadRequest,
     Conflict,
     NotFound,
-    Unauthorized,
     UnsupportedMediaType
 )
 from src.models.hacker import Hacker
+from src.common.decorators import authenticate
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -108,6 +108,7 @@ def create_hacker():
 
 
 @hackers_blueprint.get("/hackers/<email>/resume/")
+@authenticate
 def get_hacker_resume(email: str):
     """
     Get Hacker Resume
@@ -147,7 +148,9 @@ def get_hacker_resume(email: str):
 
     return res
 
+
 @hackers_blueprint.put("/hackers/<email>/accept/")
+@authenticate
 def accept_hacker(_, email: str):
     """
     Accepts a Hacker
@@ -189,7 +192,8 @@ def accept_hacker(_, email: str):
 
 
 @hackers_blueprint.get("/hackers/get_all_hackers/")
-def get_all_hackers():
+@authenticate
+def get_all_hackers(_):
     """
     Returns an array of hacker documents.
     ---
