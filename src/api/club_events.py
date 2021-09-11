@@ -14,13 +14,15 @@ from werkzeug.exceptions import BadRequest, NotFound
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
+from src.common.decorators import authenticate
 import base64
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
 
 @club_events_blueprint.put("/club/refresh_events/")
-def refresh_events():
+@authenticate
+def refresh_events(_):
     """
     Refreshed the Club Events from Notion.
     ---
