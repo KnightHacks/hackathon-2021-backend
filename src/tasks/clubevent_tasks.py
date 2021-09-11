@@ -14,6 +14,8 @@ from mongoengine.errors import ValidationError
 import requests
 import dateutil.parser
 from datetime import datetime, timedelta
+from io import BytesIO
+# from PIL import Image
 
 
 @celery.task
@@ -34,16 +36,27 @@ def refresh_notion_clubevents():
             if end_date is None:
                 end_date = start_date + timedelta(hours=1)
 
+            presenterImage = p["Presenter Image"]["files"]
+            presenterImage = ("" if not presenterImage
+                              else presenterImage[0]["file"]["url"])
+            eventImage = p["Image"]["files"]
+            eventImage = ("" if not eventImage
+                          else eventImage[0]["file"]["url"])
+
             return {
                 "name": p["Name"]["title"][0]["plain_text"],
                 "tags": tuple(
                     map(lambda t: t["name"], p["Tags"]["multi_select"])
                 ),
-                "presenter": p["Presenter"]["rich_text"][0]["plain_text"],
+                "presenter": {
+                    "name": p["Presenter"]["rich_text"][0]["plain_text"],
+                    "image": presenterImage
+                },
                 "start": start_date,
                 "end": end_date,
                 "description": p["Description"]["rich_text"][0]["plain_text"],
-                "location": p["Location"]["rich_text"][0]["plain_text"]
+                "location": p["Location"]["rich_text"][0]["plain_text"],
+                "image": eventImage
             }
 
         ClubEvent.drop_collection()
@@ -94,11 +107,41 @@ def refresh_notion_clubevents():
 
         for event in data:
             try:
-                ClubEvent.createOne(**event)
-            except ValidationError:
+                if event["image"]:
+                    image = requests.get(event["image"], allow_redirects=True)
+                else:
+                    image = None
+                if event["presenter"]["image"]:
+                    presenter_image = requests.get(event["presenter"]["image"],
+                                                   allow_redirects=True)
+                else:
+                    presenter_image = None
+
+                del event["image"]
+                del event["presenter"]["image"]
+
+                ce = ClubEvent(**event)
+
+                if image is not None:
+                    ce.image.put(
+                        BytesIO(image.content),
+                        content_type=image.headers.get("content-type")
+                    )
+
+                if presenter_image is not None:
+                    p_img_type = presenter_image.headers.get("content-type")
+                    ce.presenter.image.put(
+                        BytesIO(presenter_image.content),
+                        content_type=p_img_type
+                    )
+
+                ce.save()
+
+            except ValidationError as err:
                 app.logger.warning(
                     "Invalid Club Event(s) from Notion, did not refresh!"
                 )
+                app.logger.info(err)
             else:
                 app.logger.info(
                     "Club Event(s) grabbed from Notion, refresh successfull!"

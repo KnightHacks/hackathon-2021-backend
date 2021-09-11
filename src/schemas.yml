@@ -111,14 +111,27 @@ Event:
 ClubEvent:
   type: object
   properties:
+    id:
+      type: string
     name:
       type: string
+    image:
+      type: string
+      format: byte
+      description: A base64 encoded image
     tags:
       type: array
       items:
         type: string
     presenter:
-      type: string
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+          format: byte
+          description: A base64 encoded image
     start:
       type: string
       format: date-time
