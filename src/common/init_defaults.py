@@ -7,7 +7,7 @@
         init_default_users()
 
 """
-from src.models.user import User, ROLES
+from src.models.user import User
 from mongoengine.errors import NotUniqueError
 
 
@@ -22,10 +22,7 @@ def init_default_users():
             try:
                 User.createOne(
                     username=notion_uname,
-                    password=notion_passwd,
-                    email="notion@email.local",
-                    email_verification=True,
-                    roles=ROLES.EVENTORG
+                    password=notion_passwd
                 )
             except NotUniqueError:
                 app.logger.info("Notion Job User already exists!")

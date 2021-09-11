@@ -3,7 +3,6 @@ import json
 from src.models.club_event import ClubEvent
 from tests.base import BaseTestCase
 from datetime import datetime, timedelta
-from src.models.user import ROLES
 
 
 class TestClubEventsBlueprint(BaseTestCase):

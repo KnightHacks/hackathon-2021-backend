@@ -9,9 +9,7 @@
 
 """
 from src.api import Blueprint
-from src.models.user import User
 from src.models.hacker import Hacker
-from src.models.sponsor import Sponsor
 
 
 stats_blueprint = Blueprint("stats", __name__)
@@ -39,13 +37,9 @@ def count_users():
                             sponsors:
                                 type: integer
     """
-    user_count = User.objects.count()
     hacker_count = Hacker.objects.count()
-    sponsor_count = Sponsor.objects.count()
 
     res = {
-        "total": user_count,
-        "hackers": hacker_count,
-        "sponsors": sponsor_count
+        "hackers": hacker_count
     }
     return res, 200
