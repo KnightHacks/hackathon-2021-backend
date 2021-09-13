@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+- Failing test cases due to unauthorized routes requiring authorization.
+
 ## [0.0.4] - 2021-09-09
 
 ### Fixed
