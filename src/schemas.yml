@@ -56,6 +56,9 @@ Hacker:
     in_person:
       type: boolean
       description: Whether the hacker is present in-person or not
+    dietary_restrictions:
+      type: string
+      description: A user-written description of their dietary restrictions (if any).
 Sponsor:
   type: object
   properties:

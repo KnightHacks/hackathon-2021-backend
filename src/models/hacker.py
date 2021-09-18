@@ -51,6 +51,7 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     why_attend = db.StringField(max_length=200)
     what_learn = db.ListField()
     in_person = db.BooleanField(default=False)
+    dietary_restrictions = db.StringField()
 
     email = db.EmailField(unique=True, required=True)
     date = db.DateTimeField(default=datetime.utcnow)

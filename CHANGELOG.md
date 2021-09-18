@@ -20,6 +20,10 @@ Types of Changes:
 
 - Failing test cases due to unauthorized routes requiring authorization.
 
+### Added
+
+- Added `dietary_restrictions` field to Hacker model.
+
 ## [0.0.4] - 2021-09-09
 
 ### Fixed
