@@ -23,6 +23,7 @@ Types of Changes:
 ### Fixed
 
 - Fixed the url given in verification emails to link directly to backend api.
+- Failing test cases due to unauthorized routes requiring authorization.
 
 ## [0.0.4] - 2021-09-09
 

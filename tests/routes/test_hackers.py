@@ -87,7 +87,10 @@ class TestHackersBlueprint(BaseTestCase):
             email="foobar1@email.com",
         )
 
-        res = self.client.get("/api/hackers/get_all_hackers/")
+        token = self.login_user()
+
+        res = self.client.get("/api/hackers/get_all_hackers/", 
+                              headers=[("sid", token)])
 
         data = json.loads(res.data.decode())
 
@@ -97,7 +100,10 @@ class TestHackersBlueprint(BaseTestCase):
 
     
     def test_get_all_hackers_not_found(self):
-        res = self.client.get("/api/hackers/get_all_hackers/")
+        token = self.login_user()
+
+        res = self.client.get("/api/hackers/get_all_hackers/", 
+                              headers=[("sid", token)])
 
         data = json.loads(res.data.decode())
 
