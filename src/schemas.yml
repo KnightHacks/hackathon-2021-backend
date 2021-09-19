@@ -37,7 +37,7 @@ Hacker:
         major:
           type: string
         graduation_date:
-          type: number
+          type: string
     socials:
       type: object
       properties:
@@ -73,7 +73,7 @@ Sponsor:
       example: https://blob.knighthacks.org/somelogo.png
     socials:
       type: dict
-      example: {linkedIn: https://blob.knighthackslinkedIn.org}
+      example: { linkedIn: https://blob.knighthackslinkedIn.org }
     subscription_tier:
       type: string
       example: "Gold"
@@ -148,4 +148,3 @@ ClubEvent:
       example: An introductory workshop for the Python language.
     location:
       type: string
-
