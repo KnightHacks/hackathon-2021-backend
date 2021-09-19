@@ -24,6 +24,7 @@ Types of Changes:
 
 - Fixed the url given in verification emails to link directly to backend api.
 - Failing test cases due to unauthorized routes requiring authorization.
+- JSONDecodeError is now handled and raises a 400 with an appropriate message.
 
 ### Added
 
