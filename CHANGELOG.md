@@ -16,8 +16,13 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+- Email Verification route redirects client with a 302 to the uri provided in the `redirect_uri` query parameter or if `redirect_uri` is blank, to the frontend.
+
 ### Fixed
 
+- Fixed the url given in verification emails to link directly to backend api.
 - Failing test cases due to unauthorized routes requiring authorization.
 
 ### Added

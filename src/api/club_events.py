@@ -20,6 +20,7 @@ import base64
 
 club_events_blueprint = Blueprint("club_events", __name__)
 
+
 @club_events_blueprint.put("/club/refresh_events/")
 @authenticate
 def refresh_events(_):
