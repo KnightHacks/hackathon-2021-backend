@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+- Metadata in openapi documentation.
+
 ## [1.0.0] - 2021-09-19
 
 ### Changed
