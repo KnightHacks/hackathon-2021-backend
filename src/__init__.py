@@ -60,12 +60,12 @@ swagger_template = {
         "contact": {
             "name": "Knight Hacks Backend Team",
             "email": "development+backend@knighthacks.org",
-            "url": "https://github.com/KnightHacks/hackathon-2021-backend/issues"
+            "url": "https://github.com/KnightHacks/hackathon-2021-backend/issues"  # noqa: E501
         },
         "version": __version__,
         "license": {
             "name": "MIT License",
-            "url": "https://github.com/KnightHacks/hackathon-2021-backend/blob/main/LICENSE.md"
+            "url": "https://github.com/KnightHacks/hackathon-2021-backend/blob/main/LICENSE.md"  # noqa: E501
         }
     },
     "servers": [
