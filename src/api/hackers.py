@@ -19,6 +19,7 @@ from werkzeug.exceptions import (
 )
 from src.models.hacker import Hacker
 from src.common.decorators import authenticate
+from json import JSONDecodeError
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -60,7 +61,11 @@ def create_hacker():
         5XX:
             description: Unexpected error.
     """
-    data = json.loads(request.form.get("hacker", "{}"))
+    try:
+        data = json.loads(request.form.get("hacker"))
+    except JSONDecodeError:
+        raise BadRequest("Invalid JSON sent in hacker form part.")
+
     resume = None
 
     if "date" in data:
