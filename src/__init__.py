@@ -70,15 +70,15 @@ swagger_template = {
     },
     "servers": [
         {
-            "url": "https://api.knighthacks.org/api",
+            "url": "https://api.knighthacks.org",
             "description": "Production server"
         },
         {
-            "url": "https://stagingapi.knighthacks.org/api",
+            "url": "https://stagingapi.knighthacks.org",
             "description": "Staging server"
         },
         {
-            "url": "http://localhost:5000/api",
+            "url": "http://localhost:5000",
             "description": "Local Development server"
         }
     ],
