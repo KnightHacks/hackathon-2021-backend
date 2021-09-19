@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 class Education_Info(db.EmbeddedDocument):
     college = db.StringField()
     major = db.StringField()
-    graduation_date = db.IntField()
+    graduation_date = db.StringField()
 
 
 class Socials(db.EmbeddedDocument):
