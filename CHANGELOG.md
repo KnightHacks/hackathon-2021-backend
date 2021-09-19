@@ -16,6 +16,12 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [1.0.1] - 2021-09-19
+
+### Changed
+
+-   Metadata in openapi documentation.
+
 ## [1.0.0] - 2021-09-19
 
 ### Changed
@@ -101,7 +107,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...HEAD
+
+[1.0.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.0...1.0.1
 
 [1.0.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/0.0.4...1.0.0
 

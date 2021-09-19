@@ -35,7 +35,7 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 """Init Extensions"""
@@ -58,14 +58,30 @@ swagger_template = {
         "title": "Knight Hacks Backend API",
         "description": "Backend API for Knight Hacks",
         "contact": {
-            "responsibleOrganization": "Knight Hacks",
-            "responsibleDeveloper": "Knight Hacks Dev Team",
-            "email": "webmaster@knighthacks.org",
-            "url": "https://knighthacks.org"
+            "name": "Knight Hacks Backend Team",
+            "email": "development+backend@knighthacks.org",
+            "url": "https://github.com/KnightHacks/hackathon-2021-backend/issues"
         },
-        "version": __version__
+        "version": __version__,
+        "license": {
+            "name": "MIT License",
+            "url": "https://github.com/KnightHacks/hackathon-2021-backend/blob/main/LICENSE.md"
+        }
     },
-    "basePath": "/api",
+    "servers": [
+        {
+            "url": "https://api.knighthacks.org/api",
+            "description": "Production server"
+        },
+        {
+            "url": "https://stagingapi.knighthacks.org/api",
+            "description": "Staging server"
+        },
+        {
+            "url": "http://localhost:5000/api",
+            "description": "Local Development server"
+        }
+    ],
     "schemes": [
         "http",
         "https"
