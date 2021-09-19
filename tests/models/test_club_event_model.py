@@ -13,7 +13,9 @@ class TestClubEventModel(BaseTestCase):
         club_event = ClubEvent.createOne(
             name="foobar",
             tags=["tag1", "tag2"],
-            presenter="Arjun",
+            presenter={
+                "name": "Arjun"
+            },
             start=now,
             end=now,
             description="Lorem ipsum",
@@ -23,7 +25,7 @@ class TestClubEventModel(BaseTestCase):
         self.assertTrue(club_event.id)
         self.assertEqual(club_event.name, "foobar")
         self.assertEqual(club_event.tags, ["tag1", "tag2"])
-        self.assertEqual(club_event.presenter, "Arjun")
+        self.assertEqual(club_event.presenter.name, "Arjun")
         self.assertEqual(club_event.start, now)
         self.assertEqual(club_event.description, "Lorem ipsum")
         self.assertEqual(club_event.location, "link or actual loc")

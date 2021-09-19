@@ -28,7 +28,7 @@ class TestHackersBlueprint(BaseTestCase):
 
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
-            "/api/hackers/", data={"hacker": json.dumps({})}, content_type="multipart/form-data"
+            "/api/hackers/", data={"hacker": ""}, content_type="multipart/form-data"
         )
 
         data = json.loads(res.data.decode())
@@ -65,10 +65,10 @@ class TestHackersBlueprint(BaseTestCase):
     def test_create_hacker_invalid_datatypes(self):
         res = self.client.post(
             "/api/hackers/",
-            data=json.dumps(
+            data={"hacker": json.dumps(
                 {"email": "notanemail"}
-            ),
-            content_type="application/json",
+            )},
+            content_type="multipart/form-data",
         )
 
         data = json.loads(res.data.decode())
@@ -87,7 +87,10 @@ class TestHackersBlueprint(BaseTestCase):
             email="foobar1@email.com",
         )
 
-        res = self.client.get("/api/hackers/get_all_hackers/")
+        token = self.login_user()
+
+        res = self.client.get("/api/hackers/get_all_hackers/", 
+                              headers=[("sid", token)])
 
         data = json.loads(res.data.decode())
 
@@ -97,7 +100,10 @@ class TestHackersBlueprint(BaseTestCase):
 
     
     def test_get_all_hackers_not_found(self):
-        res = self.client.get("/api/hackers/get_all_hackers/")
+        token = self.login_user()
+
+        res = self.client.get("/api/hackers/get_all_hackers/", 
+                              headers=[("sid", token)])
 
         data = json.loads(res.data.decode())
 

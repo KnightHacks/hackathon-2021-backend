@@ -67,6 +67,11 @@ def update_registration_status():
           schema:
             type: string
           required: true
+        - name: redirect_uri
+          in: query
+          schema:
+            type: string
+            format: uri
     responses:
         200:
             description: OK
@@ -76,6 +81,8 @@ def update_registration_status():
             description: Unexpected error.
     """
     email_token = request.args.get("token", "")
+    redirect_uri = request.args.get("redirect_uri",
+                                    app.config.get("FRONTEND_URL"))
 
     if not email_token:
         raise BadRequest("No email token was provided")
@@ -94,7 +101,7 @@ def update_registration_status():
                   unset__email_token_hash="")
     hacker.save()
 
-    return redirect(app.config.get("FRONTEND_URL"), code=302)
+    return redirect(redirect_uri, code=302)
 
 
 @email_verify_blueprint.post("/email/verify/<email>/")

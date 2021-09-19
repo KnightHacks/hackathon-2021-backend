@@ -26,7 +26,7 @@ jobs:
           # Fail if "new" violations detected or "any", default "new"
           failIf: new
           # Additional arguments to pass to flake8, default "." (current directory)
-          args: "--ignore=E121,E123,W503,W292 ."
+          args: "--ignore=E121,E123,W503,W292,W504 ."
 
   test:
     runs-on: ubuntu-latest

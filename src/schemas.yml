@@ -37,7 +37,7 @@ Hacker:
         major:
           type: string
         graduation_date:
-          type: number
+          type: string
     socials:
       type: object
       properties:
@@ -56,6 +56,9 @@ Hacker:
     in_person:
       type: boolean
       description: Whether the hacker is present in-person or not
+    dietary_restrictions:
+      type: string
+      description: A user-written description of their dietary restrictions (if any).
 Sponsor:
   type: object
   properties:
@@ -70,7 +73,7 @@ Sponsor:
       example: https://blob.knighthacks.org/somelogo.png
     socials:
       type: dict
-      example: {linkedIn: https://blob.knighthackslinkedIn.org}
+      example: { linkedIn: https://blob.knighthackslinkedIn.org }
     subscription_tier:
       type: string
       example: "Gold"
@@ -111,14 +114,27 @@ Event:
 ClubEvent:
   type: object
   properties:
+    id:
+      type: string
     name:
       type: string
+    image:
+      type: string
+      format: byte
+      description: A base64 encoded image
     tags:
       type: array
       items:
         type: string
     presenter:
-      type: string
+      type: object
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+          format: byte
+          description: A base64 encoded image
     start:
       type: string
       format: date-time
@@ -132,4 +148,3 @@ ClubEvent:
       example: An introductory workshop for the Python language.
     location:
       type: string
-

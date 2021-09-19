@@ -12,7 +12,8 @@ def send_verification_email(user, token):
     """Sends a verification email to the user"""
     if not currapp.config["SEND_MAIL"]:
         return
-    href = f"{currapp.config['FRONTEND_URL']}/verifyemail?token={token}"
+    href = (f"{currapp.config['BACKEND_URL']}api/email/verify?token={token}"
+            f"&redirect_uri={currapp.config['FRONTEND_URL']}")
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
             subject="Knight Hacks - Verify your Email",

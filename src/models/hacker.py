@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 class Education_Info(db.EmbeddedDocument):
     college = db.StringField()
     major = db.StringField()
-    graduation_date = db.IntField()
+    graduation_date = db.StringField()
 
 
 class Socials(db.EmbeddedDocument):
@@ -51,6 +51,7 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     why_attend = db.StringField(max_length=200)
     what_learn = db.ListField()
     in_person = db.BooleanField(default=False)
+    dietary_restrictions = db.StringField()
 
     email = db.EmailField(unique=True, required=True)
     date = db.DateTimeField(default=datetime.utcnow)

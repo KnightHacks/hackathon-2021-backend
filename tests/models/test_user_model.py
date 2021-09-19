@@ -9,6 +9,8 @@ class TestUserModel(BaseTestCase):
 
     def test_create_user(self):
         user = User.createOne(
+            username = "foobar", 
+            password = 'string',
             email="foobar@email.com"
         )
 
@@ -18,6 +20,8 @@ class TestUserModel(BaseTestCase):
 
     def test_findOne_user(self):
         User.createOne(
+            username = "foobar", 
+            password = 'string',
             email="foobar@email.com"
         )
 
