@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Security
+
+-   Removed ability for user to provide redirect uri for email verification endpoint.
+
 ## [1.0.1] - 2021-09-19
 
 ### Changed
