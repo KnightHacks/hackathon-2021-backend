@@ -16,6 +16,9 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+-   Fixed get hacker resume field returning a 500 error.
+
 ### Security
 
 -   Removed ability for user to provide redirect uri for email verification endpoint.
