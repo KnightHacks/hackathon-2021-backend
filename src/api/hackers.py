@@ -141,15 +141,23 @@ def create_hacker():
                     type: object
                     properties:
                         hacker:
+                            deprecated: true
                             allOf:
                                 - $ref: '#/components/schemas/Hacker'
                                 - type: object
+                                  description: >
+                                    Deprecated,
+                                    do not use `multipart/form-data`,
+                                    use `application/json`
+                                    and upload the resume through the
+                                    `/api/hackers/resume/` POST endpoint.
                                   properties:
                                     isaccepted:
                                         readOnly: true
                                     rsvp_status:
                                         readOnly: true
                         resume:
+                             deprecated: true
                              type: string
                              format: binary
                 encoding:
@@ -243,6 +251,12 @@ def create_hacker():
         "status": "success",
         "message": "Hacker was created!"
     }
+
+    res = make_response(res)
+    res.headers["Deprecation"] = (
+        "The use of multipart/form-data is deprecated,"
+        " use `application/json` and upload the resume through the "
+        "/api/hackers/resume/ POST endpoint.")
 
     return res, 201
 

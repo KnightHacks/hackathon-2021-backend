@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+# Deprecated
+
+- The use of `multipart/form-data` on the POST `/api/hackers/` endpoint.
+
 ### Added
 
 -   POST `/api/hackers/resume/` endpoint for uploading a hacker's resume before the hacker is actually created in the DB. Unattached resumes are deleted after 24 hours.
