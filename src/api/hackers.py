@@ -18,11 +18,99 @@ from werkzeug.exceptions import (
     UnsupportedMediaType
 )
 from src.models.hacker import Hacker
+from src.models.resume import Resume
 from src.common.decorators import authenticate
 from json import JSONDecodeError
+from datetime import datetime, timedelta
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
+
+
+@hackers_blueprint.post("/hackers/resume/")
+def create_hacker_resume():
+    """
+    Creates a hacker resume
+    ---
+    tags:
+        - hacker
+    summary: Creates a new resume for a Hacker. Only accepts pdfs.
+    description: Creates a new resume for a Hacker. Only accepts pdfs.
+    requestBody:
+        content:
+            multipart/form-data:
+                schema:
+                    type: object
+                    required:
+                        - resume
+                    properties:
+                        resume:
+                            type: string
+                            format: binary
+                encoding:
+                    resume:
+                        contentType: application/pdf
+    responses:
+        201:
+            description: OK
+            headers:
+                Expires:
+                    description: >
+                        The date/time that the uploaded resume is
+                        deleted from the server.
+                    schema:
+                        type: string
+                        format: date-time
+                        example: 2021-09-20T00:00:00Z
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            id:
+                                type: string
+        415:
+            description: Unsupported Media Type, endpoint only accepts pdfs
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            id:
+                                type: string
+    links:
+        createHacker:
+            operationId: create_hacker
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            allOf:
+                                - $ref: '#/paths/~1api~1hackers~1/requestBody/content/application~1json/schema' # noqa: E501
+                                - type: object
+                                  properties:
+                                    resume_id: '$response.body#/id'
+            description: >
+                The `id` value returned in the response can be used as the `resume_id` in `POST /hackers/`
+    """
+    file = request.files["resume"]
+
+    if file.mimetype != "application/pdf":
+        raise UnsupportedMediaType(
+            "Unsupported Media Type. Endpoint only accepts PDFs"
+        )
+
+    resume = Resume()
+
+    resume.file.put(file, content_type="application/pdf")
+
+    resume.save()
+
+    res = make_response({"id": resume.id})
+    expTime = datetime.utcnow() + timedelta(hours=24)
+    res.headers["Expires"] = expTime.isoformat() + "Z"
+
+    return res, 201
 
 
 @hackers_blueprint.post("/hackers/")
@@ -33,14 +121,34 @@ def create_hacker():
     tags:
         - hacker
     summary: Create Hacker
+    operationId: create_hacker
     requestBody:
         content:
+            application/json:
+                schema:
+                    allOf:
+                        - $ref: '#/components/schemas/Hacker'
+                        - type: object
+                          properties:
+                            isaccepted:
+                                readOnly: true
+                            rsvp_status:
+                                readOnly: true
+                            resume_id:
+                                type: string
             multipart/form-data:
                 schema:
                     type: object
                     properties:
                         hacker:
-                            $ref: '#/components/schemas/Hacker'
+                            allOf:
+                                - $ref: '#/components/schemas/Hacker'
+                                - type: object
+                                  properties:
+                                    isaccepted:
+                                        readOnly: true
+                                    rsvp_status:
+                                        readOnly: true
                         resume:
                              type: string
                              format: binary
@@ -56,15 +164,22 @@ def create_hacker():
             description: OK
         400:
             description: Bad request.
+        404:
+            description: A resume with the provided id does not exist.
         409:
             description: Sorry, that email already exists.
         5XX:
             description: Unexpected error.
     """
-    try:
-        data = json.loads(request.form.get("hacker"))
-    except JSONDecodeError:
-        raise BadRequest("Invalid JSON sent in hacker form part.")
+    if request.content_type == "multipart/form-data":
+        try:
+            data = json.loads(request.form.get("hacker"))
+        except JSONDecodeError:
+            raise BadRequest("Invalid JSON sent in hacker form part.")
+    elif request.content_type == "application/json":
+        data = request.get_json()
+    else:
+        raise UnsupportedMediaType()
 
     resume = None
 
@@ -86,11 +201,31 @@ def create_hacker():
         if resume.content_type != "application/pdf":
             raise UnsupportedMediaType()
 
+    if "resume_id" in data:
+        try:
+            resume_doc = Resume.objects.get_or_404(id=data["resume_id"])
+        except ValidationError:
+            raise BadRequest(f"{data['resume_id']} is not a valid ObjectId.")
+    elif resume:
+        resume_doc = Resume(attached=True)
+    else:
+        resume_doc = None
+
     try:
         hacker = Hacker.createOne(**data)
 
-        if resume:
-            hacker.resume.put(resume, content_type="application/pdf")
+        if resume and resume_doc:
+            hacker.resume = resume_doc
+
+            hacker.resume.file.put(resume, content_type="application/pdf")
+
+            hacker.resume.save()
+        elif "resume_id" in data and resume_doc:
+            hacker.resume = resume_doc
+
+            hacker.resume.attached = True
+
+            hacker.resume.save()
 
         hacker.save()
 
@@ -146,7 +281,7 @@ def get_hacker_resume(email: str):
     if not hacker.resume:
         raise NotFound("There is no resume for this hacker")
 
-    resume = hacker.resume.read()
+    resume = hacker.resume.file.read()
 
     res = make_response(resume)
     res.headers["Content-Type"] = "application/pdf"

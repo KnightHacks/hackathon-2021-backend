@@ -14,7 +14,9 @@ from flask import current_app as app
 from src import db, bcrypt
 from src.models import BaseDocument
 from src.common.jwt import encode_jwt, decode_jwt
+from src.models.resume import Resume
 from datetime import datetime, timedelta
+from mongoengine import signals
 
 
 class Education_Info(db.EmbeddedDocument):
@@ -46,7 +48,7 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     ethnicity = db.StringField()
     pronouns = db.StringField()
     edu_info = db.EmbeddedDocumentField(Education_Info)
-    resume = db.FileField()
+    resume = db.ReferenceField(Resume)
     socials = db.EmbeddedDocumentField(Socials)
     why_attend = db.StringField(max_length=200)
     what_learn = db.ListField()
@@ -82,3 +84,11 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     def decode_email_token(email_token: str) -> str:
         """Decodes the email token"""
         return decode_jwt(email_token)["sub"]
+
+    @classmethod
+    def pre_delete(cls, sender, document, **kwargs):
+        if document.resume:
+            document.resume.delete()
+
+
+signals.pre_delete.connect(Hacker.pre_delete, sender=Hacker)
