@@ -8,7 +8,7 @@
         create_hacker()
 
 """
-from flask import request, make_response, json
+from flask import request, make_response, json, current_app as app
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import (
@@ -179,7 +179,7 @@ def create_hacker():
         5XX:
             description: Unexpected error.
     """
-    if request.content_type == "multipart/form-data":
+    if "multipart/form-data" in request.content_type:
         try:
             data = json.loads(request.form.get("hacker"))
         except JSONDecodeError:
@@ -188,6 +188,7 @@ def create_hacker():
         data = request.get_json()
     else:
         raise UnsupportedMediaType()
+
 
     resume = None
 
@@ -252,11 +253,12 @@ def create_hacker():
         "message": "Hacker was created!"
     }
 
-    res = make_response(res)
-    res.headers["Deprecation"] = (
-        "The use of multipart/form-data is deprecated,"
-        " use `application/json` and upload the resume through the "
-        "/api/hackers/resume/ POST endpoint.")
+    if "multipart/form-data" in request.content_type:
+        res = make_response(res)
+        res.headers["Deprecation"] = (
+            "The use of multipart/form-data is deprecated,"
+            " use `application/json` and upload the resume through the "
+            "/api/hackers/resume/ POST endpoint.")
 
     return res, 201
 
