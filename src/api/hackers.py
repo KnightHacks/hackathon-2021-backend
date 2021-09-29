@@ -265,7 +265,7 @@ def create_hacker():
 
 @hackers_blueprint.get("/hackers/<email>/resume/")
 @authenticate
-def get_hacker_resume(email: str):
+def get_hacker_resume(_, email: str):
     """
     Get Hacker Resume
     ---
