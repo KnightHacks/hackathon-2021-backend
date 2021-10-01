@@ -8,7 +8,7 @@
         create_hacker()
 
 """
-from flask import request, make_response, json, current_app as app
+from flask import request, make_response, json
 from src.api import Blueprint
 from mongoengine.errors import NotUniqueError, ValidationError
 from werkzeug.exceptions import (
