@@ -144,6 +144,7 @@ def create_app():
     """Register Blueprints"""
     from src.api.auth import auth_blueprint
     from src.api.hackers import hackers_blueprint
+    from src.api.sponsors import sponsors_blueprint
     from src.api.stats import stats_blueprint
     from src.api.events import events_blueprint
     from src.api.club_events import club_events_blueprint
@@ -151,6 +152,7 @@ def create_app():
 
     app.register_blueprint(auth_blueprint, url_prefix="/api")
     app.register_blueprint(hackers_blueprint, url_prefix="/api")
+    app.register_blueprint(sponsors_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
     app.register_blueprint(events_blueprint, url_prefix="/api")
     app.register_blueprint(club_events_blueprint, url_prefix="/api")
