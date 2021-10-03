@@ -16,9 +16,11 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-10-03
+
 ### Deprecated
 
-- The use of `multipart/form-data` on the POST `/api/hackers/` endpoint.
+-   The use of `multipart/form-data` on the POST `/api/hackers/` endpoint.
 
 ### Added
 
@@ -124,7 +126,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.1.0...HEAD
+
+[1.1.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...1.1.0
 
 [1.0.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.0...1.0.1
 
