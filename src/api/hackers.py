@@ -189,7 +189,6 @@ def create_hacker():
     else:
         raise UnsupportedMediaType()
 
-
     resume = None
 
     if "date" in data:
