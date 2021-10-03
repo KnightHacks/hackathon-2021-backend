@@ -16,6 +16,25 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-10-03
+
+### Deprecated
+
+-   The use of `multipart/form-data` on the POST `/api/hackers/` endpoint.
+
+### Added
+
+-   POST `/api/hackers/resume/` endpoint for uploading a hacker's resume before the hacker is actually created in the DB. Unattached resumes are deleted after 24 hours.
+-   Added the ability to upload the hacker document as a `application/json` while providing the optional `resume_id` value to attach a resume to a hacker document which is returned from the `/api/hackers/resume/` endpoint.
+
+### Fixed
+
+-   Fixed get hacker resume field returning a 500 error.
+
+### Security
+
+-   Removed ability for user to provide redirect uri for email verification endpoint.
+
 ## [1.0.1] - 2021-09-19
 
 ### Changed
@@ -107,7 +126,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.1.0...HEAD
+
+[1.1.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...1.1.0
 
 [1.0.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.0...1.0.1
 
