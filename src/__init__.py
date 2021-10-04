@@ -173,3 +173,10 @@ def create_app():
 
 
 app, celery = create_app()
+
+
+@app.after_request
+def allow_localhost_CORS(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Methods", "POST")
+    return response
