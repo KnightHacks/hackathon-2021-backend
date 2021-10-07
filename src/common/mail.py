@@ -8,8 +8,11 @@ from flask import render_template, current_app as currapp
 from src.tasks.mail_tasks import send_async_email
 
 
-def send_verification_email(user, token):
+def send_verification_email(user):
     """Sends a verification email to the user"""
+
+    token = user.encode_email_token()
+
     if not currapp.config["SEND_MAIL"]:
         return
     href = (f"{currapp.config['BACKEND_URL']}api/email/verify?token={token}"

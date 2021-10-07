@@ -10,7 +10,7 @@
 """
 from flask import request, make_response, json
 from src.api import Blueprint
-from mongoengine.errors import NotUniqueError, ValidationError
+from mongoengine.errors import NotUniqueError, ValidationError, DoesNotExist
 from werkzeug.exceptions import (
     BadRequest,
     Conflict,
@@ -22,6 +22,7 @@ from src.models.resume import Resume
 from src.common.decorators import authenticate
 from json import JSONDecodeError
 from datetime import datetime, timedelta
+import sentry_sdk
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -210,42 +211,69 @@ def create_hacker():
             raise UnsupportedMediaType()
 
     if "resume_id" in data:
-        try:
-            resume_doc = Resume.objects.get_or_404(id=data["resume_id"])
-        except ValidationError:
-            raise BadRequest(f"{data['resume_id']} is not a valid ObjectId.")
+        with sentry_sdk.start_span(
+            op="db.findOne",
+            description="Get Existing Resume Document"
+        ) as span:
+            span.set_data("db.query", {"_id": data["resume_id"]})
+            try:
+                resume_doc = Resume.objects.get(id=data["resume_id"])
+            except ValidationError:
+                raise BadRequest(
+                    f"{data['resume_id']} is not a valid ObjectId."
+                )
+            except DoesNotExist:
+                raise NotFound(f"Resume with id `{data['resume_id']}` "
+                               "does not exist, it may have expired.")
     elif resume:
-        resume_doc = Resume(attached=True)
+        with sentry_sdk.start_span(op="db.insertOne",
+                                   description="Create new empty Resume"):
+            resume_doc = Resume(attached=True)
     else:
         resume_doc = None
 
-    try:
-        hacker = Hacker.createOne(**data)
+    with sentry_sdk.start_span(op="db.insertOne",
+                               description="Create Hacker"):
+        try:
+            hacker = Hacker.createOne(**data)
 
-        if resume and resume_doc:
-            hacker.resume = resume_doc
+            if resume and resume_doc:
+                hacker.resume = resume_doc
 
-            hacker.resume.file.put(resume, content_type="application/pdf")
+                with sentry_sdk.start_span(
+                    op="db.gridfs.put",
+                    description="Put resume into GridFS"
+                ):
+                    hacker.resume.file.put(resume,
+                                           content_type="application/pdf")
 
-            hacker.resume.save()
-        elif "resume_id" in data and resume_doc:
-            hacker.resume = resume_doc
+                with sentry_sdk.start_span(
+                    op="db.updateOne",
+                    description="Save resume document"
+                ):
 
-            hacker.resume.attached = True
+                    hacker.resume.save()
+            elif "resume_id" in data and resume_doc:
+                with sentry_sdk.start_span(
+                    op="db.updateOne",
+                    description="Save resume document"
+                ):
+                    hacker.resume = resume_doc
 
-            hacker.resume.save()
+                    hacker.resume.attached = True
 
-        hacker.save()
+                    hacker.resume.save()
 
-    except NotUniqueError:
-        raise Conflict("Sorry, that email already exists.")
-    except ValidationError:
-        raise BadRequest()
+            hacker.save()
+
+        except NotUniqueError:
+            raise Conflict("Sorry, that email already exists.")
+        except ValidationError:
+            raise BadRequest()
 
     """Send Verification Email"""
-    token = hacker.encode_email_token()
     from src.common.mail import send_verification_email
-    send_verification_email(hacker, token)
+    send_verification_email(hacker)
 
     res = {
         "status": "success",

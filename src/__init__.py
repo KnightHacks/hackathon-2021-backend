@@ -20,7 +20,13 @@ from os import path, getenv, environ
 if not getenv("APP_SETTINGS", "src.config.TestingConfig"):
     from gevent import monkey
     monkey.patch_all()
-from flask import Flask, json  # noqa: E402
+from flask import (
+    g,
+    Flask,
+    json,
+    before_render_template,
+    template_rendered
+)  # noqa: E402
 from werkzeug.exceptions import HTTPException  # noqa: E402
 from flasgger import Swagger  # noqa: E402
 from flask_cors import CORS  # noqa: E402
@@ -33,6 +39,7 @@ from sentry_sdk.integrations.celery import CeleryIntegration  # noqa: E402
 from flask_socketio import SocketIO  # noqa: E402
 from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
+import blinker  # noqa
 
 """ Version Number (DO NOT TOUCH) """
 __version__ = "1.1.0"
@@ -125,6 +132,7 @@ def create_app():
             release=f"backend@{__version__}",
             integrations=[FlaskIntegration(), CeleryIntegration()],
             traces_sample_rate=1.0,
+            debug=True
         )
 
     """Setup Extensions"""
@@ -168,6 +176,27 @@ def create_app():
     def _init_app():
         from src.common.init_defaults import init_default_users
         init_default_users()
+
+    @before_render_template.connect_via(app)
+    def _sentry_pre_render_template(sender, template, context, **extra):
+
+        parent = sentry_sdk.Hub.current.scope.span
+        if parent is not None:
+            span = parent.start_child(op="flask.render_template")
+
+            span.set_data("flask.render_template.sender", sender)
+            span.set_data("flask.render_template.template", template)
+            span.set_data("flask.render_template.context", context)
+            span.set_data("flask.render_template.extra", extra)
+
+            g._sentry_span_render_template = span
+
+    @template_rendered.connect_via(app)
+    def _sentry_template_rendered(sender, template, context, **extra):
+        span = g.pop("_sentry_span_render_template", None)
+
+        if span is not None:
+            span.finish()
 
     return app, celery
 
