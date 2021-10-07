@@ -16,6 +16,14 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Added
+
+-   Sentry Spans to `create_hacker`, `common.jwt.*`, `flask.render_template`.
+
+### Changed
+
+-   Increased the resource limits and requests for the production backend container.
+
 ## [1.1.0] - 2021-10-03
 
 ### Deprecated
