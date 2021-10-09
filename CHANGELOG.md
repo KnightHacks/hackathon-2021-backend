@@ -16,6 +16,16 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   Updated email templates for email footer, top, and hacker acceptance. (Initial non-Jinja templates created by: @APherwani)
+-   Email helper functions and templates specify hackers instead of user.
+
+### Added
+
+-   Email template for hacker confirmation success.
+-   Helper functions for hacker confirmation success.
+
 ## [1.1.0] - 2021-10-03
 
 ### Deprecated
