@@ -10,7 +10,11 @@ class TestHackerModel(BaseTestCase):
 
     def test_create_hacker(self):
         hacker = Hacker.createOne(
-            email="foobar@email.com"
+            email="foobar@email.com",
+            mlh=dict(
+                mlh_code_of_conduct=True,
+                mlh_privacy_and_contest_terms=True
+            )
         )
 
         self.assertTrue(hacker.id)

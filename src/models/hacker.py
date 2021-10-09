@@ -23,11 +23,18 @@ class Education_Info(db.EmbeddedDocument):
     college = db.StringField()
     major = db.StringField()
     graduation_date = db.StringField()
+    level_of_study = db.StringField()
 
 
 class Socials(db.EmbeddedDocument):
     github = db.StringField()
     linkedin = db.StringField()
+
+
+class MLH_Authorizations(db.EmbeddedDocument):
+    mlh_code_of_conduct = db.BooleanField(required=True)
+    mlh_privacy_and_contest_terms = db.BooleanField(required=True)
+    mlh_send_messages = db.BooleanField(default=False)
 
 
 class Hacker(BaseDocument):  # Stored in the "user" collection
@@ -40,6 +47,8 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
 
     first_name = db.StringField()
     last_name = db.StringField()
+    birthday = db.DateTimeField()
+    country = db.StringField()
     phone_number = db.StringField()
     isaccepted = db.BooleanField(default=False)
     can_share_info = db.BooleanField(default=False)
@@ -59,6 +68,8 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     date = db.DateTimeField(default=datetime.utcnow)
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
+
+    mlh = db.EmbeddedDocumentField(MLH_Authorizations)
 
     def encode_email_token(self) -> str:
         """Encode the email token"""
