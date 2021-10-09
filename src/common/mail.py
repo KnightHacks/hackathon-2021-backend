@@ -30,7 +30,7 @@ def send_hacker_acceptance_email(hacker):
         return
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
-            subject="",
+            subject="Knight Hacks - You're in!",
             recipient=hacker.email,
             text_body=render_template("emails/hacker_acceptance.txt",
                                       hacker=hacker),
@@ -44,8 +44,7 @@ def send_hacker_confirmation_success_email(hacker):
         return
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
-            subject=(f"Knight Hacks - {hacker.first_name}, "
-                     "Thank You for Confirming Your Attendance!"),
+            subject="Knight Hacks - Thank you for Confirming!",
             recipient=hacker.email,
             text_body=render_template("emails/hacker_confirmation_success.txt",
                                       hacker=hacker),
