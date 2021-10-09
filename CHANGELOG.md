@@ -16,6 +16,25 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Breaking Changes
+
+-   The Fields `/mlh/mlh_code_of_conduct` and `/mlh/mlh_privacy_and_contest_terms` in the Hacker schema must be true when submitting an application, otherwise the api will return a 422.
+
+### Changed
+
+-   The Hacker schema to include the fields:
+    -   `/birthday` as a iso8601 date string field
+    -   `/country` as a string field
+    -   `/mlh/mlh_code_of_conduct` as a required == `true` boolean field **\***
+    -   `/mlh/mlh_privacy_and_contest_terms` as a required == `true` boolean field **\***
+    -   `/mlh/mlh_send_messages` as a boolean field
+    -   `/edu_info/level_of_study` as a string field
+    **\*** Submitting these fields as anything besides `true` will return a 422.
+
+### Fixed
+
+-   API will return a 418 when fields that do not exist on the Hacker model are submitted to the API.
+
 ## [1.1.0] - 2021-10-03
 
 ### Deprecated
