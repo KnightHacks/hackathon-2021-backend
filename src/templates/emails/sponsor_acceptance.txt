@@ -1,1 +1,0 @@
-Knight Hacks, You've been accepted! - {{sponsor.username}}
