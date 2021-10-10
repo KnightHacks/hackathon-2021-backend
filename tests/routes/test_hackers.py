@@ -90,6 +90,27 @@ class TestHackersBlueprint(BaseTestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(Hacker.objects.count(), 0)
 
+    def test_create_hacker_extraneous_fields(self):
+
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_code_of_conduct": True,
+                    "mlh_privacy_and_contest_terms": True
+                },
+                "edu_info": {
+                    "extrabs": "asdf"
+                }
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(res.status_code, 418)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
             "/api/hackers/", data={"hacker": ""}, content_type="multipart/form-data"
