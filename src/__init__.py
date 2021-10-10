@@ -109,7 +109,10 @@ swagger = Swagger(template=swagger_template)
 
 def create_app():
     """Initialize the App"""
-    app = Flask(__name__, static_url_path="/static")
+    app = Flask(__name__,
+                static_url_path="/static",
+                static_folder=path.join(
+                    path.abspath(path.dirname(__file__)), "static"))
 
     """Flask Config"""
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")

@@ -1,0 +1,7 @@
+Thank you for confirming your attendance to Knight Hacks {{hacker.first_name}} {{hacker.last_name}}!
+
+Visit https://knighthacks.org for the official Knight Hacks Hacker Guide!
+
+This includes all the relevant information about the event including the schedule, workshops, challenges, prizes and more! Please note that this guide is being constantly updated as we get closer to the event.
+
+Don't forget to join our discord at https://knighthacks.org/discord and check in for the event there!

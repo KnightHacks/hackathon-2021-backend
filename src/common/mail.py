@@ -8,10 +8,10 @@ from flask import render_template, current_app as currapp
 from src.tasks.mail_tasks import send_async_email
 
 
-def send_verification_email(user):
+def send_verification_email(hacker):
     """Sends a verification email to the user"""
 
-    token = user.encode_email_token()
+    token = hacker.encode_email_token()
 
     if not currapp.config["SEND_MAIL"]:
         return
@@ -20,26 +20,20 @@ def send_verification_email(user):
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
             subject="Knight Hacks - Verify your Email",
-            recipient=user.email,
+            recipient=hacker.email,
             text_body=render_template("emails/email_verification.txt",
-                                      user=user),
+                                      hacker=hacker),
             html_body=render_template("emails/email_verification.html",
-                                      user=user, href=href)))
-
-
-def send_event_email(user, event):
-    pass
-
-
-def send_track_email(user, track):
-    pass
+                                      hacker=hacker, href=href)))
 
 
 def send_hacker_acceptance_email(hacker):
     """Sends an acceptance email to the hacker"""
+    if not currapp.config["SEND_MAIL"]:
+        return
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
-            subject="",
+            subject="Knight Hacks - You're in!",
             recipient=hacker.email,
             text_body=render_template("emails/hacker_acceptance.txt",
                                       hacker=hacker),
@@ -47,14 +41,16 @@ def send_hacker_acceptance_email(hacker):
                                       hacker=hacker)))
 
 
-def send_sponsor_acceptance_email(sponsor):
-    """Sends an acceptance email to the sponsor"""
+def send_hacker_confirmation_success_email(hacker):
+    """Sends an confirmation success email to the hacker"""
+    if not currapp.config["SEND_MAIL"]:
+        return
     if not currapp.config.get("TESTING"):
         send_async_email.apply_async((), dict(
-            subject="",
-            recipient=sponsor.email,
-            text_body=render_template("emails/sponsor_acceptance.txt",
-                                      sponsor=sponsor),
+            subject="Knight Hacks - Thank you for Confirming!",
+            recipient=hacker.email,
+            text_body=render_template("emails/hacker_confirmation_success.txt",
+                                      hacker=hacker),
             html_body=render_template(
-                "emails/sponsor_acceptance.html",
-                sponsor=sponsor)))
+                "emails/hacker_confirmation_success.html",
+                hacker=hacker)))
