@@ -10,18 +10,26 @@
 """
 from flask import request, make_response, json
 from src.api import Blueprint
-from mongoengine.errors import NotUniqueError, ValidationError
+from mongoengine.errors import (
+    NotUniqueError,
+    ValidationError,
+    FieldDoesNotExist
+)
 from werkzeug.exceptions import (
     BadRequest,
     Conflict,
     NotFound,
-    UnsupportedMediaType
+    UnsupportedMediaType,
+    UnprocessableEntity,
+    ImATeapot
 )
 from src.models.hacker import Hacker
 from src.models.resume import Resume
 from src.common.decorators import authenticate
 from json import JSONDecodeError
 from datetime import datetime, timedelta
+import dateutil.parser
+from dateutil.parser import ParserError
 
 
 hackers_blueprint = Blueprint("hackers", __name__)
@@ -176,6 +184,15 @@ def create_hacker():
             description: A resume with the provided id does not exist.
         409:
             description: Sorry, that email already exists.
+        422:
+            description: >
+                Empty JSON object received or
+                the required fields `/mlh/mlh_code_of_conduct` and
+                `/mlh/mlh_privacy_and_contest_terms` are not `true`
+        418:
+            description: >
+                A field has been provided that does not
+                exist for this endpoint.
         5XX:
             description: Unexpected error.
     """
@@ -191,6 +208,18 @@ def create_hacker():
 
     resume = None
 
+    if data is None:
+        raise BadRequest("No Hacker data received!")
+
+    if not data:
+        raise UnprocessableEntity()
+
+    if "birthday" in data:
+        try:
+            data["birthday"] = dateutil.parser.parse(data["birthday"])
+        except ParserError:
+            raise BadRequest("Invalid birthday, must be in ISO8601 format")
+
     if "date" in data:
         del data["date"]
 
@@ -200,8 +229,19 @@ def create_hacker():
     if "email_token_hash" in data:
         del data["email_token_hash"]
 
-    if not data:
-        raise BadRequest()
+    """Check for mlh authorization checkboxes"""
+    no_mlh_msg = ("Hacker must agree to the MLH Code of Conduct, "
+                  "the MLH Privacy Policy, "
+                  "and the MLH Contest Terms and Conditions "
+                  "by marking the fields `/mlh/mlh_code_of_conduct`, and "
+                  "`/mlh/mlh_privacy_and_contest_terms` as `true`")
+
+    if "mlh" not in data:
+        raise UnprocessableEntity(no_mlh_msg)
+
+    if (not data["mlh"].get("mlh_code_of_conduct") or
+            not data["mlh"].get("mlh_privacy_and_contest_terms")):
+        raise UnprocessableEntity(no_mlh_msg)
 
     if "resume" in request.files:
         resume = request.files["resume"]
@@ -241,6 +281,9 @@ def create_hacker():
         raise Conflict("Sorry, that email already exists.")
     except ValidationError:
         raise BadRequest()
+    except FieldDoesNotExist:
+        raise ImATeapot("Request contains fields that do not exist "
+                        "for the current resource.")
 
     """Send Verification Email"""
     token = hacker.encode_email_token()
