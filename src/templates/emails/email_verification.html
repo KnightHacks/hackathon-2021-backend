@@ -8,8 +8,8 @@
     {% include "emails/top.html" %}
 
     <main>
-      <h1>Hello {{user.username}}, please click the link below to verify your email.</h1>
-       <a href="{{href}}">Click Here</a>
+        <h1>Hello {{hacker.first_name}} {{hacker.last_name}}, please click the link below to verify your email.</h1>
+        <a href="{{href}}">Click Here</a>
     </main>
 
     {% include "emails/footer.html" %}

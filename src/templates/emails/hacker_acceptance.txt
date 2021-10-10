@@ -1,1 +1,2 @@
-Knight Hacks, You've been accepted! - {{hacker.username}}
+Knight Hacks, You've been accepted! - {{hacker.first_name}}
+href = {{href}}
