@@ -16,6 +16,11 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Added
+
+- POST `/api/sponsors/` endpoint for adding a hackathon sponsor to the DB.
+- GET `/api/sponsors/get_all_sponsors/` endpoint for retrieving information on all of the hackathon sponsors.
+
 ### Changed
 
 - Modified styling of the Email Verification template for Hackathon applicants.

@@ -14,7 +14,12 @@ from src import db
 
 
 class Sponsor(BaseDocument):
-    sponsor_name = db.StringField()
+
+    private_fields = [
+        "id",
+    ]
+
+    sponsor_name = db.StringField(unique=True, required=True)
     description = db.StringField()
     logo = db.URLField()
     socials = db.DictField()
@@ -22,10 +27,5 @@ class Sponsor(BaseDocument):
 
     def to_mongo(self, *args, **kwargs):
         data = super().to_mongo(*args, **kwargs)
-
-        try:
-            data["events"] = [e for e in self.events]
-        except ValidationError:
-            pass
 
         return data
