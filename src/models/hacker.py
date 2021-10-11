@@ -23,6 +23,7 @@ class Education_Info(db.EmbeddedDocument):
     college = db.StringField()
     major = db.StringField()
     graduation_date = db.StringField()
+    level_of_study = db.StringField()
 
 
 class Socials(db.EmbeddedDocument):
@@ -30,7 +31,19 @@ class Socials(db.EmbeddedDocument):
     linkedin = db.StringField()
 
 
+class MLH_Authorizations(db.EmbeddedDocument):
+    mlh_code_of_conduct = db.BooleanField(required=True)
+    mlh_privacy_and_contest_terms = db.BooleanField(required=True)
+    mlh_send_messages = db.BooleanField(default=False)
+
+
 class Hacker(BaseDocument):  # Stored in the "user" collection
+
+    meta = {
+        "indexes": [
+            "email"
+        ]
+    }
 
     private_fields = [
         "id",
@@ -40,6 +53,8 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
 
     first_name = db.StringField()
     last_name = db.StringField()
+    birthday = db.DateTimeField()
+    country = db.StringField()
     phone_number = db.StringField()
     isaccepted = db.BooleanField(default=False)
     can_share_info = db.BooleanField(default=False)
@@ -60,14 +75,15 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     email_verification = db.BooleanField(default=False)
     email_token_hash = db.BinaryField()
 
+    mlh = db.EmbeddedDocumentField(MLH_Authorizations)
+
     def encode_email_token(self) -> str:
         """Encode the email token"""
         email_token = encode_jwt(
             exp=(
                 datetime.utcnow() + timedelta(
                     minutes=app.config["TOKEN_EMAIL_EXPIRATION_MINUTES"],
-                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]
-                )
+                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"])
             ),
             sub=self.email
         )
