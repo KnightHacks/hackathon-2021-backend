@@ -16,6 +16,17 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.0] - 2021-10-11
+
+### Added
+
+-   POST `/api/sponsors/` endpoint for adding a hackathon sponsor to the DB.
+-   GET `/api/sponsors/get_all_sponsors/` endpoint for retrieving information on all of the hackathon sponsors.
+
+### Changed
+
+-   Modified styling of the Email Verification template for Hackathon applicants.
+
 ## [2.0.1] - 2021-10-11
 
 ### Changed
@@ -168,7 +179,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.1...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.0...HEAD
+
+[2.1.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.1...2.1.0
 
 [2.0.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.0...2.0.1
 
