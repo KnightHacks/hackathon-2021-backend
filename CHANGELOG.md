@@ -24,6 +24,10 @@ Types of Changes:
 
 -   Sentry Spans to `create_hacker`, `common.jwt.*`, `flask.render_template`.
 
+### Fixed
+
+-   Email templates now provide the full URI to static assets.
+
 ## [2.0.0] - 2021-10-11
 
 ### Breaking Changes
