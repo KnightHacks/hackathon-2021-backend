@@ -9,7 +9,6 @@
         Sponsor
 """
 from src.models import BaseDocument
-from mongoengine.errors import ValidationError
 from src import db
 
 
