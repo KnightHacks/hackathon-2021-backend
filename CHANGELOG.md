@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.0.1] - 2021-10-11
+
 ### Changed
 
 -   Increased the resource limits and requests for the production backend container.
@@ -166,7 +168,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.1...HEAD
+
+[2.0.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.0...2.0.1
 
 [2.0.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.1.0...2.0.0
 
