@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.0.0] - 2021-10-11
+
 ### Breaking Changes
 
 -   The Fields `/mlh/mlh_code_of_conduct` and `/mlh/mlh_privacy_and_contest_terms` in the Hacker schema must be true when submitting an application, otherwise the api will return a 422.
@@ -29,14 +31,13 @@ Types of Changes:
     -   `/mlh/mlh_privacy_and_contest_terms` as a required == `true` boolean field **\***
     -   `/mlh/mlh_send_messages` as a boolean field
     -   `/edu_info/level_of_study` as a string field
-    **\*** Submitting these fields as anything besides `true` will return a 422.
+        **\*** Submitting these fields as anything besides `true` will return a 422.
 -   Updated email templates for email footer, top, and hacker acceptance. (Initial non-Jinja templates created by: @APherwani)
 -   Email helper functions and templates specify hackers instead of user.
 
 ### Fixed
 
 -   API will return a 418 when fields that do not exist on the Hacker model are submitted to the API.
-
 
 ### Added
 
@@ -153,7 +154,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.0.0...HEAD
+
+[2.0.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.1.0...2.0.0
 
 [1.1.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/1.0.1...1.1.0
 
