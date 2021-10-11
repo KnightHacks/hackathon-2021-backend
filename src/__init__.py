@@ -35,7 +35,7 @@ from src.tasks import make_celery  # noqa: E402
 import yaml  # noqa: E402
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 
 
 """Init Extensions"""
@@ -102,7 +102,10 @@ swagger = Swagger(template=swagger_template)
 
 def create_app():
     """Initialize the App"""
-    app = Flask(__name__, static_url_path="/static")
+    app = Flask(__name__,
+                static_url_path="/static",
+                static_folder=path.join(
+                    path.abspath(path.dirname(__file__)), "static"))
 
     """Flask Config"""
     app_settings = getenv("APP_SETTINGS", "src.config.ProductionConfig")

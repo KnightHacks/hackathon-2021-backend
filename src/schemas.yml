@@ -8,6 +8,35 @@ Hacker:
     last_name:
       type: string
       example: Doe
+    birthday:
+      type: string
+      format: date
+      example: YYYY-MM-DD
+    country:
+      type: string
+    mlh:
+      type: object
+      required:
+        - mlh_code_of_conduct
+        - mlh_privacy_and_contest_terms
+      properties:
+        mlh_code_of_conduct:
+          type: boolean
+          description: >
+            Has the hacker read and understand the MLH Code of Conduct?
+            This must be true in order to successfully submit an application.
+        mlh_privacy_and_contest_terms:
+          type: boolean
+          description: >
+            Does the hacker authorize Knight Hacks to share their application/registration information
+            with MLH for event admin, ranking, and MLH terms of both the MLH Contest Terms and Conditions
+            and the MLH Privacy Policy?
+            This must be true in order to successfully submit an application.
+        mlh_send_messages:
+          type: boolean
+          description: >
+            Does the hacker authorize MLH to send them occasional messages about hackathons
+            including pre- and post-event informational emails?
     email:
       type: string
       example: foobar@email.com
@@ -37,6 +66,8 @@ Hacker:
         major:
           type: string
         graduation_date:
+          type: string
+        level_of_study:
           type: string
     socials:
       type: object

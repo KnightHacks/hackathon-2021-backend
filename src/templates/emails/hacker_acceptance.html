@@ -8,10 +8,29 @@
     {% include "emails/top.html" %}
 
     <main>
-        <h1>You've been accepted!</h1>
-        <hr />
-        <p>Congratulations {{hacker.username if not hacker.first_name else hacker.first_name.capitalize() + hacker.last_name.capitalize()}}! You've been accepted to Knight Hacks 2021. Be sure to RSVP so we can plan for you :)</p>
-        <a href="https://knighthacks.org/rsvp?token=123456">RSVP</a>
+        <h1 style="font-size:300%;" >Congratulations {{hacker.first_name}} {{hacker.last_name}}!</h1>
+        <p style="font-size:160%;">
+            Welcome to KnightHacks, UCF's annual hackathon!
+            <br>
+            Now there's just one thing you must do
+            <b> -- confirm your attendance.</b>
+        </p>
+        <p style="font-size:160%;">
+            In order to do so, simply check out the link below and submit the form.
+            This will let us know that you will be attending and secure a spot for you!
+            Your deadline to confirm is <b>{{deadline.strftime("%x @ %I:%M %p %Z")}}.</b>
+            <br>
+            If you don't confirm by the given date, your spot will not be guaranteed, 
+            so please be sure to confirm right away!
+        </p>
+        <p style="font-size:160%;">
+            <img src="check-mark.png">
+            <br>
+            <a href="{{href}}">Confirm here!</a>
+            <br>
+            We hope to see you at KnightHacks this year!
+            <br>
+        </p>
     </main>
 
     {% include "emails/footer.html" %}

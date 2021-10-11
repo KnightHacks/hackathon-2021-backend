@@ -6,3 +6,5 @@ updates:
       schedule:
         interval: weekly
       open-pull-requests-limit: 99
+      reviewers:
+        - @KnightHacks/backend

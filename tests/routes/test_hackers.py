@@ -18,6 +18,10 @@ class TestHackersBlueprint(BaseTestCase):
                 {
                     "email": "foobar@email.com",
                     "date": now.isoformat(),
+                    "mlh": {
+                        "mlh_code_of_conduct": True,
+                        "mlh_privacy_and_contest_terms": True
+                    }
                 }
             )},
             content_type="multipart/form-data",
@@ -25,6 +29,87 @@ class TestHackersBlueprint(BaseTestCase):
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Hacker.objects.count(), 1)
+
+    def test_create_hacker_not_accepted_mlh_coc(self):
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_code_of_conduct": False,
+                    "mlh_privacy_and_contest_terms": True
+                }
+            }),
+            content_type="application/json"
+        )
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_privacy_and_contest_terms": True
+                }
+            }),
+            content_type="application/json"
+        )
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+    def test_create_hacker_not_accepted_mlh_pact(self):
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_code_of_conduct": True,
+                    "mlh_privacy_and_contest_terms": False
+                }
+            }),
+            content_type="application/json"
+        )
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_code_of_conduct": True
+                }
+            }),
+            content_type="application/json"
+        )
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(Hacker.objects.count(), 0)
+
+    def test_create_hacker_extraneous_fields(self):
+
+        res = self.client.post(
+            "/api/hackers/",
+            data=json.dumps({
+                "email": "foobar@email.com",
+                "mlh": {
+                    "mlh_code_of_conduct": True,
+                    "mlh_privacy_and_contest_terms": True
+                },
+                "edu_info": {
+                    "extrabs": "asdf"
+                }
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(res.status_code, 418)
+        self.assertEqual(Hacker.objects.count(), 0)
+
 
     def test_create_hacker_invalid_json(self):
         res = self.client.post(
@@ -49,6 +134,10 @@ class TestHackersBlueprint(BaseTestCase):
                 {
                     "email": "foobar@email.com",
                     "date": now.isoformat(),
+                    "mlh": {
+                        "mlh_code_of_conduct": True,
+                        "mlh_privacy_and_contest_terms": True
+                    }
                 }
             )},
             content_type="multipart/form-data",
@@ -66,7 +155,11 @@ class TestHackersBlueprint(BaseTestCase):
         res = self.client.post(
             "/api/hackers/",
             data={"hacker": json.dumps(
-                {"email": "notanemail"}
+                {"email": "notanemail",
+                 "mlh": {
+                     "mlh_code_of_conduct": True,
+                     "mlh_privacy_and_contest_terms": True
+                 }}
             )},
             content_type="multipart/form-data",
         )
@@ -80,11 +173,19 @@ class TestHackersBlueprint(BaseTestCase):
     """get_all_hackers"""
     def test_get_all_hackers(self):
         Hacker.createOne(
-            email="foobar@email.com"
+            email="foobar@email.com",
+            mlh=dict(
+                mlh_code_of_conduct=True,
+                mlh_privacy_and_contest_terms=True
+            )
         )
 
         Hacker.createOne(
             email="foobar1@email.com",
+            mlh=dict(
+                mlh_code_of_conduct=True,
+                mlh_privacy_and_contest_terms=True
+            )
         )
 
         token = self.login_user()
