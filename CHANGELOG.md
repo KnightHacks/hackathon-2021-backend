@@ -16,12 +16,15 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+- Modified styling of the Email Verification template for Hackathon applicants.
+
 ## [2.0.1] - 2021-10-11
 
 ### Changed
 
 - Increased the resource limits and requests for the production backend container.
-- Modified styling of the Email Verification template for Hackathon applicants.
 
 ### Added
 
