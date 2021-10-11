@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     {% include "emails/head.html" %}
@@ -8,8 +8,17 @@
     {% include "emails/top.html" %}
 
     <main>
-        <h1>Hello {{hacker.first_name}} {{hacker.last_name}}, please click the link below to verify your email.</h1>
-        <a href="{{href}}">Click Here</a>
+      <h1>
+        Hello {{hacker.first_name}},
+      </h1>
+      <p style="font-size: 160%;">
+        Thank you for registering for Knight Hacks 2021!
+        <br />
+        Please click the link below to <b> verify your email.</b>
+      </p>
+      <p style="font-size: 160%;">
+        <a href="{{href}}">Click Here!</a>
+      </p>
     </main>
 
     {% include "emails/footer.html" %}
