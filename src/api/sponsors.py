@@ -6,6 +6,7 @@
     Functions:
 
         create_sponsor()
+        get_all_sponsors
 
 """
 from flask import request, make_response, json
@@ -20,10 +21,9 @@ from werkzeug.exceptions import (
 from src.models.sponsor import Sponsor
 from src.common.decorators import authenticate
 from json import JSONDecodeError
-from datetime import datetime, timedelta
 
 
-sponsors_blueprint = Blueprint("sponsors", __name__)\
+sponsors_blueprint = Blueprint("sponsors", __name__)
 
 
 @sponsors_blueprint.post("/sponsors/")
