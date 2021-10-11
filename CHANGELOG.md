@@ -16,6 +16,14 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   Increased the resource limits and requests for the production backend container.
+
+### Added
+
+-   Sentry Spans to `create_hacker`, `common.jwt.*`, `flask.render_template`.
+
 ## [2.0.0] - 2021-10-11
 
 ### Breaking Changes
@@ -34,7 +42,6 @@ Types of Changes:
         **\*** Submitting these fields as anything besides `true` will return a 422.
 -   Updated email templates for email footer, top, and hacker acceptance. (Initial non-Jinja templates created by: @APherwani)
 -   Email helper functions and templates specify hackers instead of user.
--   Increased the resource limits and requests for the production backend container.
 
 ### Fixed
 
@@ -44,7 +51,6 @@ Types of Changes:
 
 -   Email template for hacker confirmation success.
 -   Helper functions for hacker confirmation success.
--   Sentry Spans to `create_hacker`, `common.jwt.*`, `flask.render_template`.
 
 ## [1.1.0] - 2021-10-03
 
