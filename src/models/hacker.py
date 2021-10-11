@@ -39,6 +39,12 @@ class MLH_Authorizations(db.EmbeddedDocument):
 
 class Hacker(BaseDocument):  # Stored in the "user" collection
 
+    meta = {
+        "indexes": [
+            "email"
+        ]
+    }
+
     private_fields = [
         "id",
         "email_verification",
@@ -77,8 +83,7 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
             exp=(
                 datetime.utcnow() + timedelta(
                     minutes=app.config["TOKEN_EMAIL_EXPIRATION_MINUTES"],
-                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"]
-                )
+                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"])
             ),
             sub=self.email
         )
