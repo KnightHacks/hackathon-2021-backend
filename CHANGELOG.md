@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+-   Providing temporary datetime to email_acceptance template
+
 ## [2.1.1] - 2021-10-17
 
 ### Changed
