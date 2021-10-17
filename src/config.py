@@ -58,6 +58,8 @@ class BaseConfig:
     NOTION_VERSION = os.getenv("NOTION_VERSION")
     NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
     SEND_MAIL = True
+    """Max payload of 20mb"""
+    MAX_CONTENT_LENGTH = 20 * 1024 * 1024
 
 
 class DevelopmentConfig(BaseConfig):

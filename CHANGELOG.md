@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   20mb file size limit for hacker resumes.
+
 ## [2.1.0] - 2021-10-11
 
 ### Added
