@@ -42,7 +42,7 @@ import yaml  # noqa: E402
 import blinker  # noqa
 
 """ Version Number (DO NOT TOUCH) """
-__version__ = "2.1.2"
+__version__ = "2.1.3"
 
 
 """Init Extensions"""

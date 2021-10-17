@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.3] - 2021-10-17
+
 ### Fixed
 
 -   Fixed route to re-send verification emails.
@@ -199,7 +201,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.2...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.3...HEAD
+
+[2.1.3]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.2...2.1.3
 
 [2.1.2]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.1...2.1.2
 
