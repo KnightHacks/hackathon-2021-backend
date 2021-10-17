@@ -100,7 +100,7 @@ def update_registration_status():
 
 @email_verify_blueprint.post("/email/verify/<email>/")
 @authenticate
-def send_registration_email(email: str):
+def send_registration_email(_, email: str):
     """
     Sends a registration email to the hacker.
     ---
@@ -127,10 +127,8 @@ def send_registration_email(email: str):
     if not hacker:
         raise NotFound()
 
-    token = hacker.encode_email_token()
-
     from src.common.mail import send_verification_email
-    send_verification_email(hacker, token)
+    send_verification_email(hacker)
 
     res = {
         "status": "success",

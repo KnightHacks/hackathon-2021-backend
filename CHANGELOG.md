@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+-   Fixed route to re-send verification emails.
+
 ## [2.1.2] - 2021-10-17
 
 ### Fixed
