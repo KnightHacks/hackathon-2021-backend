@@ -61,6 +61,11 @@ class BaseConfig:
     """Max payload of 20mb"""
     MAX_CONTENT_LENGTH = 20 * 1024 * 1024
     CORS_SUPPORTS_CREDENTIALS = True
+    CORS_ORIGINS = [
+        "http://localhost",
+        r"https://(.*)?admin-tool.pages.dev",
+        r"https://(.*)?knighthacks.org"
+    ]
 
 
 class DevelopmentConfig(BaseConfig):
