@@ -20,6 +20,10 @@ Types of Changes:
 
 -   20mb file size limit for hacker resumes.
 
+### Fixed
+
+-   CORS policy now allows cookies and credentials to be submitted across domains.
+
 ## [2.1.0] - 2021-10-11
 
 ### Added

@@ -60,6 +60,7 @@ class BaseConfig:
     SEND_MAIL = True
     """Max payload of 20mb"""
     MAX_CONTENT_LENGTH = 20 * 1024 * 1024
+    CORS_SUPPORTS_CREDENTIALS = True
 
 
 class DevelopmentConfig(BaseConfig):
