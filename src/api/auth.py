@@ -64,7 +64,7 @@ def login():
     auth_token = user.encode_auth_token()
 
     res = make_response()
-    res.set_cookie("sid", auth_token)
+    res.set_cookie("sid", auth_token, samesite="None", secure=True)
 
     return res
 

@@ -32,7 +32,7 @@ class BaseConfig:
             }
         ]
     }
-    TOKEN_EMAIL_EXPIRATION_MINUTES = 30
+    TOKEN_EMAIL_EXPIRATION_MINUTES = 1440
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
     SECRET_KEY = os.getenv("SECRET_KEY")
     RABBITMQ_URL = os.getenv("RABBITMQ_URL")
@@ -58,6 +58,14 @@ class BaseConfig:
     NOTION_VERSION = os.getenv("NOTION_VERSION")
     NOTION_API_URI = os.getenv("NOTION_API_URI", "https://api.notion.com/v1")
     SEND_MAIL = True
+    """Max payload of 20mb"""
+    MAX_CONTENT_LENGTH = 20 * 1024 * 1024
+    CORS_SUPPORTS_CREDENTIALS = True
+    CORS_ORIGINS = [
+        "http://localhost",
+        r"https://(.*)?admin-tool.pages.dev",
+        r"https://(.*)?knighthacks.org"
+    ]
 
 
 class DevelopmentConfig(BaseConfig):
