@@ -32,7 +32,7 @@ class BaseConfig:
             }
         ]
     }
-    TOKEN_EMAIL_EXPIRATION_MINUTES = 30
+    TOKEN_EMAIL_EXPIRATION_MINUTES = 1440
     TOKEN_EMAIL_EXPIRATION_SECONDS = 0
     SECRET_KEY = os.getenv("SECRET_KEY")
     RABBITMQ_URL = os.getenv("RABBITMQ_URL")
