@@ -14,6 +14,7 @@
 """
 import os
 import logging
+from datetime import datetime
 
 
 class BaseConfig:
@@ -66,6 +67,7 @@ class BaseConfig:
         r"https://(.*)?admin-tool.pages.dev",
         r"https://(.*)?knighthacks.org"
     ]
+    HACKER_CONFIRM_DEADLINE = datetime(year=2021, month=11, day=11)
 
 
 class DevelopmentConfig(BaseConfig):
