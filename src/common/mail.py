@@ -37,8 +37,10 @@ def send_hacker_acceptance_email(hacker):
             recipient=hacker.email,
             text_body=render_template("emails/hacker_acceptance.txt",
                                       hacker=hacker),
-            html_body=render_template("emails/hacker_acceptance.html",
-                                      hacker=hacker)))
+            html_body=render_template(
+                "emails/hacker_acceptance.html",
+                hacker=hacker,
+                deadline=currapp.config["HACKER_CONFIRM_DEADLINE"])))
 
 
 def send_hacker_confirmation_success_email(hacker):

@@ -16,6 +16,12 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.2] - 2021-10-17
+
+### Fixed
+
+-   Providing temporary datetime to email_acceptance template
+
 ## [2.1.1] - 2021-10-17
 
 ### Changed
@@ -189,7 +195,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.1...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.2...HEAD
+
+[2.1.2]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.1...2.1.2
 
 [2.1.1]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.0...2.1.1
 
