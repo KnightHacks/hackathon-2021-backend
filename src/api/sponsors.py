@@ -108,8 +108,7 @@ def create_sponsor(_):
 
 
 @sponsors_blueprint.get("/sponsors/get_all_sponsors/")
-@authenticate
-def get_all_sponsors(_):
+def get_all_sponsors():
     """
     Returns an array of sponsor documents.
     ---
