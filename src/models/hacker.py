@@ -65,7 +65,7 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
     edu_info = db.EmbeddedDocumentField(Education_Info)
     resume = db.ReferenceField(Resume)
     socials = db.EmbeddedDocumentField(Socials)
-    why_attend = db.StringField(max_length=200)
+    why_attend = db.StringField()
     what_learn = db.ListField()
     in_person = db.BooleanField(default=False)
     dietary_restrictions = db.StringField()

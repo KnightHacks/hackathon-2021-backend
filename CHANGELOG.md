@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   `why_attend` field in Hacker model no longer has a limit of 200 characters.
+
 ## [2.1.3] - 2021-10-17
 
 ### Fixed
