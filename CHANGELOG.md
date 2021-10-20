@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.4] - 2021-10-20
+
 ### Changed
 
 -   `why_attend` field in Hacker model no longer has a limit of 200 characters.
@@ -205,7 +207,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.3...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.4...HEAD
+
+[2.1.4]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.3...2.1.4
 
 [2.1.3]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.2...2.1.3
 
