@@ -16,6 +16,14 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+-   `why_attend` schema is updated to no longer show length limit.
+
+### Changed
+
+-   `/api/sponsors/get_all_sponsors/` no longer requires authentication.
+
 ## [2.1.4] - 2021-10-20
 
 ### Changed
