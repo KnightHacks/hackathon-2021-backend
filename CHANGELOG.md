@@ -16,6 +16,16 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.5] - 2021-10-20
+
+### Fixed
+
+-   `why_attend` schema is updated to no longer show length limit.
+
+### Changed
+
+-   `/api/sponsors/get_all_sponsors/` no longer requires authentication.
+
 ## [2.1.4] - 2021-10-20
 
 ### Changed
@@ -207,7 +217,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.4...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.5...HEAD
+
+[2.1.5]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.4...2.1.5
 
 [2.1.4]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.3...2.1.4
 
