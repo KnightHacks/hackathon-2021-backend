@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Fixed
+
+-   pages.dev urls added to cors origins.
+
 ## [2.1.5] - 2021-10-20
 
 ### Fixed
