@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.6] - 2021-10-21
+
 ### Fixed
 
 -   pages.dev urls added to cors origins.
@@ -221,7 +223,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.5...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.6...HEAD
+
+[2.1.6]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.5...2.1.6
 
 [2.1.5]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.4...2.1.5
 
