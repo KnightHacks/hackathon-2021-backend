@@ -65,7 +65,8 @@ class BaseConfig:
     CORS_ORIGINS = [
         "http://localhost",
         r"https://(.*)?admin-tool.pages.dev",
-        r"https://(.*)?knighthacks.org"
+        r"https://(.*)?knighthacks.org",
+        r"https://(.*)?pages.dev"
     ]
     HACKER_CONFIRM_DEADLINE = datetime(year=2021, month=11, day=11)
 
