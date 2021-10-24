@@ -61,14 +61,20 @@ class BaseConfig:
     SEND_MAIL = True
     """Max payload of 20mb"""
     MAX_CONTENT_LENGTH = 20 * 1024 * 1024
+    CORS_ALLOW_LOCALHOST = os.getenv("CORS_ALLOW_LOCALHOST")
     CORS_SUPPORTS_CREDENTIALS = True
     CORS_ORIGINS = [
-        "http://localhost",
+        ("http://localhost(:[0-9]*)?" if CORS_ALLOW_LOCALHOST == "True"
+         else None),
         r"https://(.*)?admin-tool.pages.dev",
         r"https://(.*)?knighthacks.org",
         r"https://(.*)?pages.dev"
     ]
     HACKER_CONFIRM_DEADLINE = datetime(year=2021, month=11, day=11)
+    AZURE_CLIENT_ID = os.getenv("AZURE_CLIENT_ID")
+    AZURE_CLIENT_SECRET = os.getenv("AZURE_CLIENT_SECRET")
+    AZURE_TENANT_ID = os.getenv("AZURE_TENANT_ID")
+    AZURE_API_AUDIENCE = os.getenv("AZURE_API_AUDIENCE")
 
 
 class DevelopmentConfig(BaseConfig):
@@ -78,6 +84,13 @@ class DevelopmentConfig(BaseConfig):
     MAIL_SUPPRESS_SEND = False
     SUPPRESS_EMAIL = True
     SEND_MAIL = False
+    SECRET_KEY = os.getenv("SECRET_KEY", "vivalapluto")
+    CORS_ALLOW_LOCALHOST = True
+    CORS_ORIGINS = [
+        "http://localhost(:[0-9]*)?",
+        r"https://(.*)?admin-tool.pages.dev",
+        r"https://(.*)?knighthacks.org"
+    ]
 
 
 class TestingConfig(BaseConfig):

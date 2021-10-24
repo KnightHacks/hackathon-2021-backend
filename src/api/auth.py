@@ -4,85 +4,47 @@
     ~~~~~~~~~~~~
 
 """
-from flask import request, make_response
+from flask import current_app as app, session, redirect
+from src import oauth
 from src.api import Blueprint
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
-from src.models.user import User
-from src import bcrypt
 from src.common.decorators import authenticate
+from src.common.utils import current_user
 
 auth_blueprint = Blueprint("auth", __name__)
 
 
-@auth_blueprint.post("/auth/login/")
+@auth_blueprint.route("/auth/login")
 def login():
-    """
-    Logs in User
-    ---
-    tags:
-        - auth
-    requestBody:
-        content:
-            application/json:
-                schema:
-                    type: object
-                    properties:
-                        username:
-                            type: string
-                        password:
-                            type: string
-    responses:
-        200:
-            description: OK
-            headers:
-                Set-Cookie:
-                    description: JWT token to save session data.
-                    schema:
-                        type: string
-        400:
-            description: Login failed.
-        404:
-            description: User not found.
-        5XX:
-            description: Unexpected error.
-    """
-    data = request.get_json()
-
-    if not data:
-        raise BadRequest()
-
-    if not data.get("password") and not data.get("username"):
-        raise BadRequest()
-
-    user = User.objects(username=data["username"]).first()
-    if not user:
-        raise NotFound()
-
-    if not bcrypt.check_password_hash(user.password, data["password"]):
-        raise Forbidden()
-
-    auth_token = user.encode_auth_token()
-
-    res = make_response()
-    res.set_cookie("sid", auth_token, samesite="None", secure=True)
-
-    return res
+    # redirect_uri = url_for("auth.getAToken", _external=True)
+    redirect_uri = "http://localhost:8080/popup.html"
+    res = oauth.azure.authorize_redirect(redirect_uri)
+    loc = res.headers.get("Location")
+    return {"loc": loc}, 200
 
 
-@auth_blueprint.get("/auth/signout/")
+@auth_blueprint.route("/auth/getAToken")
+def getAToken():
+    token = oauth.azure.authorize_access_token()
+
+    session["token"] = token
+
+    app.logger.debug(token)
+
+    return redirect(f"http://localhost:8080/popup.html?t={token}")
+
+
+@auth_blueprint.get("/echo")
 @authenticate
-def logout(_):
-    """
-    Logs out the user.
-    ---
-    tags:
-        - auth
-    response:
-        default:
-            description: OK
-    """
+def echo():
 
-    res = make_response()
-    res.delete_cookie("sid")
+    # token = session.get("token")
 
-    return res
+    # claims = oauth.azure.parse_id_token(token)
+
+    # roles = claims.get("roles")
+
+    roles = current_user
+
+    app.logger.debug(roles)
+
+    return {"roles": roles.get("roles", [])}, 200, [("Access-Control-Allow-Origin", "http://localhost:3000")]

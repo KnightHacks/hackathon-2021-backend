@@ -33,6 +33,7 @@ from flask_cors import CORS  # noqa: E402
 from flask_mongoengine import MongoEngine  # noqa: E402
 from flask_mail import Mail  # noqa: E402
 from flask_bcrypt import Bcrypt  # noqa: E402
+from authlib.integrations.flask_client import OAuth  # noqa: E402
 import sentry_sdk  # noqa: E402
 from sentry_sdk.integrations.flask import FlaskIntegration  # noqa: E402
 from sentry_sdk.integrations.celery import CeleryIntegration  # noqa: E402
@@ -50,6 +51,7 @@ db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
 socketio = SocketIO()
+oauth = OAuth()
 
 
 """Load the Schema Definitions"""
@@ -96,10 +98,11 @@ swagger_template = {
     "components": {
         "schemas": schema,
         "securitySchemes": {
-            "CookieAuth": {
-                "type": "apiKey",
-                "in": "cookie",
-                "name": "sid"
+            "BearerAuth": {
+                "type": "http",
+                "in": "header",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }
@@ -134,8 +137,7 @@ def create_app():
             environment=app.config.get("SENTRY_ENV"),
             release=f"backend@{__version__}",
             integrations=[FlaskIntegration(), CeleryIntegration()],
-            traces_sample_rate=1.0,
-            debug=True
+            traces_sample_rate=1.0
         )
 
     """Setup Extensions"""
@@ -148,6 +150,11 @@ def create_app():
                       cors_allowed_origins="*",
                       json=json,
                       message_queue=app.config.get("SOCKETIO_MESSAGE_QUEUE"))
+
+    oauth.init_app(app)
+
+    from src.azure import setup_azure_ad
+    setup_azure_ad(oauth)
 
     from src.common.json import JSONEncoderBase
     app.json_encoder = JSONEncoderBase
@@ -202,6 +209,9 @@ def create_app():
 
         if span is not None:
             span.finish()
+
+    print(app.config.get("CORS_ALLOW_LOCALHOST"))
+    print(app.config.get("CORS_ORIGINS"))
 
     return app, celery
 
