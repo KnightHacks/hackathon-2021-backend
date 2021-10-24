@@ -16,6 +16,12 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.7] - 2021-10-24
+
+### Changed
+
+-   Email verification token expiry time increased to 30 days.
+
 ## [2.1.6] - 2021-10-21
 
 ### Fixed
@@ -223,7 +229,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.6...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.7...HEAD
+
+[2.1.7]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.6...2.1.7
 
 [2.1.6]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.5...2.1.6
 
