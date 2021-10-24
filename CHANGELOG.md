@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   Email verification token expiry time increased to 30 days.
+
 ## [2.1.6] - 2021-10-21
 
 ### Fixed
