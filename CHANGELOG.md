@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [2.1.9] - 2021-10-25
+
 ### Changed
 
 -   We now return `email_verification` field.
@@ -235,7 +237,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.8...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.9...HEAD
+
+[2.1.9]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.8...2.1.9
 
 [2.1.8]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.7...2.1.8
 
