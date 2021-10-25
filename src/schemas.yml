@@ -40,6 +40,8 @@ Hacker:
     email:
       type: string
       example: foobar@email.com
+    email_verification:
+      type: boolean
     phone_number:
       type: string
       example: +1 (555) 555-5555

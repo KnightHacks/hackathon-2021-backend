@@ -16,6 +16,10 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Changed
+
+-   We now return `email_verification` field.
+
 ## [2.1.8] - 2021-10-25
 
 ## [2.1.7] - 2021-10-24

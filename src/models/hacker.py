@@ -47,7 +47,6 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
 
     private_fields = [
         "id",
-        "email_verification",
         "email_token_hash"
     ]
 
