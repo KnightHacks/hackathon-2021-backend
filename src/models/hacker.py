@@ -15,7 +15,7 @@ from src import db, bcrypt
 from src.models import BaseDocument
 from src.common.jwt import encode_jwt, decode_jwt
 from src.models.resume import Resume
-from datetime import datetime, timedelta
+from datetime import datetime
 from mongoengine import signals
 
 
