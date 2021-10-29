@@ -1,7 +1,6 @@
 # flake8: noqa
 import json
 from tests.base import BaseTestCase
-from src import app
 
 
 class TestFlasgger(BaseTestCase):

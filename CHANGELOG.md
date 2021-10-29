@@ -16,6 +16,18 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Breaking Changes
+
+-   All authentication and authorization is handled through the Knight Hacks Azure AD tenant. Previous authentication routes will no longer work and will return a 404.
+
+### Changed
+
+-   Authentication is provided by Azure AD, applications using this API must be granted the `access_as_user` permission.
+
+### Removed
+
+-   Authentication routes
+
 ## [2.1.9] - 2021-10-25
 
 ### Changed

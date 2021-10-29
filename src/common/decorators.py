@@ -7,11 +7,11 @@
 from flask import current_app as app, json, _request_ctx_stack
 from functools import wraps
 from werkzeug.exceptions import Unauthorized, Forbidden
-from src.models.user import User
 from src.common.utils import _get_token_auth_header
 from six.moves.urllib.request import urlopen
 from jose import jwt
-from src.common.scopes import Scopes
+from src.common.scope import Scope
+from sentry_sdk import set_user, add_breadcrumb
 
 
 def authenticate(f):
@@ -21,11 +21,18 @@ def authenticate(f):
 
     doc = getattr(f, "__doc__")
     if doc:
-        setattr(f, "__doc__", doc + """security:
-        - BearerAuth: []""")
+        setattr(f, "__doc__", doc + "security:\n\t- BearerAuth: []")
 
     @wraps(f)
     def decorator(*args, **kwargs):
+
+        if app.config.get("TESTING"):
+            """If we're testing, just return a user w/ all perms"""
+            _request_ctx_stack.top.current_user = {
+                "roles": list(Scope.members().keys())
+            }
+            return f(*args, **kwargs)
+
         try:
             token = _get_token_auth_header()
             jsonurl = urlopen("https://login.microsoftonline.com/" +
@@ -68,20 +75,46 @@ def authenticate(f):
                 raise Unauthorized("Unable to parse authentication token")
 
             _request_ctx_stack.top.current_user = payload
+
+            """Set the authenticated user in Sentry"""
+            set_user({
+                "id": payload.get("unique_id"),
+                "username": payload.get("preferred_username"),
+                "roles": payload.get("roles", [])
+            })
+
+            """Add breadcrumb"""
+            add_breadcrumb(
+                category="auth",
+                message=("Authenticated user " +
+                         payload.get("preferred_username", "")),
+                level="info"
+            )
+
             return f(*args, **kwargs)
         raise Unauthorized("Unable to find appropriate key")
 
     return decorator
 
 
-def requires_scope(scope: Scopes):
+def requires_scope(scope: Scope):
 
     def decorator(f):
+
+        """Shoves the scopes specified by the decorator in the docstring"""
+        doc = getattr(f, "__doc__")
+        if doc:
+            setattr(f, "__doc__", (doc + "description: |\n" +
+                                   "\tRequired Permissions:\n" +
+                                   "".join((f"\t- {i}""\n")
+                                           for i in scope.names) +
+                                   "    "))
+
         @wraps(f)
         def decorated_function(*args, **kwargs):
             cu = _request_ctx_stack.top.current_user
 
-            s = Scopes(cu.get("roles"))
+            s = Scope(cu.get("roles"))
 
             """ Check if the user has the required scope(s) """
             if not(scope & s):

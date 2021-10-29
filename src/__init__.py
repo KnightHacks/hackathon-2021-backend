@@ -33,7 +33,6 @@ from flask_cors import CORS  # noqa: E402
 from flask_mongoengine import MongoEngine  # noqa: E402
 from flask_mail import Mail  # noqa: E402
 from flask_bcrypt import Bcrypt  # noqa: E402
-from authlib.integrations.flask_client import OAuth  # noqa: E402
 import sentry_sdk  # noqa: E402
 from sentry_sdk.integrations.flask import FlaskIntegration  # noqa: E402
 from sentry_sdk.integrations.celery import CeleryIntegration  # noqa: E402
@@ -51,7 +50,6 @@ db = MongoEngine()
 mail = Mail()
 bcrypt = Bcrypt()
 socketio = SocketIO()
-oauth = OAuth()
 
 
 """Load the Schema Definitions"""
@@ -151,11 +149,6 @@ def create_app():
                       json=json,
                       message_queue=app.config.get("SOCKETIO_MESSAGE_QUEUE"))
 
-    oauth.init_app(app)
-
-    from src.azure import setup_azure_ad
-    setup_azure_ad(oauth)
-
     from src.common.json import JSONEncoderBase
     app.json_encoder = JSONEncoderBase
 
@@ -184,11 +177,6 @@ def create_app():
     """Initialize Celery"""
     celery = make_celery(app)
 
-    @app.before_first_request
-    def _init_app():
-        from src.common.init_defaults import init_default_users
-        init_default_users()
-
     @before_render_template.connect_via(app)
     def _sentry_pre_render_template(sender, template, context, **extra):
 
@@ -209,9 +197,6 @@ def create_app():
 
         if span is not None:
             span.finish()
-
-    print(app.config.get("CORS_ALLOW_LOCALHOST"))
-    print(app.config.get("CORS_ORIGINS"))
 
     return app, celery
 
