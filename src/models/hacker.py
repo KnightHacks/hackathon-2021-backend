@@ -71,19 +71,12 @@ class Hacker(BaseDocument):  # Stored in the "user" collection
 
     email = db.EmailField(unique=True, required=True)
     date = db.DateTimeField(default=datetime.utcnow)
-    email_verification = db.BooleanField(default=False)
-    email_token_hash = db.BinaryField()
 
     mlh = db.EmbeddedDocumentField(MLH_Authorizations)
 
     def encode_email_token(self) -> str:
         """Encode the email token"""
         email_token = encode_jwt(
-            exp=(
-                datetime.utcnow() + timedelta(
-                    minutes=app.config["TOKEN_EMAIL_EXPIRATION_MINUTES"],
-                    seconds=app.config["TOKEN_EMAIL_EXPIRATION_SECONDS"])
-            ),
             sub=self.email
         )
 

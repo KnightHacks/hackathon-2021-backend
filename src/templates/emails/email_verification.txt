@@ -1,2 +1,0 @@
-Knight Hacks Email Verification - {{hacker.first_name}}
-href = {{href}}

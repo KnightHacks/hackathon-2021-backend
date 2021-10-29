@@ -16,6 +16,14 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Breaking Changes
+
+-   Hacker email verification no longer exists. All requests to `/api/email/*` endpoints will respond with 410 Gone until the next major release.
+
+### Removed
+
+-   Hacker email verification.
+
 ## [2.1.9] - 2021-10-25
 
 ### Changed

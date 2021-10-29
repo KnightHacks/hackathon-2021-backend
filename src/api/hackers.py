@@ -225,12 +225,6 @@ def create_hacker():
     if "date" in data:
         del data["date"]
 
-    if "email_verification" in data:
-        del data["email_verification"]
-
-    if "email_token_hash" in data:
-        del data["email_token_hash"]
-
     """Check for mlh authorization checkboxes"""
     no_mlh_msg = ("Hacker must agree to the MLH Code of Conduct, "
                   "the MLH Privacy Policy, "
@@ -314,10 +308,6 @@ def create_hacker():
         except FieldDoesNotExist:
             raise ImATeapot("Request contains fields that do not exist "
                             "for the current resource.")
-
-    """Send Verification Email"""
-    from src.common.mail import send_verification_email
-    send_verification_email(hacker)
 
     res = {
         "status": "success",
