@@ -34,6 +34,8 @@ def check_verification_status(email: str):
             type: string
           required: true
     responses:
+        410:
+            description: Gone
         200:
             description: OK
         401:
@@ -62,6 +64,8 @@ def update_registration_status():
             type: string
           required: true
     responses:
+        410:
+            description: Gone
         200:
             description: OK
         404:
@@ -97,6 +101,8 @@ def send_registration_email(_, email: str):
             format: email
           required: true
     responses:
+        410:
+            description: Gone
         201:
             description: OK
         404:
