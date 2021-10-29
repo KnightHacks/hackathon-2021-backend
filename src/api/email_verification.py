@@ -73,7 +73,9 @@ def update_registration_status():
     raise Gone("Hacker emails are no longer being verified. "
                "If you have arrived here after clicking the link "
                "in your email, you don't need to do anything and "
-               "you may safely close this window.")
+               "you may safely close this window. "
+               "If you have any questions or are experiencing "
+               "any issues, please contact us at team@knighthacks.org")
 
 
 @email_verify_blueprint.post("/email/verify/<email>/")
