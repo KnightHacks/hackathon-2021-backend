@@ -4,85 +4,39 @@
     ~~~~~~~~~~~~
 
 """
-from flask import request, make_response
+from flask import current_app as app
 from src.api import Blueprint
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
-from src.models.user import User
-from src import bcrypt
 from src.common.decorators import authenticate
+from src.common.utils import current_user
 
 auth_blueprint = Blueprint("auth", __name__)
 
 
-@auth_blueprint.post("/auth/login/")
-def login():
-    """
-    Logs in User
-    ---
-    tags:
-        - auth
-    requestBody:
-        content:
-            application/json:
-                schema:
-                    type: object
-                    properties:
-                        username:
-                            type: string
-                        password:
-                            type: string
-    responses:
-        200:
-            description: OK
-            headers:
-                Set-Cookie:
-                    description: JWT token to save session data.
-                    schema:
-                        type: string
-        400:
-            description: Login failed.
-        404:
-            description: User not found.
-        5XX:
-            description: Unexpected error.
-    """
-    data = request.get_json()
-
-    if not data:
-        raise BadRequest()
-
-    if not data.get("password") and not data.get("username"):
-        raise BadRequest()
-
-    user = User.objects(username=data["username"]).first()
-    if not user:
-        raise NotFound()
-
-    if not bcrypt.check_password_hash(user.password, data["password"]):
-        raise Forbidden()
-
-    auth_token = user.encode_auth_token()
-
-    res = make_response()
-    res.set_cookie("sid", auth_token, samesite="None", secure=True)
-
-    return res
-
-
-@auth_blueprint.get("/auth/signout/")
+@auth_blueprint.get("/auth/me")
 @authenticate
-def logout(_):
+def me():
     """
-    Logs out the user.
+    Returns the currently authenticated user's information
     ---
     tags:
         - auth
-    response:
-        default:
-            description: OK
+    responses:
+        201:
+            description: ok
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            roles:
+                                type: array
+                                items:
+                                    type: string
+                                    description: Application roles
     """
 
-    res = make_response()
-    res.delete_cookie("sid")
+    roles = current_user
 
-    return res
+    app.logger.debug(roles)
+
+    return {"roles": roles.get("roles", [])}, 200

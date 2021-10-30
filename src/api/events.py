@@ -17,7 +17,8 @@ from werkzeug.exceptions import BadRequest, NotFound, Conflict
 from src.models.event import Event
 import dateutil.parser
 from dateutil.parser import ParserError
-from src.common.decorators import authenticate
+from src.common.decorators import authenticate, requires_scope
+from src.common.scope import Scope
 
 events_blueprint = Blueprint("events", __name__)
 
@@ -29,7 +30,8 @@ EVENT_FIELDS = ("name", "date_time", "description",
 
 @events_blueprint.post("/events/create_event/")
 @authenticate
-def create_event(_):
+@requires_scope(Scope.Event_Create)
+def create_event():
     """
     Creates a new event.
     ---
@@ -88,7 +90,8 @@ def create_event(_):
 
 @events_blueprint.put("/events/update_event/<event_name>/")
 @authenticate
-def update_event(_, event_name: str):
+@requires_scope(Scope.Event_Update)
+def update_event(event_name: str):
     """
     Updates an event that has already been created.
     ---

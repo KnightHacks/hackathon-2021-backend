@@ -14,8 +14,9 @@ from werkzeug.exceptions import BadRequest, NotFound
 import dateutil.parser
 from datetime import datetime, timedelta
 from src.models.club_event import ClubEvent
-from src.common.decorators import authenticate
+from src.common.decorators import authenticate, requires_scope
 import base64
+from src.common.scope import Scope
 
 
 club_events_blueprint = Blueprint("club_events", __name__)
@@ -23,7 +24,8 @@ club_events_blueprint = Blueprint("club_events", __name__)
 
 @club_events_blueprint.put("/club/refresh_events/")
 @authenticate
-def refresh_events(_):
+@requires_scope(Scope.ClubEvent_Refresh)
+def refresh_events():
     """
     Refreshed the Club Events from Notion.
     ---
