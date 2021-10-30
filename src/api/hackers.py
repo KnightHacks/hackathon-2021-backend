@@ -26,7 +26,8 @@ from werkzeug.exceptions import (
 )
 from src.models.hacker import Hacker
 from src.models.resume import Resume
-from src.common.decorators import authenticate
+from src.common.decorators import authenticate, requires_scope
+from src.common.scope import Scope
 from json import JSONDecodeError
 from datetime import datetime, timedelta
 import sentry_sdk
@@ -326,6 +327,7 @@ def create_hacker():
 
 @hackers_blueprint.get("/hackers/<email>/resume/")
 @authenticate
+@requires_scope(Scope.Hacker_Read)
 def get_hacker_resume(_, email: str):
     """
     Get Hacker Resume
@@ -368,7 +370,8 @@ def get_hacker_resume(_, email: str):
 
 @hackers_blueprint.put("/hackers/<email>/accept/")
 @authenticate
-def accept_hacker(_, email: str):
+@requires_scope(Scope.Hacker_Accept)
+def accept_hacker(email: str):
     """
     Accepts a Hacker
     ---
@@ -410,7 +413,8 @@ def accept_hacker(_, email: str):
 
 @hackers_blueprint.get("/hackers/get_all_hackers/")
 @authenticate
-def get_all_hackers(_):
+@requires_scope(Scope.Hacker_Read)
+def get_all_hackers():
     """
     Returns an array of hacker documents.
     ---

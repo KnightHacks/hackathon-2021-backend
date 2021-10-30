@@ -24,16 +24,15 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": 10,
                 "event_status": "status"
             }),
-            content_type="application/json",
-            headers=[("sid", self.login_user())])
+            content_type="application/json"
+        )
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Event.objects.count(), 1)
 
     def test_create_event_invalid_json(self):
         res = self.client.post("/api/events/create_event/",
-                               data=json.dumps({}),
-                               headers=[("sid", self.login_user())])
+                               data=json.dumps({}))
 
         data = json.loads(res.data.decode())
 
@@ -42,7 +41,6 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_create_event_invalid_datatypes(self):
         now = datetime.now()
-        token = self.login_user()
 
         res = self.client.post(
             "api/events/create_event/",
@@ -56,8 +54,8 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": "newcount",
                 "event_status": 12345
             }),
-            content_type="application/json",
-            headers=[("sid", token)])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 
@@ -76,8 +74,8 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": "newcount",
                 "event_status": 12345
             }),
-            content_type="application/json",
-            headers=[("sid", token)])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 
@@ -108,8 +106,8 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": 10,
                 "event_status": "status"
             }),
-            content_type="application/json",
-            headers=[("sid", self.login_user())])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 
@@ -141,15 +139,14 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": 20,
                 "event_status": "ongoing",
             }),
-            content_type="application/json",
-            headers=[("sid", self.login_user())])
+            content_type="application/json"
+        )
 
         self.assertEqual(res.status_code, 201)
         self.assertEqual(Event.objects.first().event_status, "ongoing")
 
     def test_update_event_invalid_json(self):
-        res = self.client.put("api/events/update_event/new_event/",
-                              headers=[("sid", self.login_user())])
+        res = self.client.put("api/events/update_event/new_event/")
 
         data = json.loads(res.data.decode())
 
@@ -158,7 +155,6 @@ class TestEventsBlueprint(BaseTestCase):
 
     def test_update_event_invalid_datatypes(self):
         now = datetime.now()
-        token = self.login_user()
 
         Event.createOne(name="new_event",
                         date_time=now.isoformat(),
@@ -180,8 +176,8 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": 20,
                 "event_status": "ongoing",
             }),
-            content_type="application/json",
-            headers=[("sid", token)])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 
@@ -199,8 +195,8 @@ class TestEventsBlueprint(BaseTestCase):
                 "attendees_count": 20,
                 "event_status": "ongoing",
             }),
-            content_type="application/json",
-            headers=[("sid", token)])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 
@@ -213,8 +209,8 @@ class TestEventsBlueprint(BaseTestCase):
             data=json.dumps({
                 "description": "new description"
             }),
-            content_type="application/json",
-            headers=[("sid", self.login_user())])
+            content_type="application/json"
+        )
         
         data = json.loads(res.data.decode())
 

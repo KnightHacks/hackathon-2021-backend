@@ -11,7 +11,8 @@
 """
 from src.api import Blueprint
 from werkzeug.exceptions import Gone
-from src.common.decorators import authenticate
+from src.common.decorators import authenticate, requires_scope
+from src.common.scope import Scope
 
 
 email_verify_blueprint = Blueprint("email_verification", __name__)
@@ -84,7 +85,8 @@ def update_registration_status():
 
 @email_verify_blueprint.post("/email/verify/<email>/")
 @authenticate
-def send_registration_email(_, email: str):
+@requires_scope(Scope.Email_Send)
+def send_registration_email(email: str):
     """
     Sends a registration email to the hacker.
     ---

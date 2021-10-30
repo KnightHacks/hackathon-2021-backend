@@ -20,3 +20,6 @@ gevent-websocket
 requests
 blinker
 Pillow
+Authlib
+python-jose-cryptodome
+six

@@ -3,7 +3,6 @@ import os
 from flask_testing import TestCase
 from mongoengine import connect
 from mongoengine.connection import disconnect_all
-from src.models.user import User
 
 os.environ["APP_SETTINGS"] = "src.config.TestingConfig"
 from src import app
@@ -27,13 +26,3 @@ class BaseTestCase(TestCase):
 
     def tearDown(self):
         self._conn.drop_database("mongoenginetest")
-
-    def login_user(self) -> str:
-        user = User.createOne(
-            username="test",
-            password="test"
-        )
-
-        token = user.encode_auth_token()
-
-        return token

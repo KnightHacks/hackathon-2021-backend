@@ -96,10 +96,11 @@ swagger_template = {
     "components": {
         "schemas": schema,
         "securitySchemes": {
-            "CookieAuth": {
-                "type": "apiKey",
-                "in": "cookie",
-                "name": "sid"
+            "BearerAuth": {
+                "type": "http",
+                "in": "header",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     }
@@ -134,8 +135,7 @@ def create_app():
             environment=app.config.get("SENTRY_ENV"),
             release=f"backend@{__version__}",
             integrations=[FlaskIntegration(), CeleryIntegration()],
-            traces_sample_rate=1.0,
-            debug=True
+            traces_sample_rate=1.0
         )
 
     """Setup Extensions"""
@@ -176,11 +176,6 @@ def create_app():
 
     """Initialize Celery"""
     celery = make_celery(app)
-
-    @app.before_first_request
-    def _init_app():
-        from src.common.init_defaults import init_default_users
-        init_default_users()
 
     @before_render_template.connect_via(app)
     def _sentry_pre_render_template(sender, template, context, **extra):
