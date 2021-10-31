@@ -19,7 +19,8 @@ from werkzeug.exceptions import (
     UnsupportedMediaType
 )
 from src.models.sponsor import Sponsor
-from src.common.decorators import authenticate
+from src.common.decorators import authenticate, requires_scope
+from src.common.scope import Scope
 from json import JSONDecodeError
 
 
@@ -28,7 +29,8 @@ sponsors_blueprint = Blueprint("sponsors", __name__)
 
 @sponsors_blueprint.post("/sponsors/")
 @authenticate
-def create_sponsor(_):
+@requires_scope(Scope.Sponsor_Create)
+def create_sponsor():
     """
     Creates a new sponsor.
     ---

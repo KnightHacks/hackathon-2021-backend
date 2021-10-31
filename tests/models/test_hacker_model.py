@@ -1,7 +1,6 @@
 # flake8: noqa
 from mongoengine.errors import NotUniqueError
 from src.models.hacker import Hacker
-from src.models.user import User
 from tests.base import BaseTestCase
 
 

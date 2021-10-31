@@ -188,10 +188,9 @@ class TestHackersBlueprint(BaseTestCase):
             )
         )
 
-        token = self.login_user()
 
-        res = self.client.get("/api/hackers/get_all_hackers/", 
-                              headers=[("sid", token)])
+
+        res = self.client.get("/api/hackers/get_all_hackers/")
 
         data = json.loads(res.data.decode())
 
@@ -201,10 +200,8 @@ class TestHackersBlueprint(BaseTestCase):
 
     
     def test_get_all_hackers_not_found(self):
-        token = self.login_user()
 
-        res = self.client.get("/api/hackers/get_all_hackers/", 
-                              headers=[("sid", token)])
+        res = self.client.get("/api/hackers/get_all_hackers/")
 
         data = json.loads(res.data.decode())
 
