@@ -27,13 +27,11 @@ class TestEmailsBlueprint(BaseTestCase):
 
     def test_send_verification_email(self):
 
-        token = self.login_user()
 
         res = self.client.post(
             "/api/email/verify/foobar@email.com/",
             headers=[
-                ("Accept", "application/json"),
-                ("sid", token)
+                ("Accept", "application/json")
             ]
         )
 
