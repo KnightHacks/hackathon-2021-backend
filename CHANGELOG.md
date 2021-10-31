@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [3.0.0] - 2021-10-31
+
 ### Breaking Changes
 
 -   All authentication and authorization is handled through the Knight Hacks Azure AD tenant. Previous authentication routes will no longer work and will return a 404.
@@ -251,7 +253,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.9...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/3.0.0...HEAD
+
+[3.0.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.9...3.0.0
 
 [2.1.9]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.8...2.1.9
 
