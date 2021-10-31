@@ -4,7 +4,7 @@ LABEL maintainer "webmaster@knighthacks.org"
 ENV TZ America/New_York
 
 RUN apt-get update \
-    && apt-get install -y build-essential python3-dev
+    && apt-get install -y build-essential python3-dev \
     && python3 -m pip install --upgrade pip \
     && groupadd -r knighthacks \
     && useradd --no-log-init -r -g knighthacks backend \
