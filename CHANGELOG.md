@@ -19,6 +19,7 @@ Types of Changes:
 ### Breaking Changes
 
 -   All authentication and authorization is handled through the Knight Hacks Azure AD tenant. Previous authentication routes will no longer work and will return a 404.
+-   Hacker email verification no longer exists. All requests to `/api/email/*` endpoints will respond with 410 Gone until the next major release.
 
 ### Changed
 
@@ -27,6 +28,7 @@ Types of Changes:
 ### Removed
 
 -   Authentication routes
+-   Hacker email verification.
 
 ## [2.1.9] - 2021-10-25
 
