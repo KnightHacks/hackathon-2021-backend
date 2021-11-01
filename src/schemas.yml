@@ -103,8 +103,12 @@ Sponsor:
       type: uri
       example: https://blob.knighthacks.org/somelogo.png
     socials:
+      deprecated: true
       type: dict
       example: { linkedIn: https://blob.knighthackslinkedIn.org }
+    sponsor_website:
+      type: uri
+      example: https://knighthacks.org
     subscription_tier:
       type: string
       example: "Gold"

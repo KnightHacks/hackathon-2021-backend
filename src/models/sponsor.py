@@ -21,8 +21,9 @@ class Sponsor(BaseDocument):
     sponsor_name = db.StringField(unique=True, required=True)
     description = db.StringField()
     logo = db.URLField()
-    socials = db.DictField()
     subscription_tier = db.StringField()
+    socials = db.DictField()
+    sponsor_website = db.URLField()
 
     def to_mongo(self, *args, **kwargs):
         data = super().to_mongo(*args, **kwargs)
