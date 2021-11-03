@@ -101,10 +101,15 @@ def create_sponsor():
         "message": "sponsor was created!"
     }
 
+    res = make_response(res)
+
     if "multipart/form-data" in request.content_type:
-        res = make_response(res)
         res.headers["Deprecation"] = (
-            "The use of multipart/form-data is deprecated")
+            "The use of multipart/form-data is deprecated. ")
+
+    if "socials" in data:
+        res.headers["Deprecation"] = (
+            "The socials field is deprecated use sponsor_website instead")
 
     return res, 201
 
@@ -118,8 +123,19 @@ def get_all_sponsors():
         - sponsor
     summary: returns an array of sponsor documents
     responses:
-        201:
+        200:
             description: OK
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            sponsors:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Sponsor'
+                            status:
+                                type: string
         404:
             description: No sponsor documents are created.
         5XX:
@@ -135,4 +151,10 @@ def get_all_sponsors():
         "status": "success"
     }
 
-    return res, 201
+    res = make_response(res)
+    res.headers["Deprecation"] = (
+        "The socials field is deprecated "
+        "use sponsor_website instead."
+    )
+
+    return res, 200

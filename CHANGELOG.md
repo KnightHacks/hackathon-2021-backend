@@ -16,6 +16,18 @@ Types of Changes:
 
 ## [Unreleased]
 
+### Added
+
+-   Added `sponsor_website` field in Sponsor model.
+
+### Deprecated
+
+-   `socials` field in Sponsor model is deprecated in favor of the `sponsor_website` field.
+
+### Fixed
+
+-   `get_all_sponsors` route now returns a 200 instead of a 201.
+
 ## [3.0.0] - 2021-10-31
 
 ### Breaking Changes
