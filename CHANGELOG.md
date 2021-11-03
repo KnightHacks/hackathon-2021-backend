@@ -16,6 +16,8 @@ Types of Changes:
 
 ## [Unreleased]
 
+## [3.1.0] - 2021-11-03
+
 ### Added
 
 -   Added `sponsor_website` field in Sponsor model.
@@ -265,7 +267,9 @@ Types of Changes:
 -   Sponsor routes.
 -   Stats routes.
 
-[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/KnightHacks/hackathon-2021-backend/compare/3.1.0...HEAD
+
+[3.1.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/3.0.0...3.1.0
 
 [3.0.0]: https://github.com/KnightHacks/hackathon-2021-backend/compare/2.1.9...3.0.0
 
