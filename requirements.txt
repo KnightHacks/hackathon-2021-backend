@@ -1,5 +1,5 @@
 jsonschema < 5.0.0
-flasgger == 0.9.5
+flasgger == 0.9.7.1
 Flask
 Flask-Cors
 flask-mongoengine
